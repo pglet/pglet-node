@@ -6,8 +6,13 @@ const pglet = require("../index.js");
         const id = await p.send("add textbox id=name");
         console.log(id);
 
-        const e = p.waitEvents();
-        console.log(e);
+        await p.send("add button id=ok text=OK");
+        await p.send("add button id=cancel text=Cancel");
+
+        while(true) {
+            const e = await p.waitEvent();
+            console.log(e);
+        }
     });
 
     process.stdin.resume();

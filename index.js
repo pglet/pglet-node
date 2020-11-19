@@ -43,7 +43,7 @@ class Connection {
         // open connections for command and event pipes
         this._commandResolve = null;
         this._commandReject = null;
-        this._commandClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}` : `${os.tmpdir()}/${connId}`, () => {
+        this._commandClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}` : `${os.tmpdir()}/CoreFxPipe_${connId}`, () => {
             console.log("Connected to command pipe.");
         });
 
@@ -67,10 +67,26 @@ class Connection {
             }
         });
 
-        this._eventPromise = null;
-        this._eventClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}.events` : `${os.tmpdir()}/${connId}.events`, () => {
+        this._eventResolve = null;
+        this._eventClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}.events` : `${os.tmpdir()}/CoreFxPipe_${connId}.events`, () => {
             console.log("Connected to event pipe.");
         });
+
+        this._eventClient.on('data', (data) => {
+            const result = data.toString().trim();
+
+            let re = /(?<target>[^\s]+)\s(?<name>[^\s]+)(\s(?<data>.+))*/;
+            let match = re.exec(result);
+
+            const value = new Event(match.groups.target, match.groups.name, match.groups.data);
+
+            var fn = this._eventResolve;
+            this._eventResolve = null;
+
+            if (fn) {
+                fn(value);
+            }
+        });        
     }
 
     get id() {
@@ -91,9 +107,11 @@ class Connection {
         return result;
     }
 
-    waitEvents() {
-        // todo
-        return new Event('button1', 'click', null);
+    waitEvent() {
+        // register for result
+        return new Promise((resolve, reject) => {
+            this._eventResolve = resolve;
+        });
     }
 }
 
