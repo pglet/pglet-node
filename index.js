@@ -123,9 +123,15 @@ module.exports.page = (...args) => {
     //console.log(pgletExe);
 
     var res = cp.spawnSync(pgletExe, pargs, { encoding : 'utf8' });
-    console.log('stdout:' + res.stdout);
+    var result = res.stdout.trim();
 
-    return new Connection("conn1");
+    let re = /(?<connId>[^\s]+)\s(?<pageUrl>[^\s]+)/;
+    let match = re.exec(result);
+
+    var conn = new Connection(match.groups.connId);
+    conn.pageUrl = match.groups.pageUrl;
+
+    return conn;
 }
 
 module.exports.app = (...args) => {
@@ -153,7 +159,9 @@ module.exports.app = (...args) => {
         if (!pageUrl) {
             pageUrl = data;
         } else {
-            fn(new Connection(data));
+            var conn = new Connection(data);
+            conn.pageUrl = pageUrl;
+            fn(conn);
         }
     });  
     child.on('close', exitCode => {

@@ -1,10 +1,16 @@
 const pglet = require("../index.js");
 
-p = pglet.page();
-p.send("add textbox");
+(async () => {
+    p = pglet.page();
 
-// pglet.page("page1");
-
-// pglet.page("page1", { public: true });
-
-// pglet.page({ name: "test1" });
+    const id = await p.send("add textbox id=name");
+    console.log(id);
+    
+    await p.send("add button id=ok text=OK");
+    await p.send("add button id=cancel text=Cancel");
+    
+    while(true) {
+        const e = await p.waitEvent();
+        console.log(e);
+    }
+})();
