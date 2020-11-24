@@ -47,4 +47,4 @@ build_script:
 test: off
 
 artifacts:
-- path: '**\*.tar.gz'
+- path: '**\*.tgz'
