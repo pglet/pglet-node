@@ -1,0 +1,53 @@
+version: 0.1.{build}
+
+environment:
+  NODE_VERSION: 12
+  NPM_TOKEN:
+    secure: k2cSmOKcnk4Va2hNea/oVjUCIyWl+iAMMS0ZgxWzXFHQg/0q5f+T7JyKYEIEF56Y
+
+init:
+- ps: Install-Product node $env:NODE_VERSION
+
+build_script:
+# run tests
+- node --version
+- npm --version
+
+# build and publish package
+- ps: |
+    $ErrorActionPreference = "Stop"
+
+    if ($env:APPVEYOR_REPO_TAG -eq 'true') {
+      # release mode
+
+      # version
+      $ver = $env:APPVEYOR_REPO_TAG_NAME
+      if ($ver.StartsWith('v')) { $ver = $ver.Substring(1) }
+
+      # prerelease moniker
+      $idx = $ver.indexOf('-')
+      if ($idx -ne -1) {
+        $prerelease = $ver.Substring($idx + 1)
+        $ver = $ver.Substring(0, $idx)
+      }
+    } else {
+
+      # build mode
+      $ver = $env:APPVEYOR_BUILD_VERSION
+    }
+
+    # patch version
+    $packageJson = Get-Content 'package.json' | ConvertFrom-Json
+    $packageJson.version = $ver
+    $packageJson | ConvertTo-Json -Depth 20 | Set-Content -Path 'package.json'
+
+    npm pack
+
+    if ($env:APPVEYOR_REPO_TAG -eq 'true') {
+      npm publish
+    }
+
+test: off
+
+artifacts:
+- path: *.tar.gz
