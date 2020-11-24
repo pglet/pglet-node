@@ -2,7 +2,7 @@ version: 0.1.{build}
 
 environment:
   NODE_VERSION: 12
-  NODE_AUTH_TOKEN:
+  NPM_TOKEN:
     secure: k2cSmOKcnk4Va2hNea/oVjUCIyWl+iAMMS0ZgxWzXFHQg/0q5f+T7JyKYEIEF56Y
 
 init:
