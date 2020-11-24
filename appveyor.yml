@@ -42,6 +42,7 @@ build_script:
     $packageJson | ConvertTo-Json -Depth 20 | Set-Content -Path 'package.json'
 
 - npm pack
+- echo %APPVEYOR_REPO_TAG%
 - IF "%APPVEYOR_REPO_TAG%"=="True" npm publish
 
 test: off
