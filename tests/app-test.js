@@ -1,7 +1,8 @@
 const pglet = require("../index.js");
 
+(async () => {
     // test app
-    pglet.app(async (p) => {
+    await pglet.app(async (p) => {
 
         const id = await p.send("add textbox id=name");
         console.log(id);
@@ -16,3 +17,4 @@ const pglet = require("../index.js");
     });
 
     process.stdin.resume();
+})();

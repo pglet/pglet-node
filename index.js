@@ -2,15 +2,82 @@ const os = require('os');
 const path = require('path');
 const cp = require('child_process');
 const net = require('net');
+const fs = require("fs");
+const request = require('request');
+const compareVersions = require('compare-versions');
+const { error } = require('console');
+
+const PGLET_VERSION = "0.1.5";
 
 var pgletExe = null;
+var _installPromise = null;
 
-function install() {
-    console.log("Installing Pglet");
+async function _install() {
+    // prevent concurrent calls firing install more than once
+    if (!_installPromise) {
+        _installPromise = _doInstall();
+      }
+      return _installPromise;
+}
 
+async function _doInstall() {
     var pgletDir = path.join(os.homedir(), ".pglet");
     var pgletBin = path.join(pgletDir, "bin");
     pgletExe = path.join(pgletBin, os.type() === "Windows_NT" ? "pglet.exe" : "pglet");
+
+    if (!fs.existsSync(pgletBin)) {
+        await fs.promises.mkdir(pgletBin, { recursive: true });
+    }
+
+    var ver = PGLET_VERSION;
+    var installedVer = null;
+
+    if (fs.existsSync(pgletExe)) {
+        var res = cp.spawnSync(pgletExe, ["--version"], { encoding : 'utf8' });
+        installedVer = res.stdout.trim();
+    }
+
+    if (!installedVer || compareVersions(installedVer, ver) < 0) {
+        console.log(`Installing Pglet v${ver}...`)
+
+        var target = null;
+        const platform = os.type();
+        if (platform == "Windows_NT") {
+            target = "windows-amd64.exe";
+        } else if (platform == "Linux") {
+            target = "linux-amd64";
+        } else if (platform == "Darwin") {
+            target = "darwin-amd64";
+        } else {
+            throw `Unsupported platform: {platform}`
+        }
+
+        // download file
+        const pgletUrl = `https://github.com/pglet/pglet/releases/download/v${ver}/pglet-${target}`;
+        await download(pgletUrl, pgletExe);
+
+        if (platform != "Windows_NT") {
+            fs.chmodSync(pgletExe, 0755);
+        }
+    }
+}
+
+async function download(url, filePath) {
+    await new Promise((resolve, reject) => {
+        let file = fs.createWriteStream(filePath);
+        file.on('close', () => {
+            resolve();
+        });
+
+        let stream = request({ uri: url })
+        .pipe(file)
+        .on('error', (error) => {
+            reject(error);
+        })
+    })
+    .catch(error => {
+        console.log(`Error downloading ${url}: ${error}`);
+    });
 }
 
 class Event {
@@ -115,8 +182,8 @@ class Connection {
     }
 }
 
-module.exports.page = (...args) => {
-
+module.exports.page = async (...args) => {
+    await _install();
     const pargs = buildArgs("page", args);
 
     console.log(pargs);
@@ -134,8 +201,8 @@ module.exports.page = (...args) => {
     return conn;
 }
 
-module.exports.app = (...args) => {
-
+module.exports.app = async (...args) => {
+    await _install();
     // last argument must be a function
     var fn = null;
     if (args.length > 0 && typeof args[args.length - 1] === 'function') {
@@ -218,6 +285,3 @@ function buildArgs(action, args) {
 
     return pargs;
 }
-
-// run on init
-install();

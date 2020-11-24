@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "description": "Pglet bindings for Node.js - easily build interactive web apps in Node.js",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,5 +24,9 @@
   "bugs": {
     "url": "https://github.com/pglet/pglet-node/issues"
   },
-  "homepage": "https://github.com/pglet/pglet-node#readme"
+  "homepage": "https://github.com/pglet/pglet-node#readme",
+  "dependencies": {
+    "compare-versions": "^3.6.0",
+    "request": "^2.88.2"
+  }
 }
