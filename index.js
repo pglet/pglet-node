@@ -160,6 +160,7 @@ class Connection {
         return this.connId;
     }
 
+    // send command to a pipe and receive results
     send(command) {
 
         // register for result
@@ -174,6 +175,7 @@ class Connection {
         return result;
     }
 
+    // wait event pipe for new event
     waitEvent() {
         // register for result
         return new Promise((resolve, reject) => {
@@ -262,20 +264,26 @@ function buildArgs(action, args) {
         pargs.push(pageName);
     }
 
-    if (opts && opts.public) {
-        pargs.push("--public");
+    if (opts && opts.web) {
+        pargs.push("--web");
     }
 
     if (opts && opts.private) {
         pargs.push("--private");
     }
 
-    if (opts && opts.server) {
-        pargs.push("--server");
+    if (opts && opts.noWindow) {
+        pargs.push("--no-window");
     }
 
     if (opts && opts.server) {
         pargs.push("--server");
+        pargs.push(opts.server);
+    }
+
+    if (opts && opts.token) {
+        pargs.push("--token");
+        pargs.push(opts.token);
     }
 
     if (os.type() !== "Windows_NT") {
