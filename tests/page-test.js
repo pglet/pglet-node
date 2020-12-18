@@ -1,5 +1,9 @@
 const pglet = require("../index.js");
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 (async () => {
     p = await pglet.page("index", { noWindow: true });
 
@@ -9,6 +13,10 @@ const pglet = require("../index.js");
     
     await p.send("add button id=ok text=OK");
     await p.send("add button id=cancel text=Cancel");
+
+    console.log("before sleep");
+    await sleep(5000);
+    console.log("after sleep");
     
     while(true) {
         const e = await p.waitEvent();
