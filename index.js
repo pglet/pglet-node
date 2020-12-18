@@ -188,7 +188,7 @@ module.exports.page = async (...args) => {
     await _install();
     const pargs = buildArgs("page", args);
 
-    console.log(pargs);
+    //console.log(pargs);
     //console.log(pgletExe);
 
     var res = cp.spawnSync(pgletExe, pargs, { encoding : 'utf8' });
@@ -215,7 +215,7 @@ module.exports.app = async (...args) => {
 
     const pargs = buildArgs("app", args);
 
-    console.log(pargs);
+    //console.log(pargs);
 
     var pageUrl = null;
 
