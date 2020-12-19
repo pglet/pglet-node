@@ -7,7 +7,7 @@ const request = require('request');
 const compareVersions = require('compare-versions');
 const { error } = require('console');
 
-const PGLET_VERSION = "0.1.5";
+const PGLET_VERSION = "0.1.11";
 
 var pgletExe = null;
 var _installPromise = null;
@@ -379,11 +379,7 @@ function buildArgs(action, args) {
     if (opts && opts.web) {
         pargs.push("--web");
     }
-
-    if (opts && opts.private) {
-        pargs.push("--private");
-    }
-
+    
     if (opts && opts.noWindow) {
         pargs.push("--no-window");
     }
