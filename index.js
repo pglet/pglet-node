@@ -21,9 +21,26 @@ async function _install() {
 }
 
 async function _doInstall() {
+    pgletExe = os.type() === "Windows_NT" ? "pglet.exe" : "pglet";
+
+    // check if pglet exists in PATH (for development)
+    let pgletInPath = null;
+    process.env.PATH.split(path.delimiter).forEach(p => {
+        let fp = path.join(p, pgletExe);
+        if (fs.existsSync(fp)) {
+            pgletInPath = fp;
+        }
+    });
+
+    if (pgletInPath != null) {
+        pgletExe = pgletInPath;
+        //console.log("pglet found in PATH:", pgletExe);
+        return;
+    }
+
     var pgletDir = path.join(os.homedir(), ".pglet");
     var pgletBin = path.join(pgletDir, "bin");
-    pgletExe = path.join(pgletBin, os.type() === "Windows_NT" ? "pglet.exe" : "pglet");
+    pgletExe = path.join(pgletBin, pgletExe);
 
     if (!fs.existsSync(pgletBin)) {
         await fs.promises.mkdir(pgletBin, { recursive: true });
@@ -107,53 +124,50 @@ class Connection {
 
         console.log(`New connection: ${connId}`);
 
-        // open connections for command and event pipes
-        this._commandResolve = null;
-        this._commandReject = null;
-        this._commandClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}` : `${os.tmpdir()}/CoreFxPipe_${connId}`, () => {
-            console.log("Connected to command pipe.");
-        });
-
-        this._commandClient.on('data', (data) => {
-            const result = data.toString().trim();
-            
-            var flag = result;
-            var value = null;
-            const idx = result.indexOf(" ");
-            if (idx != -1) {
-                flag = result.substring(0, idx);
-                value = result.substring(idx + 1);
-            }
-
-            var fn = (flag === "error") ? this._commandReject : this._commandResolve;
+        if (os.type() === "Windows_NT") {
+            // open connections for command and event pipes
             this._commandResolve = null;
             this._commandReject = null;
+            this._commandClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}` : `${os.tmpdir()}/CoreFxPipe_${connId}`, () => {
+                console.log("Connected to command pipe.");
+                this._commandClient.setNoDelay(true);
+            });
 
-            if (fn) {
-                fn(value);
-            }
-        });
+            this._commandClient.on('data', (data) => {
+                // parse result
+                const result = this.parseResult(data);
 
-        this._eventResolve = null;
-        this._eventClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}.events` : `${os.tmpdir()}/CoreFxPipe_${connId}.events`, () => {
-            console.log("Connected to event pipe.");
-        });
+                let fn = this._commandResolve;
+                let value = result.value;
+                if (result.error) {
+                    let fn = this._commandReject;
+                    let value = result.error;
+                }
 
-        this._eventClient.on('data', (data) => {
-            const result = data.toString().trim();
+                this._commandResolve = null;
+                this._commandReject = null;
 
-            let re = /(?<target>[^\s]+)\s(?<name>[^\s]+)(\s(?<data>.+))*/;
-            let match = re.exec(result);
+                if (fn) {
+                    fn(value);
+                }
+            });
 
-            const value = new Event(match.groups.target, match.groups.name, match.groups.data);
-
-            var fn = this._eventResolve;
             this._eventResolve = null;
+            this._eventClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}.events` : `${os.tmpdir()}/CoreFxPipe_${connId}.events`, () => {
+                console.log("Connected to event pipe.");
+            });
 
-            if (fn) {
-                fn(value);
-            }
-        });        
+            this._eventClient.on('data', (data) => {
+                const result = this.parseEvent(data);
+
+                var fn = this._eventResolve;
+                this._eventResolve = null;
+
+                if (fn) {
+                    fn(result);
+                }
+            });
+        }
     }
 
     get id() {
@@ -162,25 +176,123 @@ class Connection {
 
     // send command to a pipe and receive results
     send(command) {
+        let waitResult = !command.match(/\w+/g)[0].endsWith('f');
 
-        // register for result
-        const result = new Promise((resolve, reject) => {
-            this._commandResolve = resolve;
-            this._commandReject = reject;
-        });
-
-        // send command
-        this._commandClient.write(command);
-
-        return result;
+        if (os.type() === "Windows_NT") {
+            // Windows
+            return this._sendWindows(command, waitResult);
+        } else {
+            // Linux/macOS - use FIFO
+            return this._sendLinux(command, waitResult);
+        }
     }
+
+    _sendWindows(command, waitResult) {
+        if (waitResult) {
+
+            // command with result
+            return new Promise((resolve, reject) => {
+                this._commandResolve = resolve;
+                this._commandReject = reject;
+
+                // send command
+                this._commandClient.write(command + '\n');                
+            });
+
+        } else {
+
+            // fire-and-forget command
+            return new Promise((resolve, reject) => {
+                this._commandClient.write(command + '\n', (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        }
+    }
+
+    _sendLinux(command, waitResult) {
+        return new Promise((resolve, reject) => {
+                
+            fs.writeFile(this.connId, command + '\n', (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (waitResult) {
+                        fs.readFile(this.connId, (err, data) => {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                // parse result
+                                const result = this.parseResult(data);
+                
+                                if (result.error) {
+                                    reject(result.error);
+                                } else {
+                                    resolve(result.value);
+                                }
+                            }
+                        })
+                    } else {
+                        resolve();
+                    }
+                }
+            });
+            
+        });
+    }    
 
     // wait event pipe for new event
     waitEvent() {
         // register for result
         return new Promise((resolve, reject) => {
-            this._eventResolve = resolve;
+            if (os.type() === "Windows_NT") {
+                this._eventResolve = resolve;
+            } else {
+                fs.open(`${this.connId}.events`, 'r+', (err, fd) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        var stream = fs.createReadStream(null, {
+                            fd
+                        });
+                        stream.on('data', (data) => {
+                            stream.close()
+                            resolve(this.parseEvent(data));
+                        });                     
+                    }
+                });                
+            }
         });
+    }
+
+    parseResult(data) {
+        const result = data.toString().trim();
+            
+        var flag = result;
+        var value = null;
+        const idx = result.indexOf(" ");
+        if (idx != -1) {
+            flag = result.substring(0, idx);
+            value = result.substring(idx + 1);
+        }
+
+        return {
+            value: (flag !== "error") ? value : null,
+            error: (flag === "error") ? value : null
+        }      
+    }
+
+    parseEvent(data) {
+        const result = data.toString().trim();
+
+        let re = /(?<target>[^\s]+)\s(?<name>[^\s]+)(\s(?<data>.+))*/;
+        let match = re.exec(result);
+
+        return new Event(match.groups.target, match.groups.name, match.groups.data);
     }
 }
 
@@ -286,10 +398,10 @@ function buildArgs(action, args) {
         pargs.push(opts.token);
     }
 
-    if (os.type() !== "Windows_NT") {
-        // enforce Unix Domain Sockets for non-Windows platforms
-        pargs.push("--uds");
-    }
+    // if (os.type() !== "Windows_NT") {
+    //     // enforce Unix Domain Sockets for non-Windows platforms
+    //     pargs.push("--uds");
+    // }
 
     return pargs;
 }

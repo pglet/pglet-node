@@ -11,8 +11,9 @@ function sleep(ms) {
     const id = await p.send("add textbox id=name multiline");
     console.log(id);
     
-    await p.send("add button id=ok text=OK");
     await p.send("add button id=cancel text=Cancel");
+    await p.send("addf button id=ok text=OK");
+    await p.send("add textbox id=txt2");
 
     console.log("before sleep");
     await sleep(5000);
