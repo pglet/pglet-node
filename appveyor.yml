@@ -14,8 +14,8 @@ build_script:
 - npm --version
 
 # build and publish package
-- npm config set '//registry.npmjs.org/:_authToken' '${NPM_TOKEN}'
-- cat .npmrc
+- echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+- type .npmrc
 - ps: |
     $ErrorActionPreference = "Stop"
 
