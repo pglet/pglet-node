@@ -1,5 +1,7 @@
 version: 0.1.{build}
 
+skip_branch_with_pr: true
+
 environment:
   NODE_VERSION: 12
   NPM_TOKEN:

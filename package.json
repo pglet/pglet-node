@@ -1,7 +1,7 @@
 {
   "name": "pglet",
   "version": "0.1.0",
-  "description": "Pglet bindings for Node.js - easily build interactive web apps in Node.js",
+  "description": "Pglet client for Node.js - easily build interactive web apps in Node.js",
   "main": "index.js",
   "files": [
     "index.js",
