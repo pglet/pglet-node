@@ -7,7 +7,7 @@ const request = require('request');
 const compareVersions = require('compare-versions');
 const { error } = require('console');
 
-const PGLET_VERSION = "0.1.11";
+const PGLET_VERSION = "0.1.12";
 
 var pgletExe = null;
 var _installPromise = null;
@@ -55,7 +55,7 @@ async function _doInstall() {
     }
 
     if (!installedVer || compareVersions(installedVer, ver) < 0) {
-        console.log(`Installing Pglet v${ver}...`)
+        //console.log(`Installing Pglet v${ver}...`)
 
         var target = null;
         const platform = os.type();
@@ -122,14 +122,14 @@ class Connection {
     constructor(connId) {
         this.connId = connId;
 
-        console.log(`New connection: ${connId}`);
+        //console.log(`New connection: ${connId}`);
 
         if (os.type() === "Windows_NT") {
             // open connections for command and event pipes
             this._commandResolve = null;
             this._commandReject = null;
             this._commandClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}` : `${os.tmpdir()}/CoreFxPipe_${connId}`, () => {
-                console.log("Connected to command pipe.");
+                //console.log("Connected to command pipe.");
                 this._commandClient.setNoDelay(true);
             });
 
@@ -154,7 +154,7 @@ class Connection {
 
             this._eventResolve = null;
             this._eventClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}.events` : `${os.tmpdir()}/CoreFxPipe_${connId}.events`, () => {
-                console.log("Connected to event pipe.");
+                //console.log("Connected to event pipe.");
             });
 
             this._eventClient.on('data', (data) => {
@@ -346,7 +346,7 @@ module.exports.app = async (...args) => {
         }
     });  
     child.on('close', exitCode => {
-        console.log('Exit code:', exitCode);
+        //console.log('Exit code:', exitCode);
     });
 }
 
