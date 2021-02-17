@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/pglet/pglet-node#readme",
   "dependencies": {
+    "@types/node": "^14.14.28",
     "compare-versions": "^3.6.0",
     "request": "^2.88.2"
   }

@@ -3,14 +3,15 @@
 
 import os from 'os';
 import net from 'net';
+import { Event } from './Event';
 
 export class Connection {
     private connId = ""
-    private _commandClient;
-    private _commandResolve;
-    private _commandReject;
-    private _eventResolve;
-    private _eventClient;
+    private _commandClient: any;
+    private _commandResolve: any;
+    private _commandReject: any;
+    private _eventClient: any;
+    private _eventResolve: any;
 
     constructor(connId: string) {
         this.connId = connId;
@@ -63,6 +64,7 @@ export class Connection {
 
     add(): string {
 
+
     }
     update(): string {
 
@@ -86,5 +88,14 @@ export class Connection {
             error: (flag === "error") ? value : null
         }      
 
+    }
+
+    parseEvent(data) {
+        const result = data.toString().trim();
+
+        let re = /(?<target>[^\s]+)\s(?<name>[^\s]+)(\s(?<data>.+))*/;
+        let match = re.exec(result);
+
+        return new Event(match.groups.target, match.groups.name, match.groups.data);
     }
 }
