@@ -7,7 +7,7 @@ const request = require('request');
 const compareVersions = require('compare-versions');
 const { error } = require('console');
 
-const PGLET_VERSION = "0.1.12";
+const PGLET_VERSION = "0.2.2";
 
 var pgletExe = null;
 var _installPromise = null;
@@ -57,20 +57,24 @@ async function _doInstall() {
     if (!installedVer || compareVersions(installedVer, ver) < 0) {
         //console.log(`Installing Pglet v${ver}...`)
 
-        var target = null;
-        const platform = os.type();
-        if (platform == "Windows_NT") {
-            target = "windows-amd64.exe";
-        } else if (platform == "Linux") {
-            target = "linux-amd64";
-        } else if (platform == "Darwin") {
-            target = "darwin-amd64";
+        var platform = null;
+        var arch = "amd64";
+        var ext = ""
+
+        const p = os.type();
+        if (p == "Windows_NT") {
+            platform = "windows";
+            ext = ".exe"
+        } else if (p == "Linux") {
+            platform = "linux";
+        } else if (p == "Darwin") {
+            platform = "darwin";
         } else {
-            throw `Unsupported platform: {platform}`
+            throw `Unsupported platform: {p}`
         }
 
         // download file
-        const pgletUrl = `https://github.com/pglet/pglet/releases/download/v${ver}/pglet-${target}`;
+        const pgletUrl = `https://github.com/pglet/pglet/releases/download/v${ver}/pglet-${ver}-${platform}-${arch}${ext}`;
         await download(pgletUrl, pgletExe);
 
         if (platform != "Windows_NT") {
