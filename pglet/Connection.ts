@@ -12,6 +12,7 @@ export class Connection {
     private _commandReject: any;
     private _eventClient: any;
     private _eventResolve: any;
+    private _eventHandlers: any;
 
     constructor(connId: string) {
         this.connId = connId;
@@ -25,7 +26,7 @@ export class Connection {
                 this._commandClient.setNoDelay(true);
             });
 
-            this._commandClient.on('data', (data) => {
+            this._commandClient.on('data', (data: any) => {
                 // parse result
                 const result = this.parseResult(data);
 
@@ -71,6 +72,14 @@ export class Connection {
     }
     remove(): string {
 
+    }
+    addEventHandlers(controlId: string, eventName: string, handler: any) {
+        let controlEvents = controlId in this._eventHandlers ? this._eventHandlers[controlId] : null;
+        if (!controlEvents) {
+            controlEvents = {}
+            this._eventHandlers[controlId] = controlEvents;
+        }
+        controlEvents[eventName] = handler;
     }
     parseResult(data: any) {
         const result = data.toString().trim();
