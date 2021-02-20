@@ -27,6 +27,11 @@ export class Control {
         this.padding = controlProps.padding ? controlProps.padding : null;
         this.margin = controlProps.margin ? controlProps.margin : null;
     }
+    
+    getCmdStr(update?: boolean, index?: number, conn?: string): string {
+        return "TODO";
+
+    }
 
 
 

@@ -3,7 +3,9 @@
 
 import os from 'os';
 import net from 'net';
+import fs from 'fs';
 import { Event } from './Event';
+import { Control } from './Control';
 
 export class Connection {
     private connId = ""
@@ -63,17 +65,97 @@ export class Connection {
         }
     }
 
-    add(): string {
+    add(controls: any | Control[], to?: string, at?: number, fireAndForget?: boolean ): string {
+        let cmd = fireAndForget ? "add" : "addf";
+        cmd += to ? ` to="${to}"` : "";
+        cmd += at ? ` at="${at}"` : "";
 
+        if (_.isArray(controls)) {
+             controls.forEach(ctrl => {
+                cmd += `\n${ctrl.getCmdStrZ()}`;
+             })
 
+        }
+
+        let result = this.send(cmd);
+        
     }
-    update(): string {
+    // update(): string {
 
-    }
-    remove(): string {
+    // }
+    // remove(): string {
 
+    // }
+
+    send(command: string): Promise<string> {
+        let waitResult = !command.match(/\w+/g)[0].endsWith('f');
+
+        if (os.type() === "Windows_NT") {
+            // Windows
+            return this.sendWindows(command, waitResult);
+        } else {
+            // Linux/macOS - use FIFO
+            return this.sendLinux(command, waitResult);
+        }
     }
-    addEventHandlers(controlId: string, eventName: string, handler: any) {
+    private sendWindows(command, waitResult): Promise<string> {
+        if (waitResult) {
+
+            // command with result
+            return new Promise((resolve, reject) => {
+                this._commandResolve = resolve;
+                this._commandReject = reject;
+
+                // send command
+                this._commandClient.write(command + '\n');                
+            });
+
+        } else {
+
+            // fire-and-forget command
+            return new Promise((resolve, reject) => {
+                this._commandClient.write(command + '\n', (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        }
+    }
+
+    private sendLinux(command, waitResult): Promise<string> {
+        return new Promise((resolve, reject) => {
+                
+            fs.writeFile(this.connId, command + '\n', (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (waitResult) {
+                        fs.readFile(this.connId, (err, data) => {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                // parse result
+                                const result = this.parseResult(data);
+                
+                                if (result.error) {
+                                    reject(result.error);
+                                } else {
+                                    resolve(result.value);
+                                }
+                            }
+                        })
+                    } else {
+                        resolve();
+                    }
+                }
+            });
+            
+        });
+    }    
+    private addEventHandlers(controlId: string, eventName: string, handler: any) {
         let controlEvents = controlId in this._eventHandlers ? this._eventHandlers[controlId] : null;
         if (!controlEvents) {
             controlEvents = {}
@@ -81,7 +163,7 @@ export class Connection {
         }
         controlEvents[eventName] = handler;
     }
-    parseResult(data: any) {
+    private parseResult(data: any) {
         const result = data.toString().trim();
             
         var flag = result;
@@ -99,7 +181,7 @@ export class Connection {
 
     }
 
-    parseEvent(data) {
+    private parseEvent(data) {
         const result = data.toString().trim();
 
         let re = /(?<target>[^\s]+)\s(?<name>[^\s]+)(\s(?<data>.+))*/;
@@ -107,4 +189,10 @@ export class Connection {
 
         return new Event(match.groups.target, match.groups.name, match.groups.data);
     }
+
+    // private getControlId(controlId: string) {
+    //     if 
+
+    // }
+    
 }
