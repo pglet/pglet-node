@@ -67,18 +67,22 @@ export class Connection {
 
     add(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): string {
         let controlsArray: Control[] = [].concat(controls);
+        console.log("controlsArray: ", controlsArray);
         let cmd = fireAndForget ? "add" : "addf";
         cmd += to ? ` to="${to}"` : "";
         cmd += at ? ` at="${at}"` : "";
 
         let index = [];
 
-        if (controlsArray.length > 1) {
-             controlsArray.forEach(ctrl => {
-                cmd += `\n${ctrl.getCmdStr()}`;
-             })
+        // if (controlsArray.length > 1) {
+        //      controlsArray.forEach(ctrl => {
+        //         cmd += `\n${ctrl.getCmdStr()}`;
+        //      })
+        // }
+        controlsArray.forEach(ctrl => {
+            cmd += `\n${ctrl.getCmdStr()}`;
+        })
 
-        }
         console.log("cmd: ", cmd);
         let result = this.send(cmd);
 
@@ -102,6 +106,29 @@ export class Connection {
             // Linux/macOS - use FIFO
             return this.sendLinux(command, waitResult);
         }
+    }
+        // wait event pipe for new event
+    waitEvent(): Promise<string | Event> {
+        // register for result
+        return new Promise((resolve, reject) => {
+            if (os.type() === "Windows_NT") {
+                this._eventResolve = resolve;
+            } else {
+                fs.open(`${this.connId}.events`, 'r+', (err, fd) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        var stream = fs.createReadStream(null, {
+                            fd
+                        });
+                        stream.on('data', (data) => {
+                            stream.close()
+                            resolve(this.parseEvent(data));
+                        });                     
+                    }
+                });                
+            }
+        });
     }
     private sendWindows(command: string, waitResult: boolean): Promise<string | void> {
         if (waitResult) {
@@ -186,7 +213,7 @@ export class Connection {
 
     }
 
-    private parseEvent(data) {
+    private parseEvent(data: any) {
         const result = data.toString().trim();
 
         let re = /(?<target>[^\s]+)\s(?<name>[^\s]+)(\s(?<data>.+))*/;
