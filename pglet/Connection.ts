@@ -65,19 +65,24 @@ export class Connection {
         }
     }
 
-    add(controls: any | Control[], to?: string, at?: number, fireAndForget?: boolean ): string {
+    add(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): string {
+        let controlsArray: Control[] = [].concat(controls);
         let cmd = fireAndForget ? "add" : "addf";
         cmd += to ? ` to="${to}"` : "";
         cmd += at ? ` at="${at}"` : "";
 
-        if (_.isArray(controls)) {
-             controls.forEach(ctrl => {
-                cmd += `\n${ctrl.getCmdStrZ()}`;
+        let index = [];
+
+        if (controlsArray.length > 1) {
+             controlsArray.forEach(ctrl => {
+                cmd += `\n${ctrl.getCmdStr()}`;
              })
 
         }
-
+        console.log("cmd: ", cmd);
         let result = this.send(cmd);
+
+        return "TODO";
         
     }
     // update(): string {
@@ -87,7 +92,7 @@ export class Connection {
 
     // }
 
-    send(command: string): Promise<string> {
+    send(command: string): Promise<string | void> {
         let waitResult = !command.match(/\w+/g)[0].endsWith('f');
 
         if (os.type() === "Windows_NT") {
@@ -98,7 +103,7 @@ export class Connection {
             return this.sendLinux(command, waitResult);
         }
     }
-    private sendWindows(command, waitResult): Promise<string> {
+    private sendWindows(command: string, waitResult: boolean): Promise<string | void> {
         if (waitResult) {
 
             // command with result
@@ -113,7 +118,7 @@ export class Connection {
         } else {
 
             // fire-and-forget command
-            return new Promise((resolve, reject) => {
+            return new Promise<void>((resolve, reject): void => {
                 this._commandClient.write(command + '\n', (err) => {
                     if (err) {
                         reject(err);
@@ -125,8 +130,8 @@ export class Connection {
         }
     }
 
-    private sendLinux(command, waitResult): Promise<string> {
-        return new Promise((resolve, reject) => {
+    private sendLinux(command: string, waitResult: boolean): Promise<string | void> {
+        return new Promise<void>((resolve, reject) => {
                 
             fs.writeFile(this.connId, command + '\n', (err) => {
                 if (err) {

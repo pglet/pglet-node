@@ -28,7 +28,7 @@ export class Control {
         this.margin = controlProps.margin ? controlProps.margin : null;
     }
     
-    getCmdStr(update?: boolean, index?: number, conn?: string): string {
+    getCmdStr(update?: boolean, indent?: string, index?: any, conn?: string): string {
         return "TODO";
 
     }
