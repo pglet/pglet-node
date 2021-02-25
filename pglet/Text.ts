@@ -8,15 +8,39 @@ interface TextProperties extends ControlProperties {
 }
 
 export class Text extends Control {
-    public value: string;
-    public align: string | null;
-    public size: string | null;
+    // public value: string;
+    // public align: string | null;
+    // public size: string | null;
 
     constructor(textProps: TextProperties) {
         super(textProps);
-        this.value = textProps.value;
-        this.align = textProps.align ? textProps.align : null;
-        this.size = textProps.size ? textProps.size : null;
-
+        // does this need to be called??
+        //super.attrs = textProps
     }
+    getControlName() {
+        return "text";
+    }
+
+    /* accessors */ 
+    get value() {
+        return this.attrs.id;     
+    }
+    set value(newValue: string) {
+        this.attrs.value = newValue;
+    }
+    get align() {
+        return this.attrs.align;     
+    }
+    set align(newAlign: string) {
+        this.attrs.align = newAlign;
+    }
+    get size() {
+        return this.attrs.size;     
+    }
+    set size(newSize: string) {
+        this.attrs.size = newSize;
+    }
+
+
+
 }
