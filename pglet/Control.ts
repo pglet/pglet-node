@@ -84,16 +84,28 @@ export class Control {
         if (connection) {
             this.connection = connection;
         }
-
+        let lines = [];
         let parts = [];
 
         if (!update) {
             parts.concat(indent + this.getControlName);
         }
 
+        let attrParts = this.getCmdAttrs(update);
 
-        
-        return "TODO";
+        if (attrParts.length > 0 || !update) {
+            parts.concat(attrParts);
+        }
+
+        lines.concat(parts.join(' '));
+
+        if(index) {
+            index.concat(this);
+        }
+
+        // TODO lines.concat(getChildren)
+
+        return lines.join('\n');
 
     }
 
@@ -120,8 +132,17 @@ export class Control {
 
             this.attrs[attr] = [value, false];
         })
-
         
+        if (this.attrs.id) {
+            if (!update) {
+                parts.unshift(`id="${this.stringifyAttr(this.attrs.id)}"`)
+            }
+            else if (parts.length > 0) {
+                parts.unshift(`"${this.stringifyAttr(this.attrs.id)}`)
+            }
+        }
+
+        return parts;
 
     }
 
