@@ -9,7 +9,10 @@ function sleep(ms) {
     p = await pglet.page("index", { noWindow: false });
 
     await p.send("clean");
-    const id = await p.add(new Text.Text({id: "testObject", value: "text object test"}));
+    let textObject = new Text({id: "testObject", value: "text object test"});
+    //console.log(textObject.toString());
+    //console.log(textObject);
+    const id = await p.add(new Text({id: "testObject", value: "text object test"}));
     console.log(id);
 
 

@@ -7,16 +7,14 @@ interface TextProperties extends ControlProperties {
     size?: string,   
 }
 
-export class Text extends Control {
-    // public value: string;
-    // public align: string | null;
-    // public size: string | null;
+class Text extends Control {
 
     constructor(textProps: TextProperties) {
         super(textProps);
         // does this need to be called??
         //super.attrs = textProps
     }
+
     getControlName() {
         return "text";
     }
@@ -44,3 +42,5 @@ export class Text extends Control {
 
 
 }
+
+export = Text;

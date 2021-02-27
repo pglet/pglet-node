@@ -11,26 +11,18 @@ export interface ControlProperties {
 }
 
 export class Control {
-    // public id: string | null;
-    // public visible: boolean | null;
-    // public disabled: boolean | null;
-    // public width: string | null;
-    // public height: string | null;
-    // public padding: string | null;
-    // public margin: string | null;
+
     protected connection: Connection | null;
     protected attrs: any = {};
 
     constructor(controlProps: ControlProperties) {
-        // this.id = controlProps.id ? controlProps.id : null;
-        // this.visible = controlProps.visible ? controlProps.visible : null;
-        // this.disabled = controlProps.disabled ? controlProps.disabled : null;
-        // this.width = controlProps.width ? controlProps.width : null;
-        // this.height = controlProps.height ? controlProps.height : null;
-        // this.padding = controlProps.padding ? controlProps.padding : null;
-        // this.margin = controlProps.margin ? controlProps.margin : null;
-        this.attrs = controlProps;
+        //this.attrs = controlProps;
+        this.attrs = new Map();
+        Object.keys(controlProps).forEach(key => {
+            this.attrs[key] = [controlProps[key], true];
+        })
     }
+
     getControlName() {
         throw new Error("must be overridden in child class");
     }
@@ -80,7 +72,7 @@ export class Control {
     }
 
 
-    private getCmdStr(update?: boolean, indent?: string, index?: any, connection?: Connection): string {
+    getCmdStr(update?: boolean, indent?: string, index?: any, connection?: Connection): string {
         if (connection) {
             this.connection = connection;
         }
@@ -88,14 +80,16 @@ export class Control {
         let parts = [];
 
         if (!update) {
-            parts.concat(indent + this.getControlName);
+            parts.concat(indent + this.getControlName());
         }
 
         let attrParts = this.getCmdAttrs(update);
-
+        console.log("attrParts: ", attrParts);
         if (attrParts.length > 0 || !update) {
+            console.log("concat run");
             parts.concat(attrParts);
         }
+        console.log("parts: ", parts)
 
         lines.concat(parts.join(' '));
 
@@ -110,8 +104,8 @@ export class Control {
     }
 
     private stringifyAttr(attr: any): any {
-        let sattr = attr.toString();
-        return sattr.replaceAll("\n", "\\n").replaceAll("\"", "\\\"");
+        let sattr: string = attr.toString();
+        return sattr.replace(/\n/g, "\\n").replace(/\"/g, "\\\"");
     }
 
     private getCmdAttrs(update?: boolean): string[] {
@@ -120,11 +114,12 @@ export class Control {
         if (update && this.attrs.id == undefined) {
             return parts;
         }
-        this.attrs.forEach(attr => {
+        console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
+        Object.keys(this.attrs).forEach(attr => {
             let dirty = this.attrs[attr][1];
-
+            console.log("attrs after: ", JSON.stringify(this.attrs, undefined, 2))
             if (update && !dirty) {
-                continue
+                return;
             }
 
             let value = this.stringifyAttr(this.attrs[attr][0]);
@@ -147,7 +142,7 @@ export class Control {
     }
 
     getChildren(): Control[] {
-        let children = Control[];
+        let children: Control[] = [];
         return children;
     }
 

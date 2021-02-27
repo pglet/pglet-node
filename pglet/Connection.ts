@@ -67,7 +67,7 @@ export class Connection {
 
     add(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): string {
         let controlsArray: Control[] = [].concat(controls);
-        console.log("controlsArray: ", controlsArray);
+        //console.log("controlsArray: ", controlsArray);
         let cmd = fireAndForget ? "add" : "addf";
         cmd += to ? ` to="${to}"` : "";
         cmd += at ? ` at="${at}"` : "";
@@ -80,7 +80,7 @@ export class Connection {
         //      })
         // }
         controlsArray.forEach(ctrl => {
-            cmd += `\n${ctrl.getCmdStr()}`;
+            cmd += `\n${ctrl.getCmdStr(false, '', index, this)}`;
         })
 
         console.log("cmd: ", cmd);
