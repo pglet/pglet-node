@@ -11,15 +11,18 @@ export interface ControlProperties {
 }
 
 export class Control {
-
+    protected _id: string | null;
     protected connection: Connection | null;
     protected attrs: any = {};
 
     constructor(controlProps: ControlProperties) {
         //this.attrs = controlProps;
+        this._id = controlProps.id ? controlProps.id : undefined;
         this.attrs = new Map();
         Object.keys(controlProps).forEach(key => {
-            this.attrs[key] = [controlProps[key], true];
+            if (key != "id") {
+                this.attrs[key] = [controlProps[key], true];
+            }       
         })
     }
 
@@ -29,10 +32,10 @@ export class Control {
     
     /* accessors */ 
     get id() {
-        return this.attrs.id;     
+        return this._id;     
     }
     set id(newId: string) {
-        this.attrs.id = newId;
+        this._id = newId;
     }
     get visible() {
         return this.attrs.visible;     
@@ -80,18 +83,18 @@ export class Control {
         let parts = [];
 
         if (!update) {
-            parts.concat(indent + this.getControlName());
+            parts.push(indent + this.getControlName());
         }
 
         let attrParts = this.getCmdAttrs(update);
         console.log("attrParts: ", attrParts);
         if (attrParts.length > 0 || !update) {
             console.log("concat run");
-            parts.concat(attrParts);
+            parts.push(...attrParts);
         }
         console.log("parts: ", parts)
 
-        lines.concat(parts.join(' '));
+        lines.push(parts.join(' '));
 
         if(index) {
             index.concat(this);
@@ -121,19 +124,21 @@ export class Control {
             if (update && !dirty) {
                 return;
             }
-
+            console.log("attr before stringify: ", this.attrs[attr][0]);
             let value = this.stringifyAttr(this.attrs[attr][0]);
-            parts.concat(value);
+            console.log(value);
+            parts.push(`${attr}="${value}"`);
 
             this.attrs[attr] = [value, false];
         })
+        console.log("parts after loop: ", parts);
         
-        if (this.attrs.id) {
+        if (this._id) {
             if (!update) {
-                parts.unshift(`id="${this.stringifyAttr(this.attrs.id)}"`)
+                parts.unshift(`id="${this.stringifyAttr(this._id)}"`)
             }
             else if (parts.length > 0) {
-                parts.unshift(`"${this.stringifyAttr(this.attrs.id)}`)
+                parts.unshift(`"${this.stringifyAttr(this._id)}`)
             }
         }
 

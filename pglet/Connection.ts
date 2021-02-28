@@ -65,10 +65,10 @@ export class Connection {
         }
     }
 
-    add(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): string {
+    add(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): Promise<string | void> {
         let controlsArray: Control[] = [].concat(controls);
         //console.log("controlsArray: ", controlsArray);
-        let cmd = fireAndForget ? "add" : "addf";
+        let cmd = fireAndForget ? "addf" : "add";
         cmd += to ? ` to="${to}"` : "";
         cmd += at ? ` at="${at}"` : "";
 
@@ -86,7 +86,7 @@ export class Connection {
         console.log("cmd: ", cmd);
         let result = this.send(cmd);
 
-        return "TODO";
+        return result;
         
     }
     // update(): string {
