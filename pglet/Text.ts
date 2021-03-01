@@ -21,7 +21,7 @@ class Text extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.id;     
+        return this.attrs.value;     
     }
     set value(newValue: string) {
         this.attrs.value = newValue;

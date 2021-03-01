@@ -2,6 +2,7 @@ import { Connection } from './Connection';
 
 export interface ControlProperties {
     id?: string,
+    childControls?: Control[],
     visible?: boolean,
     disabled?: boolean,
     width?: string,
@@ -12,15 +13,18 @@ export interface ControlProperties {
 
 export class Control {
     protected _id: string | null;
+    protected _childControls: Control[] | null;
     protected connection: Connection | null;
     protected attrs: any = {};
 
     constructor(controlProps: ControlProperties) {
         //this.attrs = controlProps;
         this._id = controlProps.id ? controlProps.id : undefined;
+        this._childControls = controlProps.childControls ? controlProps.childControls : undefined;
+        
         this.attrs = new Map();
         Object.keys(controlProps).forEach(key => {
-            if (key != "id") {
+            if (key != "id" && key != "childControls") {
                 this.attrs[key] = [controlProps[key], true];
             }       
         })
@@ -146,9 +150,10 @@ export class Control {
 
     }
 
-    getChildren(): Control[] {
-        let children: Control[] = [];
-        return children;
+    protected getChildren(): Control[] | null {
+        // let children: Control[] = [];
+        // return children;
+        return this._childControls;
     }
 
 
