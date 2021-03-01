@@ -78,7 +78,6 @@ class Textbox extends Control {
     set align(newAlign: string) {
         this.attrs.align = newAlign;
     }
-
 }
 
 export = Textbox;

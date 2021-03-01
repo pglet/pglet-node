@@ -61,7 +61,6 @@ class Stack extends Control {
     set wrap(newWrap: string) {
         this.attrs.wrap = newWrap;
     }
-
 }
 
 export = Stack;

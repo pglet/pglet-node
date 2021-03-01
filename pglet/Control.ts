@@ -1,5 +1,6 @@
 import { Connection } from './Connection';
 
+
 export interface ControlProperties {
     id?: string,
     childControls?: Control[],
@@ -20,7 +21,7 @@ export class Control {
     constructor(controlProps: ControlProperties) {
         //this.attrs = controlProps;
         this._id = controlProps.id ? controlProps.id : undefined;
-        this._childControls = controlProps.childControls ? controlProps.childControls : undefined;
+        this._childControls = controlProps.childControls ? controlProps.childControls : new Array<Control>();
         
         this.attrs = new Map();
         Object.keys(controlProps).forEach(key => {
@@ -78,11 +79,11 @@ export class Control {
         this.attrs.margin = newMargin;
     }
 
-
     getCmdStr(update?: boolean, indent?: string, index?: any, connection?: Connection): string {
         if (connection) {
             this.connection = connection;
         }
+
         let lines = [];
         let parts = [];
 
@@ -91,12 +92,11 @@ export class Control {
         }
 
         let attrParts = this.getCmdAttrs(update);
-        console.log("attrParts: ", attrParts);
+        //console.log("attrParts: ", attrParts);
         if (attrParts.length > 0 || !update) {
-            console.log("concat run");
             parts.push(...attrParts);
         }
-        console.log("parts: ", parts)
+        //console.log("parts: ", parts)
 
         lines.push(parts.join(' '));
 
@@ -104,12 +104,18 @@ export class Control {
             index.concat(this);
         }
 
-        // TODO lines.concat(getChildren)
+        this.getChildren().forEach(control => {
+             let childCmd = control.getCmdStr(update, (indent+"  "), index);
+             if (childCmd != "") {
+                 lines.push(childCmd);
+             }
+        })
 
         return lines.join('\n');
 
     }
 
+    // unsure of the utility of this function
     private stringifyAttr(attr: any): any {
         let sattr: string = attr.toString();
         return sattr.replace(/\n/g, "\\n").replace(/\"/g, "\\\"");
@@ -121,21 +127,19 @@ export class Control {
         if (update && this.attrs.id == undefined) {
             return parts;
         }
-        console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
+        //console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
         Object.keys(this.attrs).forEach(attr => {
             let dirty = this.attrs[attr][1];
-            console.log("attrs after: ", JSON.stringify(this.attrs, undefined, 2))
+            //console.log("attrs after: ", JSON.stringify(this.attrs, undefined, 2))
             if (update && !dirty) {
                 return;
             }
-            console.log("attr before stringify: ", this.attrs[attr][0]);
+            
             let value = this.stringifyAttr(this.attrs[attr][0]);
-            console.log(value);
             parts.push(`${attr}="${value}"`);
 
             this.attrs[attr] = [value, false];
         })
-        console.log("parts after loop: ", parts);
         
         if (this._id) {
             if (!update) {
@@ -147,15 +151,9 @@ export class Control {
         }
 
         return parts;
-
     }
 
     protected getChildren(): Control[] | null {
-        // let children: Control[] = [];
-        // return children;
         return this._childControls;
     }
-
-
-
 }

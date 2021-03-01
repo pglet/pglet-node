@@ -1,11 +1,9 @@
-// const p = pglet.page();
-// p.send(`add text to=page value="hello, world"`) --> p.add(Text({to: page, value: "hello, world"}))
-
 import os from 'os';
 import net from 'net';
 import fs from 'fs';
 import { Event } from './Event';
 import { Control } from './Control';
+
 
 export class Connection {
     private connId = ""
@@ -74,11 +72,6 @@ export class Connection {
 
         let index = [];
 
-        // if (controlsArray.length > 1) {
-        //      controlsArray.forEach(ctrl => {
-        //         cmd += `\n${ctrl.getCmdStr()}`;
-        //      })
-        // }
         controlsArray.forEach(ctrl => {
             cmd += `\n${ctrl.getCmdStr(false, '', index, this)}`;
         })
@@ -86,12 +79,13 @@ export class Connection {
         console.log("cmd: ", cmd);
         let result = this.send(cmd);
 
-        return result;
-        
+        return result;   
     }
+
     // update(): string {
 
     // }
+
     // remove(): string {
 
     // }
@@ -107,7 +101,8 @@ export class Connection {
             return this.sendLinux(command, waitResult);
         }
     }
-        // wait event pipe for new event
+
+    // wait event pipe for new event
     waitEvent(): Promise<string | Event> {
         // register for result
         return new Promise((resolve, reject) => {
@@ -130,6 +125,7 @@ export class Connection {
             }
         });
     }
+
     private sendWindows(command: string, waitResult: boolean): Promise<string | void> {
         if (waitResult) {
 
@@ -186,7 +182,8 @@ export class Connection {
             });
             
         });
-    }    
+    }
+
     private addEventHandlers(controlId: string, eventName: string, handler: any) {
         let controlEvents = controlId in this._eventHandlers ? this._eventHandlers[controlId] : null;
         if (!controlEvents) {
@@ -195,6 +192,7 @@ export class Connection {
         }
         controlEvents[eventName] = handler;
     }
+
     private parseResult(data: any) {
         const result = data.toString().trim();
             
@@ -209,8 +207,7 @@ export class Connection {
         return {
             value: (flag !== "error") ? value : null,
             error: (flag === "error") ? value : null
-        }      
-
+        }
     }
 
     private parseEvent(data: any) {

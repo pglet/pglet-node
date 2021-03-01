@@ -38,9 +38,6 @@ class Text extends Control {
     set size(newSize: string) {
         this.attrs.size = newSize;
     }
-
-
-
 }
 
 export = Text;
