@@ -38,7 +38,7 @@ class Stack extends Control {
         this.attrs.horizontalAlign = newHorizontalAlign;
     }
     get verticalFill() {
-        return this.attrs.description;     
+        return this.attrs.verticalFill;     
     }
     set verticalFill(newVerticalFill: boolean) {
         this.attrs.verticalFill = newVerticalFill;

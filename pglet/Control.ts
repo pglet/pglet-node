@@ -15,6 +15,7 @@ export interface ControlProperties {
 export class Control {
     protected _id: string | null;
     protected _childControls: Control[] | null;
+    protected _eventHandlers: any = {};
     protected connection: Connection | null;
     protected attrs: any = {};
 
@@ -35,6 +36,13 @@ export class Control {
         throw new Error("must be overridden in child class");
     }
     
+    protected addEventHandler(eventName: string, handler: any): void {
+        this._eventHandlers[eventName] = handler;
+
+        if (this.connection) {
+            this.connection.addEventHandlers(this._id, eventName, handler);
+        }
+    }
     /* accessors */ 
     get id() {
         return this._id;     

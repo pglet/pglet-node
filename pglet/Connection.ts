@@ -184,7 +184,7 @@ export class Connection {
         });
     }
 
-    private addEventHandlers(controlId: string, eventName: string, handler: any) {
+    addEventHandlers(controlId: string, eventName: string, handler: any) {
         let controlEvents = controlId in this._eventHandlers ? this._eventHandlers[controlId] : null;
         if (!controlEvents) {
             controlEvents = {}
