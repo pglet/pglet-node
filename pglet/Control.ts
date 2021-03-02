@@ -26,23 +26,29 @@ export class Control {
         
         this.attrs = new Map();
         Object.keys(controlProps).forEach(key => {
-            if (key != "id" && key != "childControls") {
+            if (key != "id" && key != "childControls" && key!="onClick") {
                 this.attrs[key] = [controlProps[key], true];
             }       
         })
     }
 
-    getControlName() {
+    protected getControlName() {
         throw new Error("must be overridden in child class");
     }
-    
+     
+    protected getEventHandlers() {
+        return this._eventHandlers;
+    }
+
     protected addEventHandler(eventName: string, handler: any): void {
         this._eventHandlers[eventName] = handler;
-
+        console.log("control eventHandlers: ", this._eventHandlers, this.getControlName());
+        //only used for previously instantiated controls
         if (this.connection) {
             this.connection.addEventHandlers(this._id, eventName, handler);
         }
     }
+ 
     /* accessors */ 
     get id() {
         return this._id;     
@@ -89,6 +95,7 @@ export class Control {
 
     getCmdStr(update?: boolean, indent?: string, index?: any, connection?: Connection): string {
         if (connection) {
+            console.log("connection assigned for control: ", this.getControlName());
             this.connection = connection;
         }
 
@@ -100,16 +107,16 @@ export class Control {
         }
 
         let attrParts = this.getCmdAttrs(update);
-        //console.log("attrParts: ", attrParts);
+        console.log("attrParts: ", attrParts);
         if (attrParts.length > 0 || !update) {
             parts.push(...attrParts);
         }
         //console.log("parts: ", parts)
 
         lines.push(parts.join(' '));
-
+        console.log("lines in getcmdstr: ", lines);
         if(index) {
-            index.concat(this);
+            index.push(this);
         }
 
         this.getChildren().forEach(control => {
@@ -118,7 +125,7 @@ export class Control {
                  lines.push(childCmd);
              }
         })
-
+        
         return lines.join('\n');
 
     }

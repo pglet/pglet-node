@@ -12,7 +12,7 @@ export class Connection {
     private _commandReject: any;
     private _eventClient: any;
     private _eventResolve: any;
-    private _eventHandlers: any;
+    private _eventHandlers: any = {};
 
     constructor(connId: string) {
         this.connId = connId;
@@ -52,7 +52,12 @@ export class Connection {
 
             this._eventClient.on('data', (data) => {
                 const result = this.parseEvent(data);
-
+                let controlEvents = this._eventHandlers ? this._eventHandlers[result.target] : null;
+                console.log("controlEvents from event client: ", controlEvents);
+                if (controlEvents) {
+                    let handler = controlEvents[result.name]
+                    handler();
+                }
                 var fn = this._eventResolve;
                 this._eventResolve = null;
 
@@ -63,7 +68,7 @@ export class Connection {
         }
     }
 
-    add(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): Promise<string | void> {
+    async add(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): Promise<string | void> {
         let controlsArray: Control[] = [].concat(controls);
         //console.log("controlsArray: ", controlsArray);
         let cmd = fireAndForget ? "addf" : "add";
@@ -73,13 +78,35 @@ export class Connection {
         let index = [];
 
         controlsArray.forEach(ctrl => {
+            if (ctrl.id) {
+                this.removeEventHandlers(ctrl.id);
+            }
             cmd += `\n${ctrl.getCmdStr(false, '', index, this)}`;
         })
 
         console.log("cmd: ", cmd);
-        let result = this.send(cmd);
+        let result = await this.send(cmd);
+        let ids = result.split(" ");
+        console.log("ids: ", ids);
+        for(let i = 0; i < ids.length; i++) {
+            index[i].id = ids[i];
+            //resubscribe to event handlers
+            let handlers = index[i].getEventHandlers();
+            console.log("retrieved handlers: ", handlers);
+
+            Object.keys(handlers).forEach(event => {
+                this.addEventHandlers(ids[i], event, handlers[event]);
+            })
+
+        }
+        
 
         return result;   
+    }
+
+    getValue(ctrl: string | Control): Promise<string> {
+        let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
+        return this.send(`get ${value} value`);
     }
 
     // update(): string {
@@ -90,7 +117,7 @@ export class Connection {
 
     // }
 
-    send(command: string): Promise<string | void> {
+    send(command: string): Promise<string> {
         let waitResult = !command.match(/\w+/g)[0].endsWith('f');
 
         if (os.type() === "Windows_NT") {
@@ -105,6 +132,7 @@ export class Connection {
     // wait event pipe for new event
     waitEvent(): Promise<string | Event> {
         // register for result
+
         return new Promise((resolve, reject) => {
             if (os.type() === "Windows_NT") {
                 this._eventResolve = resolve;
@@ -126,7 +154,7 @@ export class Connection {
         });
     }
 
-    private sendWindows(command: string, waitResult: boolean): Promise<string | void> {
+    private sendWindows(command: string, waitResult: boolean): Promise<string> {
         if (waitResult) {
 
             // command with result
@@ -141,20 +169,20 @@ export class Connection {
         } else {
 
             // fire-and-forget command
-            return new Promise<void>((resolve, reject): void => {
+            return new Promise<string>((resolve, reject): void => {
                 this._commandClient.write(command + '\n', (err) => {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve();
+                        resolve("");
                     }
                 });
             });
         }
     }
 
-    private sendLinux(command: string, waitResult: boolean): Promise<string | void> {
-        return new Promise<void>((resolve, reject) => {
+    private sendLinux(command: string, waitResult: boolean): Promise<string> {
+        return new Promise<string>((resolve, reject) => {
                 
             fs.writeFile(this.connId, command + '\n', (err) => {
                 if (err) {
@@ -176,7 +204,7 @@ export class Connection {
                             }
                         })
                     } else {
-                        resolve();
+                        resolve("");
                     }
                 }
             });
@@ -185,12 +213,16 @@ export class Connection {
     }
 
     addEventHandlers(controlId: string, eventName: string, handler: any) {
-        let controlEvents = controlId in this._eventHandlers ? this._eventHandlers[controlId] : null;
-        if (!controlEvents) {
-            controlEvents = {}
-            this._eventHandlers[controlId] = controlEvents;
-        }
+        let controlEvents = controlId in this._eventHandlers ? this._eventHandlers[controlId] : {};
+
         controlEvents[eventName] = handler;
+        this._eventHandlers[controlId] = controlEvents;
+    }
+    
+    protected removeEventHandlers(controlId: string): void {
+        if (controlId in this._eventHandlers) {
+            delete this._eventHandlers[controlId];            
+        }
     }
 
     private parseResult(data: any) {
@@ -219,8 +251,7 @@ export class Connection {
         return new Event(match.groups.target, match.groups.name, match.groups.data);
     }
 
-    // private getControlId(controlId: string) {
-    //     if 
+    // private getControlId(ctrl: Control) {
 
     // }
     

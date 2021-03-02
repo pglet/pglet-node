@@ -8,23 +8,20 @@ const Button = require("../build/Button.js");
     p = await pglet.page("index", { noWindow: false });
 
     await p.send("clean");
-    //await p.send('add text id="testObject" value="text object test"')
-    let textObject = new Text({id: "testObject", value: "text object test"});
-    let textboxObject = new Textbox({value: "testTextbox value"});
+    let textObject = new Text({id: "heading", value: "greeter app test"});
+    let textboxObject = new Textbox({value: "Your Name", description: "Please provide your name"});
     let stackObject = new Stack({childControls: [textObject, textboxObject]});
     const id = await p.add(stackObject);
     
     console.log(id);
     async function greeterButtonHandler(e) {
+        let name = await p.getValue(textboxObject);
         await p.send("clean")
-        p.add(new Text({value: "Hello click!"}))
+        await p.add(new Text({value: `Hello ${name}!`}))
         return
     }
     let buttonObject = new Button({text: "Say hello!", primary: true, onClick: greeterButtonHandler})
-    p.add(buttonObject);
-    //const id2 = await (p.add(textboxObject));
-    //let newTextObject = new Text({value: "text object test2"})
-    //await p.add([newTextObject, textObject]);
+    await p.add(buttonObject);
     
     while(true) {
         const e = await p.waitEvent();
