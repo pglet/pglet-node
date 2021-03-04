@@ -1,5 +1,9 @@
 import { ControlProperties, Control } from './Control'
 
+interface OptionProperties extends ControlProperties {
+    value: string,
+    key: string  
+}
 
 interface DropdownProperties extends ControlProperties {
     value?: string,
@@ -11,6 +15,30 @@ interface DropdownProperties extends ControlProperties {
     optionValues?: string[]
 }
 
+class Option extends Control{
+
+    constructor(optionProps: OptionProperties) {
+        super(optionProps);       
+    }
+
+    getControlName() {
+        return "option";
+    }
+
+    /* accessors */ 
+    get value() {
+        return this.attrs.value;     
+    }
+    set value(newValue: string) {
+        this.attrs.value = newValue;
+    }
+    get key() {
+        return this.attrs.key;     
+    }
+    set key(newKey: string) {
+        this.attrs.key = newKey;
+    }
+}
 class Dropdown extends Control {
     private _options: any = [];
 
@@ -19,17 +47,17 @@ class Dropdown extends Control {
         if (dropdownProps.optionKeys || dropdownProps.optionValues) {
             if (!dropdownProps.optionKeys) {
                 for (let i = 0; i < dropdownProps.optionValues.length; i++) {
-                    this._options.push({"key": `key${i}`, "value": dropdownProps.optionValues[i]});
+                    this._options.push(new Option({key: `key${i}`, value: dropdownProps.optionValues[i]}));
                 }
             } 
             else if (!dropdownProps.optionValues) {
                 for (let i = 0; i < dropdownProps.optionKeys.length; i++) {
-                    this._options.push({"key": `key${i}`, "value": dropdownProps.optionKeys[i]});
+                    this._options.push(new Option({key: `key${i}`, value: dropdownProps.optionKeys[i]}));
                 }
             }
             else {
                 for (let i = 0; i < dropdownProps.optionValues.length; i++) {
-                    this._options.push({"key": dropdownProps.optionKeys[i], "value": dropdownProps.optionValues[i]});
+                    this._options.push(new Object({key: dropdownProps.optionKeys[i], value: dropdownProps.optionValues[i]}));
                 }
             }
         }
@@ -40,8 +68,8 @@ class Dropdown extends Control {
         return "dropdown";
     }
 
-    protected getChildren(): Control[] | null {
-        return super.getChildren();
+    protected getChildren(): any[] | null {
+        return this._options;
     }
 
     /* accessors */ 

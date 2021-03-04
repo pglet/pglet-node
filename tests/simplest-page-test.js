@@ -3,6 +3,8 @@ const Text = require("../build/Text.js");
 const Textbox = require("../build/Textbox.js");
 const Stack = require("../build/Stack.js");
 const Button = require("../build/Button.js");
+const Dropdown = require("../build.Dropdown.js");
+const { isAwaitExpression } = require("typescript");
 
 (async () => {
     p = await pglet.page("index", { noWindow: false });
@@ -20,6 +22,7 @@ const Button = require("../build/Button.js");
         await p.add(new Text({value: `Hello ${name}!`}))
         return
     }
+    await p.add(new Dropdown)
     let buttonObject = new Button({text: "Say hello!", primary: true, onClick: greeterButtonHandler})
     await p.add(buttonObject);
     
