@@ -1,7 +1,7 @@
 import { ControlProperties, Control } from './Control'
 
 interface OptionProperties extends ControlProperties {
-    value: string,
+    text: string,
     key: string  
 }
 
@@ -47,17 +47,17 @@ class Dropdown extends Control {
         if (dropdownProps.optionKeys || dropdownProps.optionValues) {
             if (!dropdownProps.optionKeys) {
                 for (let i = 0; i < dropdownProps.optionValues.length; i++) {
-                    this._options.push(new Option({key: `key${i}`, value: dropdownProps.optionValues[i]}));
+                    this._options.push(new Option({key: `key${i}`, text: dropdownProps.optionValues[i]}));
                 }
             } 
             else if (!dropdownProps.optionValues) {
                 for (let i = 0; i < dropdownProps.optionKeys.length; i++) {
-                    this._options.push(new Option({key: `key${i}`, value: dropdownProps.optionKeys[i]}));
+                    this._options.push(new Option({key: `key${i}`, text: dropdownProps.optionKeys[i]}));
                 }
             }
             else {
                 for (let i = 0; i < dropdownProps.optionValues.length; i++) {
-                    this._options.push(new Object({key: dropdownProps.optionKeys[i], value: dropdownProps.optionValues[i]}));
+                    this._options.push(new Object({key: dropdownProps.optionKeys[i], text: dropdownProps.optionValues[i]}));
                 }
             }
         }
