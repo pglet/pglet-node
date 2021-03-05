@@ -139,7 +139,7 @@ export class Control {
     private getCmdAttrs(update?: boolean): string[] {
         let parts = [];
 
-        if (update && this.attrs.id == undefined) {
+        if (update && !this._id) {
             return parts;
         }
         //console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))

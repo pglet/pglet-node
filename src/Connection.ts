@@ -3,6 +3,7 @@ import net from 'net';
 import fs from 'fs';
 import { Event } from './Event';
 import { Control } from './Control';
+import { throws } from 'assert';
 
 
 export class Connection {
@@ -100,18 +101,32 @@ export class Connection {
 
         }
         
-
         return result;   
+    }
+    
+    update(controls: Control[] | Control, fireAndForget?: boolean): Promise<string> {
+        let controlsArray: Control[] = [].concat(controls);
+        
+        let cmd = fireAndForget ? "setf" : "set";
+
+        let lines = [];
+        
+        controlsArray.forEach(ctrl => {
+            console.log("linesArray from update: ", ctrl.getCmdStr(true));
+            lines.push(ctrl.getCmdStr(true));
+        })
+        console.log("linesArray from update: ", lines);
+        let slines = lines.join("\n")
+        console.log("slines from update: ", slines)
+        let result = this.send(`${cmd}\n${slines}`);
+
+        return result;
     }
 
     getValue(ctrl: string | Control): Promise<string> {
         let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
         return this.send(`get ${value} value`);
     }
-
-    // update(): string {
-
-    // }
 
     // remove(): string {
 
