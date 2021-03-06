@@ -23,7 +23,6 @@ class Button extends Control {
     constructor(buttonProps: ButtonProperties) {
         super(buttonProps);
         if (buttonProps.onClick) {
-            console.log("buttonProps onclick detected: ", buttonProps.onClick);
             super.addEventHandler("click", buttonProps.onClick);
         }
     }

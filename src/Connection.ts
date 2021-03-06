@@ -54,7 +54,7 @@ export class Connection {
             this._eventClient.on('data', (data) => {
                 const result = this.parseEvent(data);
                 let controlEvents = this._eventHandlers ? this._eventHandlers[result.target] : null;
-                console.log("controlEvents from event client: ", controlEvents);
+                //console.log("controlEvents from event client: ", controlEvents);
                 if (controlEvents) {
                     let handler = controlEvents[result.name]
                     handler();
@@ -93,7 +93,7 @@ export class Connection {
             index[i].id = ids[i];
             //resubscribe to event handlers
             let handlers = index[i].getEventHandlers();
-            console.log("retrieved handlers: ", handlers);
+            //console.log("retrieved handlers: ", handlers);
 
             Object.keys(handlers).forEach(event => {
                 this.addEventHandlers(ids[i], event, handlers[event]);
@@ -112,12 +112,12 @@ export class Connection {
         let lines = [];
         
         controlsArray.forEach(ctrl => {
-            console.log("linesArray from update: ", ctrl.getCmdStr(true));
+            //console.log("linesArray from update: ", ctrl.getCmdStr(true));
             lines.push(ctrl.getCmdStr(true));
         })
-        console.log("linesArray from update: ", lines);
+
         let slines = lines.join("\n")
-        console.log("slines from update: ", slines)
+
         let result = this.send(`${cmd}\n${slines}`);
 
         return result;

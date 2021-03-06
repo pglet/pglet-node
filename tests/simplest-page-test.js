@@ -8,6 +8,11 @@ const Progress = require("../build/src/Progress.js");
 const Checkbox = require("../build/src/Checkbox.js");
 const { isAwaitExpression } = require("typescript");
 
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 (async () => {
     p = await pglet.page("index", { noWindow: false });
 
@@ -23,8 +28,9 @@ const { isAwaitExpression } = require("typescript");
     const id = await p.add(stackObject);
 
     for (let i = 0; i < 11; i++) {
-        progressObject.label = `"Doing step ${i}.."`
+        progressObject.label = `Doing step ${i}..`
         progressObject.value = (i*10)
+        await sleep(1000);
         await p.update(progressObject);
 
     }

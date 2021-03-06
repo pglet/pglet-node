@@ -101,7 +101,6 @@ export class Control {
 
     getCmdStr(update?: boolean, indent?: string, index?: any, connection?: Connection): string {
         if (connection) {
-            console.log("connection assigned for control: ", this.getControlName());
             this.connection = connection;
         }
 
@@ -113,14 +112,14 @@ export class Control {
         }
 
         let attrParts = this.getCmdAttrs(update);
-        console.log("attrParts: ", attrParts);
+        //console.log("attrParts: ", attrParts);
         if (attrParts.length > 0 || !update) {
             parts.push(...attrParts);
         }
         //console.log("parts: ", parts)
 
         lines.push(parts.join(' '));
-        console.log("lines in getcmdstr: ", lines);
+        //console.log("lines in getcmdstr: ", lines);
         if(index) {
             index.push(this);
         }
@@ -149,10 +148,8 @@ export class Control {
         if (update && !this._id) {
             return parts;
         }
-        console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
+        //console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
         Object.keys(this.attrs).forEach(attr => {
-            console.log("attr in loop: ", attr);
-            console.log("this.attrs[attr] in loop: ", this.attrs[attr]);
             let dirty = this.attrs[attr][1];
             //console.log("attrs after: ", JSON.stringify(this.attrs, undefined, 2))
             if (update && !dirty) {
@@ -171,7 +168,7 @@ export class Control {
                 parts.unshift(`id="${this.stringifyAttr(this._id)}"`)
             }
             else if (parts.length > 0) {
-                parts.unshift(`"${this.stringifyAttr(this._id)}`)
+                parts.unshift(`${this.stringifyAttr(this._id)}`)
             }
         }
 
