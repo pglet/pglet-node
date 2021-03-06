@@ -12,7 +12,7 @@ const { isAwaitExpression } = require("typescript");
     p = await pglet.page("index", { noWindow: false });
 
     await p.send("clean");
-    let progressObject = new Progress({label: "testProgress"})
+    let progressObject = new Progress({label: "testProgress", width: "100%"})
     await p.add(progressObject);
 
     let textObject = new Text({id: "heading", value: "greeter app test"});

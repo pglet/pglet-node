@@ -27,16 +27,16 @@ class Option extends Control{
 
     /* accessors */ 
     get value() {
-        return this.attrs.value;     
+        return this.attrs.value[0];     
     }
     set value(newValue: string) {
-        this.attrs.value = newValue;
+        this.setAttr("value", newValue);
     }
     get key() {
-        return this.attrs.key;     
+        return this.attrs.key[0];     
     }
     set key(newKey: string) {
-        this.attrs.key = newKey;
+        this.setAttr("key", newKey);
     }
 }
 class Dropdown extends Control {
@@ -74,34 +74,34 @@ class Dropdown extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.value;     
+        return this.attrs.value[0];     
     }
     set value(newValue: string) {
-        this.attrs.value = newValue;
+        this.setAttr("value", newValue);
     }
     get label() {
-        return this.attrs.label;     
+        return this.attrs.label[0];     
     }
     set label(newLabel: string) {
-        this.attrs.label = newLabel;
+        this.setAttr("label", newLabel);
     }
     get placeholder() {
-        return this.attrs.placeholder;     
+        return this.attrs.placeholder[0];     
     }
     set placeholder(newPlaceholder: string) {
-        this.attrs.placeholder = newPlaceholder;
+        this.setAttr("placeholder", newPlaceholder);
     }
     get errorMessage() {
-        return this.attrs.errorMessage;     
+        return this.attrs.errorMessage[0];     
     }
     set errorMessage(newErrorMessage: string) {
-        this.attrs.errorMessage = newErrorMessage;
+        this.setAttr("errorMessage", newErrorMessage);
     }
     get data() {
-        return this.attrs.data;     
+        return this.attrs.data[0];     
     }
     set data(newData: string) {
-        this.attrs.data = newData;
+        this.setAttr("data", newData);
     }
 }
 

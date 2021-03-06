@@ -26,40 +26,40 @@ class Stack extends Control {
 
     /* accessors */ 
     get horizontal() {
-        return this.attrs.horizontal;     
+        return this.attrs.horizontal[0];     
     }
     set horizontal(newHorizontal: boolean) {
-        this.attrs.horizontal = newHorizontal;
+        this.setAttr("horizontal", newHorizontal);
     }
     get horizontalAlign() {
-        return this.attrs.horizontalAlign;     
+        return this.attrs.horizontalAlign[0];     
     }
     set horizontalAlign(newHorizontalAlign: string) {
-        this.attrs.horizontalAlign = newHorizontalAlign;
+        this.setAttr("horizontalAlign", newHorizontalAlign);
     }
     get verticalFill() {
-        return this.attrs.verticalFill;     
+        return this.attrs.verticalFill[0];     
     }
     set verticalFill(newVerticalFill: boolean) {
-        this.attrs.verticalFill = newVerticalFill;
+        this.setAttr("verticalFill", newVerticalFill);
     }
     get verticalAlign() {
-        return this.attrs.verticalAlign;     
+        return this.attrs.verticalAlign[0];     
     }
     set verticalAlign(newVerticalAlign: string) {
-        this.attrs.verticalAlign = newVerticalAlign;
+        this.setAttr("verticalAlign", newVerticalAlign);
     }
     get gap() {
-        return this.attrs.gap;     
+        return this.attrs.gap[0];     
     }
     set gap(newGap: string) {
-        this.attrs.gap = newGap;
+        this.setAttr("gap", newGap);
     }
     get wrap() {
-        return this.attrs.wrap;     
+        return this.attrs.wrap[0];     
     }
     set wrap(newWrap: string) {
-        this.attrs.wrap = newWrap;
+        this.setAttr("wrap", newWrap);
     }
 }
 

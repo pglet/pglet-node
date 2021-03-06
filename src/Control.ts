@@ -21,19 +21,25 @@ export class Control {
 
     constructor(controlProps: ControlProperties) {
         //this.attrs = controlProps;
+        //console.log("in constructor for: ", this.getControlName(), controlProps)
         this._id = controlProps.id ? controlProps.id : undefined;
         this._childControls = controlProps.childControls ? controlProps.childControls : new Array<Control>();
         
         this.attrs = new Map();
         Object.keys(controlProps).forEach(key => {
             if (key != "id" && key != "childControls" && key!="onClick") {
-                this.attrs[key] = [controlProps[key], true];
+                // this.attrs[key] = [controlProps[key], true];
+                this.setAttr(key, controlProps[key]);
             }       
         })
     }
 
     protected getControlName() {
         throw new Error("must be overridden in child class");
+    }
+
+    protected setAttr(key: string, value: any) {
+        this.attrs[key] = [value, true];
     }
      
     protected getEventHandlers() {
@@ -57,40 +63,40 @@ export class Control {
         this._id = newId;
     }
     get visible() {
-        return this.attrs.visible;     
+        return this.attrs.visible[0];     
     }
-    set visible(vis: boolean) {
-        this.attrs.visible = vis;
+    set visible(newVisible: boolean) {
+        this.setAttr("visible",newVisible);
     }
     get disabled() {
-        return this.attrs.disabled;     
+        return this.attrs.disabled[0];     
     }
-    set disabled(dis: boolean) {
-        this.attrs.disabled = dis;
+    set disabled(newDisabled: boolean) {
+        this.setAttr("disabled", newDisabled);
     }
     get width() {
-        return this.attrs.width;     
+        return this.attrs.width[0];     
     }
     set width(newWidth: string) {
-        this.attrs.width = newWidth;
+        this.setAttr("width", newWidth);
     }
     get height() {
-        return this.attrs.height;   
+        return this.attrs.height[0];   
     }
     set height(newHeight: string) {
-        this.attrs.height = newHeight;
+        this.setAttr("height", newHeight);
     }
     get padding() {
-        return this.attrs.padding;    
+        return this.attrs.padding[0];    
     }
     set padding(newPadding: string) {
-        this.attrs.padding = newPadding;
+        this.setAttr("padding", newPadding);
     }
     get margin() {
-        return this.attrs.margin;    
+        return this.attrs.margin[0];    
     }
     set margin(newMargin: string) {
-        this.attrs.margin = newMargin;
+        this.setAttr("margin", newMargin);
     }
 
     getCmdStr(update?: boolean, indent?: string, index?: any, connection?: Connection): string {
@@ -133,7 +139,8 @@ export class Control {
     // unsure of the utility of this function
     private stringifyAttr(attr: any): any {
         let sattr: string = attr.toString();
-        return sattr.replace(/\n/g, "\\n").replace(/\"/g, "\\\"");
+        return sattr;
+        //return sattr.replace(/\n/g, "\\n").replace(/\"/g, "\\\"");
     }
 
     private getCmdAttrs(update?: boolean): string[] {
@@ -142,8 +149,10 @@ export class Control {
         if (update && !this._id) {
             return parts;
         }
-        //console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
+        console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
         Object.keys(this.attrs).forEach(attr => {
+            console.log("attr in loop: ", attr);
+            console.log("this.attrs[attr] in loop: ", this.attrs[attr]);
             let dirty = this.attrs[attr][1];
             //console.log("attrs after: ", JSON.stringify(this.attrs, undefined, 2))
             if (update && !dirty) {
@@ -151,6 +160,7 @@ export class Control {
             }
             
             let value = this.stringifyAttr(this.attrs[attr][0]);
+
             parts.push(`${attr}="${value}"`);
 
             this.attrs[attr] = [value, false];

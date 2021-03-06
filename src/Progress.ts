@@ -19,22 +19,22 @@ class Progress extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.value;
+        return this.attrs.value[0];
     }
     set value(newValue: number) {
-        this.attrs.value = newValue;
+        this.setAttr("value", newValue);
     }
     get label() {
-        return this.attrs.label;     
+        return this.attrs.label[0];     
     }
     set label(newLabel: string) {
-        this.attrs.label = newLabel;
+        this.setAttr("label", newLabel);
     }
     get description() {
-        return this.attrs.description;     
+        return this.attrs.description[0];     
     }
     set description(newDescription: string) {
-        this.attrs.description = newDescription;
+        this.setAttr("description", newDescription);
     }
 }
 

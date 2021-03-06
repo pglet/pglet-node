@@ -21,22 +21,22 @@ class Text extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.value;     
+        return this.attrs.value[0];     
     }
     set value(newValue: string) {
-        this.attrs.value = newValue;
+        this.setAttr("value", newValue);
     }
     get align() {
-        return this.attrs.align;     
+        return this.attrs.align[0];     
     }
     set align(newAlign: string) {
-        this.attrs.align = newAlign;
+        this.setAttr("align", newAlign);
     }
     get size() {
-        return this.attrs.size;     
+        return this.attrs.size[0];     
     }
     set size(newSize: string) {
-        this.attrs.size = newSize;
+        this.setAttr("size", newSize);
     }
 }
 
