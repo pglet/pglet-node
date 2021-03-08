@@ -1,7 +1,7 @@
 import { Connection } from './Connection';
 
 
-export interface ControlProperties {
+interface ControlProperties {
     id?: string,
     childControls?: Control[],
     visible?: boolean,
@@ -12,7 +12,7 @@ export interface ControlProperties {
     margin?: string
 }
 
-export class Control {
+class Control {
     protected _id: string | null;
     protected _childControls: Control[] | null;
     protected _eventHandlers: any = {};
@@ -100,6 +100,10 @@ export class Control {
         if (connection) {
             this.connection = connection;
         }
+        
+        if(!indent) {
+            indent = '';
+        }
 
         let lines = [];
         let parts = [];
@@ -171,4 +175,8 @@ export class Control {
     protected getChildren(): Control[] | null {
         return this._childControls;
     }
+}
+
+export {
+    Control, ControlProperties
 }

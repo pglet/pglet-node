@@ -83,7 +83,7 @@ export class Connection {
             }
             cmd += `\n${ctrl.getCmdStr(false, '', index, this)}`;
         })
-
+        console.log("cmd: ", cmd);
         let result = await this.send(cmd);
         let ids = result.split(" ");
 

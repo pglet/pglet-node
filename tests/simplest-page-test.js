@@ -24,7 +24,9 @@ function sleep(ms) {
     let textboxObject = new pglet.Textbox({value: "Your Name", description: "Please provide your name"});
     let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
     let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
+
     let stackObject = new pglet.Stack({childControls: [textObject, textboxObject, ddObject, checkBoxObject]});
+    console.log("call getCmdStr: ", stackObject.getCmdStr());
     const id = await p.add(stackObject);
 
     for (let i = 0; i < 11; i++) {
