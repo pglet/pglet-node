@@ -54,7 +54,7 @@ export class Connection {
             this._eventClient.on('data', (data) => {
                 const result = this.parseEvent(data);
                 let controlEvents = this._eventHandlers ? this._eventHandlers[result.target] : null;
-                //console.log("controlEvents from event client: ", controlEvents);
+
                 if (controlEvents) {
                     let handler = controlEvents[result.name]
                     handler();
@@ -71,7 +71,6 @@ export class Connection {
 
     async add(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): Promise<string | void> {
         let controlsArray: Control[] = [].concat(controls);
-        //console.log("controlsArray: ", controlsArray);
         let cmd = fireAndForget ? "addf" : "add";
         cmd += to ? ` to="${to}"` : "";
         cmd += at ? ` at="${at}"` : "";
@@ -85,20 +84,17 @@ export class Connection {
             cmd += `\n${ctrl.getCmdStr(false, '', index, this)}`;
         })
 
-        console.log("cmd: ", cmd);
         let result = await this.send(cmd);
         let ids = result.split(" ");
-        console.log("ids: ", ids);
+
         for(let i = 0; i < ids.length; i++) {
             index[i].id = ids[i];
             //resubscribe to event handlers
             let handlers = index[i].getEventHandlers();
-            //console.log("retrieved handlers: ", handlers);
 
             Object.keys(handlers).forEach(event => {
                 this.addEventHandlers(ids[i], event, handlers[event]);
             })
-
         }
         
         return result;   
@@ -112,7 +108,6 @@ export class Connection {
         let lines = [];
         
         controlsArray.forEach(ctrl => {
-            //console.log("linesArray from update: ", ctrl.getCmdStr(true));
             lines.push(ctrl.getCmdStr(true));
         })
 
@@ -127,10 +122,6 @@ export class Connection {
         let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
         return this.send(`get ${value} value`);
     }
-
-    // remove(): string {
-
-    // }
 
     send(command: string): Promise<string> {
         let waitResult = !command.match(/\w+/g)[0].endsWith('f');
@@ -265,9 +256,5 @@ export class Connection {
 
         return new Event(match.groups.target, match.groups.name, match.groups.data);
     }
-
-    // private getControlId(ctrl: Control) {
-
-    // }
     
 }

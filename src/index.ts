@@ -4,6 +4,13 @@ import os from 'os';
 import cp from 'child_process';
 import compareVersions from 'compare-versions';
 import request from 'request';
+import Text from './Text';
+import Textbox from './Textbox';
+import Stack from './Stack';
+import Button from './Button';
+import Dropdown from './Dropdown';
+import Progress from './Progress';
+import Checkbox from './Checkbox';
 import { Connection } from './Connection';
 
 
@@ -97,7 +104,7 @@ async function download(url: string, filePath: string) {
     });
 }
 
-module.exports.page = async (...args: any) => {
+let page = async (...args: any) => {
     await _install();
     const pargs = buildArgs("page", args);
 
@@ -166,4 +173,7 @@ function buildArgs(action: string, args: any) {
     // }
 
     return pargs;
+}
+export {
+    page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox
 }

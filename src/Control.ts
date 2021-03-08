@@ -20,15 +20,12 @@ export class Control {
     protected attrs: any = {};
 
     constructor(controlProps: ControlProperties) {
-        //this.attrs = controlProps;
-        //console.log("in constructor for: ", this.getControlName(), controlProps)
         this._id = controlProps.id ? controlProps.id : undefined;
         this._childControls = controlProps.childControls ? controlProps.childControls : new Array<Control>();
         
         this.attrs = new Map();
         Object.keys(controlProps).forEach(key => {
             if (key != "id" && key != "childControls" && key!="onClick") {
-                // this.attrs[key] = [controlProps[key], true];
                 this.setAttr(key, controlProps[key]);
             }       
         })
@@ -112,14 +109,13 @@ export class Control {
         }
 
         let attrParts = this.getCmdAttrs(update);
-        //console.log("attrParts: ", attrParts);
+
         if (attrParts.length > 0 || !update) {
             parts.push(...attrParts);
         }
-        //console.log("parts: ", parts)
 
         lines.push(parts.join(' '));
-        //console.log("lines in getcmdstr: ", lines);
+
         if(index) {
             index.push(this);
         }
@@ -132,14 +128,12 @@ export class Control {
         })
         
         return lines.join('\n');
-
     }
 
     // unsure of the utility of this function
     private stringifyAttr(attr: any): any {
         let sattr: string = attr.toString();
-        return sattr;
-        //return sattr.replace(/\n/g, "\\n").replace(/\"/g, "\\\"");
+        return sattr.replace(/\n/g, "\\n").replace(/\"/g, "\\\"");
     }
 
     private getCmdAttrs(update?: boolean): string[] {
@@ -151,7 +145,6 @@ export class Control {
         //console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
         Object.keys(this.attrs).forEach(attr => {
             let dirty = this.attrs[attr][1];
-            //console.log("attrs after: ", JSON.stringify(this.attrs, undefined, 2))
             if (update && !dirty) {
                 return;
             }
