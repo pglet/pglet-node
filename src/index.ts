@@ -11,6 +11,7 @@ import Button from './Button';
 import Dropdown from './Dropdown';
 import Progress from './Progress';
 import Checkbox from './Checkbox';
+import { Tabs, Tab } from './Tabs';
 import { Control}  from './Control';
 import { Connection } from './Connection';
 
@@ -78,7 +79,7 @@ async function _doInstall() {
         }
 
         // download file
-        const pgletUrl = `https://github.com/pglet/pglet/releases/download/v${ver}/pglet-${target}`;
+        const pgletUrl = `https://github.com/pglet/pglet/releases/download/v${ver}/pglet-${ver}-${target}`;
         await download(pgletUrl, pgletExe);
 
         if (platform != "Windows_NT") {
@@ -176,5 +177,5 @@ function buildArgs(action: string, args: any) {
     return pargs;
 }
 export {
-    page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control
+    page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab
 }
