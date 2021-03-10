@@ -1,4 +1,4 @@
-const pglet = require("../build/src/index.js");
+const pglet = require("../build/index.js");
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
