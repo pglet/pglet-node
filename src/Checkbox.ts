@@ -19,19 +19,19 @@ class Checkbox extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.value[0];     
+        return this.attrs.get('value')[0];     
     }
     set value(newValue: boolean) {
         this.setAttr("value", newValue);
     }
     get label() {
-        return this.attrs.label[0];     
+        return this.attrs.get('label')[0];     
     }
     set label(newLabel: string) {
         this.setAttr("label", newLabel);
     }
     get boxSide() {
-        return this.attrs.boxSide[0];     
+        return this.attrs.get('boxSide')[0];     
     }
     set boxSide(newBoxSide: string) {
         this.setAttr("boxSide", newBoxSide);

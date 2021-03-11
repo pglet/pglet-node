@@ -34,9 +34,17 @@ class Control {
     protected getControlName() {
         throw new Error("must be overridden in child class");
     }
+    
+    protected getAttr(key: string) {
+        // this.attrs = {...this.attrs, key: [value, true]};
+        console.log("getAttr called with argument: ", key);
+        return this.attrs.get(key)[0];
+    }
 
     protected setAttr(key: string, value: any) {
-        this.attrs[key] = [value, true];
+        // this.attrs = {...this.attrs, key: [value, true]};
+        this.attrs.set(key, [value, true]);
+        console.log("attrs so far: ", this.attrs);
     }
      
     protected getEventHandlers() {
@@ -60,41 +68,47 @@ class Control {
         this._id = newId;
     }
     get visible() {
-        return this.attrs.visible[0];     
+        return this.attrs.get('visible')[0];     
     }
     set visible(newVisible: boolean) {
         this.setAttr("visible",newVisible);
     }
     get disabled() {
-        return this.attrs.disabled[0];     
+        return this.attrs.get('disabled')[0];     
     }
     set disabled(newDisabled: boolean) {
         this.setAttr("disabled", newDisabled);
     }
     get width() {
-        return this.attrs.width[0];     
+        return this.attrs.get('width')[0];     
     }
     set width(newWidth: string) {
         this.setAttr("width", newWidth);
     }
     get height() {
-        return this.attrs.height[0];   
+        return this.attrs.get('height')[0];   
     }
     set height(newHeight: string) {
         this.setAttr("height", newHeight);
     }
     get padding() {
-        return this.attrs.padding[0];    
+        return this.attrs.get('padding')[0];    
     }
     set padding(newPadding: string) {
         this.setAttr("padding", newPadding);
     }
     get margin() {
-        return this.attrs.margin[0];    
+        return this.attrs.get('margin')[0];    
     }
     set margin(newMargin: string) {
         this.setAttr("margin", newMargin);
     }
+    // get attrs() {
+    //     return this._attrs;
+    // }
+    // set attrs(newAttr: any) {
+    //     this._attrs = newAttr;
+    // }
 
     getCmdStr(update?: boolean, indent?: string, index?: any, connection?: Connection): string {
         if (connection) {
@@ -146,9 +160,10 @@ class Control {
         if (update && !this._id) {
             return parts;
         }
-        //console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
+        console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
         Object.keys(this.attrs).forEach(attr => {
             let dirty = this.attrs[attr][1];
+            console.log("this attr: ", this.attrs.get(attr));
             if (update && !dirty) {
                 return;
             }

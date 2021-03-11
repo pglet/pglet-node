@@ -30,37 +30,37 @@ class Page extends Control {
 
     /* accessors */ 
     get title() {
-        return this.attrs.title[0];     
+        return this.attrs.get('title')[0];     
     }
     set title(newTitle: string) {
         this.setAttr("title", newTitle);
     }
     get verticalFill() {
-        return this.attrs.verticalFill[0];     
+        return this.attrs.get('verticalFill')[0];     
     }
     set verticalFill(newVerticalFill: boolean) {
         this.setAttr("verticalFill", newVerticalFill);
     }
     get horizontalAlign() {
-        return this.attrs.horizontalAlign[0];     
+        return this.attrs.get('horizontalAlign')[0];     
     }
     set horizontalAlign(newHorizontalAlign: string) {
         this.setAttr("horizontalAlign", newHorizontalAlign);
     }
     get verticalAlign() {
-        return this.attrs.verticalAlign[0];     
+        return this.attrs.get('verticalAlign')[0];     
     }
     set verticalAlign(newVerticalAlign: string) {
         this.setAttr("verticalAlign", newVerticalAlign);
     }
     get width() {
-        return this.attrs.width[0];     
+        return this.attrs.get('width')[0];     
     }
     set width(newWidth: string) {
         this.setAttr("width", newWidth);
     }
     get gap() {
-        return this.attrs.gap[0];     
+        return this.attrs.get('gap')[0];     
     }
     set gap(newGap: string) {
         this.setAttr("gap", newGap);

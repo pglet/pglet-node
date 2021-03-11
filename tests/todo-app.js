@@ -1,4 +1,4 @@
-const pglet = require("../build/src/index.js");
+const pglet = require("../build/index.js");
 
 
 
@@ -6,7 +6,7 @@ const pglet = require("../build/src/index.js");
 (async () => {
     p = await pglet.page("index", { noWindow: false });
     // p.update("index", { title: "Node TODO with pglet", horizontalAlign: "center"})
-    await p.add(new pglet.Stack({width: "70%", 
+    await p.add([new pglet.Stack({width: "70%", 
         childControls: [
             new pglet.Text({value: "Todos", size: "xLarge", align: "center"}),
             new pglet.Stack({horizontal: true,
@@ -30,7 +30,7 @@ const pglet = require("../build/src/index.js");
                         ]})
                 ]})
         ]})
-    );
+    ]);
 
     // p.add()
     
