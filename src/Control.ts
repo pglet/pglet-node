@@ -22,13 +22,14 @@ class Control {
     constructor(controlProps: ControlProperties) {
         this._id = controlProps.id ? controlProps.id : undefined;
         this._childControls = controlProps.childControls ? controlProps.childControls : new Array<Control>();
-        
+        // console.log("outerstack childControls: ", this._childControls);
         this.attrs = new Map();
         Object.keys(controlProps).forEach(key => {
             if (key != "id" && key != "childControls" && key!="onClick") {
                 this.setAttr(key, controlProps[key]);
             }       
         })
+        // console.log("ctrl and its attrs: ", this.getControlName(), this._id, this.attrs);
     }
 
     protected getControlName() {
@@ -37,14 +38,15 @@ class Control {
     
     protected getAttr(key: string) {
         // this.attrs = {...this.attrs, key: [value, true]};
-        console.log("getAttr called with argument: ", key);
+        // console.log("getAttr called with argument: ", key);
         return this.attrs.get(key)[0];
+
     }
 
     protected setAttr(key: string, value: any) {
         // this.attrs = {...this.attrs, key: [value, true]};
         this.attrs.set(key, [value, true]);
-        console.log("attrs so far: ", this.attrs);
+        // console.log("attrs so far: ", this.attrs);
     }
      
     protected getEventHandlers() {
@@ -125,8 +127,9 @@ class Control {
         if (!update) {
             parts.push(indent + this.getControlName());
         }
-
+        console.log("current ctrl attrs: ", this.attrs);
         let attrParts = this.getCmdAttrs(update);
+        console.log("returned attr parts: ", attrParts);
 
         if (attrParts.length > 0 || !update) {
             parts.push(...attrParts);
@@ -160,19 +163,19 @@ class Control {
         if (update && !this._id) {
             return parts;
         }
-        console.log("attrs before: ", JSON.stringify(this.attrs, undefined, 2))
-        Object.keys(this.attrs).forEach(attr => {
-            let dirty = this.attrs[attr][1];
-            console.log("this attr: ", this.attrs.get(attr));
+        console.log("attrs before: ", this.attrs);
+        this.attrs.forEach((value, attr) => {
+            let dirty = this.attrs.get(attr)[1];
+            console.log("this attr: ", attr);
             if (update && !dirty) {
                 return;
             }
             
-            let value = this.stringifyAttr(this.attrs[attr][0]);
+            //let value = this.stringifyAttr(this.attrs[attr][0]);
 
-            parts.push(`${attr}="${value}"`);
+            parts.push(`${attr}="${value[0]}"`);
 
-            this.attrs[attr] = [value, false];
+            this.attrs.set(attr, [value[0], false]);
         })
         
         if (this._id) {

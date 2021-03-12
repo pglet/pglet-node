@@ -74,7 +74,8 @@ export class Connection {
         let cmd = fireAndForget ? "addf" : "add";
         cmd += to ? ` to="${to}"` : "";
         cmd += at ? ` at="${at}"` : "";
-
+        console.log("space", "test");
+        console.log("cmd space?:", cmd);
         let index = [];
 
         controlsArray.forEach(ctrl => {
@@ -83,8 +84,9 @@ export class Connection {
             }
             cmd += `\n${ctrl.getCmdStr(false, '', index, this)}`;
         })
-        console.log("cmd: ", cmd);
+        console.log("cmd:\n", cmd);
         let result = await this.send(cmd);
+        console.log("result:\n", result);
         let ids = result.split(" ");
 
         for(let i = 0; i < ids.length; i++) {

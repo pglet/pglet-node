@@ -16,7 +16,7 @@ import { Control}  from './Control';
 import { Connection } from './Connection';
 
 
-const PGLET_VERSION: string = "0.1.12";
+const PGLET_VERSION: string = "0.2.0";
 
 var pgletExe: string = null;
 var _installPromise: any = null;
