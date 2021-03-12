@@ -37,7 +37,7 @@ build_script:
 
       # build mode
       $ver = $env:APPVEYOR_BUILD_VERSION
-      $env:NPM_TOKEN = ''
+      $env:NPM_TOKEN = '123'
     }
 
     # patch version
