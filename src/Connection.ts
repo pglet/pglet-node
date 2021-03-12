@@ -74,8 +74,6 @@ export class Connection {
         let cmd = fireAndForget ? "addf" : "add";
         cmd += to ? ` to="${to}"` : "";
         cmd += at ? ` at="${at}"` : "";
-        console.log("space", "test");
-        console.log("cmd space?:", cmd);
         let index = [];
 
         controlsArray.forEach(ctrl => {
@@ -102,6 +100,26 @@ export class Connection {
         return result;   
     }
     
+    async replace(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): Promise<string | void> {
+        let controlsArray: Control[] = [].concat(controls);
+        let cmd = fireAndForget ? "replacef" : "replace";
+        cmd += to ? ` to="${to}"` : "";
+        cmd += at ? ` at="${at}"` : "";
+        let index = [];
+        
+        controlsArray.forEach(ctrl => {
+            if (ctrl.id) {
+                this.removeEventHandlers(ctrl.id);
+            }
+            cmd += `\n${ctrl.getCmdStr(false, '', index, this)}`;
+        })
+
+        let result = await this.send(cmd);
+
+        return result;
+
+    }
+
     update(controls: Control[] | Control, fireAndForget?: boolean): Promise<string> {
         let controlsArray: Control[] = [].concat(controls);
         
