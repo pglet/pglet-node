@@ -1,0 +1,189 @@
+import { ControlProperties, Control } from './Control'
+
+interface ColumnProperties extends ControlProperties {
+    name: string,
+    icon?: string,
+    iconOnly?: boolean,
+    fieldName?: string,
+    sortable?: string,
+    sortField?: string,
+    sorted?: string,
+    resizable?: boolean,
+    minWidth?: number,
+    maxWidth?: number,
+    onClick?: boolean  
+}
+
+interface GridProperties extends ControlProperties {
+    selection?: string,
+    compact?: boolean,
+    headerVisible?: boolean,
+    shimmerLines?: number
+}
+
+class Columns extends Control{
+    private _columns: any = [];
+
+    constructor(props) {
+        super(props);       
+    }
+
+    getControlName() {
+        return "columns";
+    }
+
+    /* accessors */ 
+    get columns() {
+        return this._columns;     
+    }
+    addItem(column: Column) {
+        this._columns.push(column);
+    }
+    get key() {
+        return this.attrs.get('key')[0];     
+    }
+    set key(newKey: string) {
+        this.setAttr("key", newKey);
+    }
+}
+
+class Column extends Control{
+
+    constructor(columnProps: ColumnProperties) {
+        super(columnProps);       
+    }
+
+    getControlName() {
+        return "column";
+    }
+
+    /* accessors */ 
+    get name() {
+        return this.attrs.get('name')[0];     
+    }
+    set name(newName: string) {
+        this.setAttr("name", newName);
+    }
+    get icon() {
+        return this.attrs.get('icon')[0];     
+    }
+    set icon(newIcon: string) {
+        this.setAttr("icon", newIcon);
+    }
+    get iconOnly() {
+        return this.attrs.get('iconOnly')[0];     
+    }
+    set iconOnly(newIconOnly: boolean) {
+        this.setAttr("iconOnly", newIconOnly);
+    }
+    get fieldName() {
+        return this.attrs.get('fieldName')[0];     
+    }
+    set fieldName(newFieldName: string) {
+        this.setAttr("fieldName", newFieldName);
+    }
+    get sortable() {
+        return this.attrs.get('sortable')[0];     
+    }
+    set sortable(newSortable: string) {
+        this.setAttr("sortable", newSortable);
+    }
+    get sortField() {
+        return this.attrs.get('sortField')[0];     
+    }
+    set sortField(newSortField: string) {
+        this.setAttr("sortField", newSortField);
+    }
+    get sorted() {
+        return this.attrs.get('sorted')[0];     
+    }
+    set sorted(newSorted: string) {
+        this.setAttr("sorted", newSorted);
+    }
+    get resizable() {
+        return this.attrs.get('resizable')[0];     
+    }
+    set resizable(newResizable: string) {
+        this.setAttr("resizable", newResizable);
+    }
+}
+
+class Items extends Control{
+    private _items: any = [];
+
+    constructor(props) {
+        super(props);  
+        if (props.items && props.items.length > 0) {
+            props.items.forEach(item => {
+                this.addItem(item);
+            })
+        }        
+    }
+
+    getControlName() {
+        return "items";
+    }
+
+    /* accessors */ 
+    get items() {
+        return this._items;     
+    }
+    addItem(item: any) {
+        this._items.push(item);
+    }
+
+}
+
+class Item extends Control{
+
+    constructor(props) {
+         super(props);     
+    }
+
+    getControlName() {
+        return "item";
+    }
+}
+
+class Grid extends Control {
+    private _columns: Column[] = [];
+    private _items: Item[] = [];
+    constructor(gridProps: GridProperties) {
+        super(gridProps);
+    }
+
+    getControlName() {
+        return "grid";
+    }
+
+    protected getChildren(): any[] | null {
+        let children = [].concat(this._columns);
+
+        return children.concat(this._items);
+    }
+
+    /* accessors */ 
+    get selection() {
+        return this.attrs.get('selection')[0];     
+    }
+    set selection(newSelection: string) {
+        this.setAttr("selection", newSelection);
+    }
+    get compact() {
+        return this.attrs.get('compact')[0];     
+    }
+    set compact(newCompact: boolean) {
+        this.setAttr("compact", newCompact);
+    }
+    get headerVisible() {
+        return this.attrs.get('headerVisible')[0];     
+    }
+    set headerVisible(newHeaderVisible: boolean) {
+        this.setAttr("headerVisible", newHeaderVisible);
+    }
+
+}
+
+export {
+    Grid, Columns, Column, Items, Item
+};
