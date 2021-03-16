@@ -21,15 +21,15 @@ function sleep(ms) {
     // console.log("call getCmdStr: ", stackObject.getCmdStr());
     const id = await p.add(stackObject);
 
-    for (let i = 0; i < 11; i++) {
-        progressObject.label = `Doing step ${i}..`
-        progressObject.value = (i*10)
-        await sleep(1000);
-        await p.update(progressObject);
+    // for (let i = 0; i < 11; i++) {
+    //     progressObject.label = `Doing step ${i}..`
+    //     progressObject.value = (i*10)
+    //     await sleep(1000);
+    //     await p.update(progressObject);
 
-    }
-    progressObject.label = "Completed!"
-    await p.update(progressObject);
+    // }
+    // progressObject.label = "Completed!"
+    // await p.update(progressObject);
     
     console.log(id);
     async function greeterButtonHandler(e) {
@@ -41,6 +41,10 @@ function sleep(ms) {
 
     let buttonObject = new pglet.Button({text: "Say hello!", primary: true, onClick: greeterButtonHandler})
     await p.add(buttonObject);
+    let gridColumns = [new pglet.Column({name: "Name", fieldName: "name"}), new pglet.Column({name: "Age", fieldName: "age"})];
+    let gridItems = [new pglet.Item({name: "Art Farmer", age: 58}), new pglet.Item({name: "Jim Hall", age: 56}), new pglet.Item({name: "Steve Gadd", age: 42})]
+    let gridObject = new pglet.Grid({columns: gridColumns, items: gridItems});
+    await p.add(gridObject);
     
     while(true) {
         const e = await p.waitEvent();

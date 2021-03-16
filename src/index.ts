@@ -11,6 +11,7 @@ import Button from './Button';
 import Dropdown from './Dropdown';
 import Progress from './Progress';
 import Checkbox from './Checkbox';
+import { Column, Columns, Item, Items, Grid } from './Grid';
 import { Tabs, Tab } from './Tabs';
 import { Control}  from './Control';
 import { Connection } from './Connection';
@@ -177,5 +178,5 @@ function buildArgs(action: string, args: any) {
     return pargs;
 }
 export {
-    page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab
+    page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid
 }

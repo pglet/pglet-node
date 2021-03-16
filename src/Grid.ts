@@ -18,7 +18,9 @@ interface GridProperties extends ControlProperties {
     selection?: string,
     compact?: boolean,
     headerVisible?: boolean,
-    shimmerLines?: number
+    shimmerLines?: number,
+    columns: Column[],
+    items: Item[]
 }
 
 class Columns extends Control{
@@ -151,10 +153,12 @@ class Item extends Control{
 }
 
 class Grid extends Control {
-    private _columns: Column[] = [];
-    private _items: Item[] = [];
+    private _columns: Columns;
+    private _items: Items;
     constructor(gridProps: GridProperties) {
         super(gridProps);
+        this._columns = new Columns({columns: gridProps.columns});
+        this._items = new Items({items: gridProps.items});
     }
 
     getControlName() {
@@ -162,6 +166,7 @@ class Grid extends Control {
     }
 
     protected getChildren(): any[] | null {
+        console.log("in Grid getChildren call: ", this._columns, this._items)
         let children = [].concat(this._columns);
 
         return children.concat(this._items);
