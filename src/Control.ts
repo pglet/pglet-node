@@ -14,14 +14,14 @@ interface ControlProperties {
 
 class Control {
     protected _id: string | null;
-    protected _childControls: Control[] | null;
+    // protected _childControls: Control[] | null;
     protected _eventHandlers: any = {};
     protected connection: Connection | null;
     protected attrs: any = {};
 
     constructor(controlProps: ControlProperties) {
         this._id = controlProps.id ? controlProps.id : undefined;
-        this._childControls = controlProps.childControls ? controlProps.childControls : new Array<Control>();
+        //this._childControls = controlProps.childControls ? controlProps.childControls : new Array<Control>();
         // console.log("outerstack childControls: ", this._childControls);
         this.attrs = new Map();
         Object.keys(controlProps).forEach(key => {
@@ -190,8 +190,8 @@ class Control {
         return parts;
     }
 
-    protected getChildren(): Control[] | null {
-        return this._childControls;
+    protected getChildren() {
+        return [];
     }
 }
 

@@ -11,17 +11,23 @@ interface StackProperties extends ControlProperties {
 }
 
 class Stack extends Control {
+    private _childControls: Control[] = [];
 
     constructor(stackProps: StackProperties) {
         super(stackProps);
+        if (stackProps.childControls && stackProps.childControls.length > 0) {
+            stackProps.childControls.forEach(ctrl => {
+                this._childControls.push(ctrl);
+            })
+        }
     }
 
     getControlName() {
         return "stack";
     }
 
-    protected getChildren(): Control[] | null {
-        return super.getChildren();
+    protected getChildren(): Control[] {
+        return this._childControls;
     }
 
     /* accessors */ 

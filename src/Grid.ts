@@ -25,7 +25,12 @@ class Columns extends Control{
     private _columns: any = [];
 
     constructor(props) {
-        super(props);       
+        super(props);
+        if (props.columns && props.columns.length > 0) {
+            props.columns.forEach(column => {
+                this.addColumn(column);
+            })
+        }       
     }
 
     getControlName() {
@@ -36,14 +41,11 @@ class Columns extends Control{
     get columns() {
         return this._columns;     
     }
-    addItem(column: Column) {
+    addColumn(column: Column) {
         this._columns.push(column);
     }
-    get key() {
-        return this.attrs.get('key')[0];     
-    }
-    set key(newKey: string) {
-        this.setAttr("key", newKey);
+    getChildren() {
+        return this._columns;
     }
 }
 
@@ -130,6 +132,9 @@ class Items extends Control{
     }
     addItem(item: any) {
         this._items.push(item);
+    }
+    getChildren() {
+        return this._items;
     }
 
 }
