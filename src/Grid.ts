@@ -11,7 +11,9 @@ interface ColumnProperties extends ControlProperties {
     resizable?: boolean,
     minWidth?: number,
     maxWidth?: number,
-    onClick?: boolean  
+    onClick?: boolean,
+    onClickAction?: any,
+    templateControls?: Control[];
 }
 
 interface GridProperties extends ControlProperties {
@@ -20,7 +22,9 @@ interface GridProperties extends ControlProperties {
     headerVisible?: boolean,
     shimmerLines?: number,
     columns: Column[],
-    items: Item[]
+    items: Item[],
+    onSelect?: any,
+    onItemInvoke?: any
 }
 
 class Columns extends Control{
@@ -52,13 +56,26 @@ class Columns extends Control{
 }
 
 class Column extends Control{
+    private _templateControls: Control[] = [];
 
     constructor(columnProps: ColumnProperties) {
-        super(columnProps);       
+        super(columnProps); 
+        if (columnProps.onClickAction) {
+            super.addEventHandler("click", columnProps.onClickAction);
+        }
+        if (columnProps.templateControls && columnProps.templateControls.length > 0) {
+            columnProps.templateControls.forEach(ctrl => {
+                this._templateControls.push(ctrl);
+            })
+        }      
     }
 
     getControlName() {
         return "column";
+    }
+
+    protected getChildren(): Control[] {
+        return this._templateControls;
     }
 
     /* accessors */ 
@@ -159,6 +176,12 @@ class Grid extends Control {
         super(gridProps);
         this._columns = new Columns({columns: gridProps.columns});
         this._items = new Items({items: gridProps.items});
+        if (gridProps.onItemInvoke) {
+            super.addEventHandler("itemInvoke", gridProps.onItemInvoke);
+        }
+        if (gridProps.onSelect) {
+            super.addEventHandler("select", gridProps.onSelect)
+        }
     }
 
     getControlName() {

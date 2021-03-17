@@ -41,7 +41,7 @@ function sleep(ms) {
 
     let buttonObject = new pglet.Button({text: "Say hello!", primary: true, onClick: greeterButtonHandler})
     await p.add(buttonObject);
-    let gridColumns = [new pglet.Column({name: "Name", fieldName: "name"}), new pglet.Column({name: "Age", fieldName: "age"})];
+    let gridColumns = [new pglet.Column({name: "Name", fieldName: "name", sortable: "true"}), new pglet.Column({name: "Age", fieldName: "age", sortable: "true"})];
     let gridItems = [new pglet.Item({name: "Art Farmer", age: 58}), new pglet.Item({name: "Jim Hall", age: 56}), new pglet.Item({name: "Steve Gadd", age: 42})]
     let gridObject = new pglet.Grid({columns: gridColumns, items: gridItems});
     await p.add(gridObject);
