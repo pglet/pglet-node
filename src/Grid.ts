@@ -189,7 +189,6 @@ class Grid extends Control {
     }
 
     protected getChildren(): any[] | null {
-        console.log("in Grid getChildren call: ", this._columns, this._items)
         let children = [].concat(this._columns);
 
         return children.concat(this._items);

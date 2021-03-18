@@ -1,3 +1,4 @@
+const { isAwaitExpression } = require("typescript");
 const pglet = require("../build/index.js");
 
 function sleep(ms) {
@@ -8,8 +9,7 @@ function sleep(ms) {
     p = await pglet.page("index", { noWindow: false });
 
     await p.send("clean");
-    let progressObject = new pglet.Progress({label: "testProgress", width: "100%"})
-    await p.add(progressObject);
+    
     let tablist = [new pglet.Tab({text: "tab1", icon: "Sunny"}), new pglet.Tab({text: "tab2", icon: "Cloudy"})]
     await p.add(new pglet.Tabs({childControls: tablist}));
     let textObject = new pglet.Text({id: "heading", value: "greeter app test"});
@@ -21,21 +21,25 @@ function sleep(ms) {
     // console.log("call getCmdStr: ", stackObject.getCmdStr());
     const id = await p.add(stackObject);
 
-    // for (let i = 0; i < 11; i++) {
-    //     progressObject.label = `Doing step ${i}..`
-    //     progressObject.value = (i*10)
-    //     await sleep(1000);
-    //     await p.update(progressObject);
 
-    // }
-    // progressObject.label = "Completed!"
-    // await p.update(progressObject);
+    
     
     console.log(id);
     async function greeterButtonHandler(e) {
         let name = await p.getValue(textboxObject);
         // await p.send("clean")
+        stackObject.horizontal = true;
+        stackObject.childControls = [textObject, ddObject];
+        await p.update(stackObject);
+
+        buttonObject.text = name
+        buttonObject.onClick = greeterButtonHandler2;
+        await p.update(buttonObject);
         await p.add(new pglet.Text({value: `Hello ${name}!`}))
+        return
+    }
+    async function greeterButtonHandler2(e) {
+        await p.send("clean")
         return
     }
 

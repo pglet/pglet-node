@@ -4,7 +4,6 @@ let nextTaskId = 0;
 let taskIds = [];
 let tasksCompleted = [];
 let taskNames = [];
-p = await pglet.page("index", { noWindow: false });
 
 async function updateTasksView() {
 } 
@@ -22,6 +21,7 @@ async function addNewTask() {
     
 } 
 (async () => {
+    let p = await pglet.page("index", { noWindow: false });
     // p.update("index", { title: "Node TODO with pglet", horizontalAlign: "center"})
     await p.add(new pglet.Stack({width: "70%", 
             childControls: [
@@ -48,6 +48,8 @@ async function addNewTask() {
                     ]})
             ]})
         );
+
+    // addNewTask
 
 
     // p.add()

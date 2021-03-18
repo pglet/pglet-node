@@ -55,7 +55,7 @@ class Control {
 
     protected addEventHandler(eventName: string, handler: any): void {
         this._eventHandlers[eventName] = handler;
-        console.log("control eventHandlers: ", this._eventHandlers, this.getControlName());
+        // console.log("control eventHandlers: ", this._eventHandlers, this.getControlName());
         //only used for previously instantiated controls
         if (this.connection) {
             this.connection.addEventHandlers(this._id, eventName, handler);
@@ -127,9 +127,9 @@ class Control {
         if (!update) {
             parts.push(indent + this.getControlName());
         }
-        console.log("current ctrl attrs: ", this.attrs);
+        // console.log("current ctrl attrs: ", this.attrs);
         let attrParts = this.getCmdAttrs(update);
-        console.log("returned attr parts: ", attrParts);
+        // console.log("returned attr parts: ", attrParts);
 
         if (attrParts.length > 0 || !update) {
             parts.push(...attrParts);
@@ -163,15 +163,13 @@ class Control {
         if (update && !this._id) {
             return parts;
         }
-        console.log("attrs before: ", this.attrs);
+
         this.attrs.forEach((value, attr) => {
             let dirty = this.attrs.get(attr)[1];
             console.log("this attr: ", attr);
             if (update && !dirty) {
                 return;
             }
-            
-            //let value = this.stringifyAttr(this.attrs[attr][0]);
 
             parts.push(`${attr}="${value[0]}"`);
 

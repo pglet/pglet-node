@@ -68,12 +68,25 @@ export class Connection {
             });
         }
     }
-
-    async add(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): Promise<string | void> {
-        let controlsArray: Control[] = [].concat(controls);
+    
+    async add(controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string | void> {
         let cmd = fireAndForget ? "addf" : "add";
+        return this.addOrReplace(cmd, controls, to, at, trim, fireAndForget);
+    }
+    
+    async replace(controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string | void> {
+        let cmd = fireAndForget ? "replacef" : "replace";
+        return this.addOrReplace(cmd, controls, to, at, trim, fireAndForget);
+    }
+
+    async addOrReplace(cmdString: string, controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string | void> {
+        let controlsArray: Control[] = [].concat(controls);
+
+        let cmd = cmdString;
         cmd += to ? ` to="${to}"` : "";
         cmd += at ? ` at="${at}"` : "";
+        cmd += trim ? ` trim="${trim}"` : "";
+
         let index = [];
 
         controlsArray.forEach(ctrl => {
@@ -99,26 +112,6 @@ export class Connection {
         
         return result;   
     }
-    
-    async replace(controls: Control[] | Control, to?: string, at?: number, fireAndForget?: boolean ): Promise<string | void> {
-        let controlsArray: Control[] = [].concat(controls);
-        let cmd = fireAndForget ? "replacef" : "replace";
-        cmd += to ? ` to="${to}"` : "";
-        cmd += at ? ` at="${at}"` : "";
-        let index = [];
-        
-        controlsArray.forEach(ctrl => {
-            if (ctrl.id) {
-                this.removeEventHandlers(ctrl.id);
-            }
-            cmd += `\n${ctrl.getCmdStr(false, '', index, this)}`;
-        })
-
-        let result = await this.send(cmd);
-
-        return result;
-
-    }
 
     update(controls: Control[] | Control, fireAndForget?: boolean): Promise<string> {
         let controlsArray: Control[] = [].concat(controls);
@@ -141,6 +134,13 @@ export class Connection {
     getValue(ctrl: string | Control): Promise<string> {
         let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
         return this.send(`get ${value} value`);
+    }
+
+    setValue(ctrl: string | Control, value: string, fireAndForget: boolean): Promise<string> {
+        let cmd = fireAndForget ? "setf" : "set";
+
+        let ctrlValue = (typeof ctrl === "string") ? ctrl : ctrl.id;
+        return this.send(`${cmd} ${ctrlValue} value="${value}"`);
     }
 
     send(command: string): Promise<string> {

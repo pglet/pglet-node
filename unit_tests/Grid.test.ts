@@ -13,7 +13,6 @@ test('Grid add test', () => {
         `    column name="key2" fieldName="key2"\n` +
         `  items\n` +
         `    item key1="value1" key2="value2"\n` +
-        `    item key1="value1" key2="value2"` 
-        
+        `    item key1="value1" key2="value2"`    
     );
 });
