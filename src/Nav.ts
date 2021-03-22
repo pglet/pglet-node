@@ -105,7 +105,7 @@ class Nav extends Control {
             super.addEventHandler("change", navProps.onChange);
         }
         if (navProps.onExpand) {
-            super.addEventHandler("Expand", navProps.onExpand)
+            super.addEventHandler("expand", navProps.onExpand)
         }
         if (navProps.onCollapse) {
             super.addEventHandler("collapse", navProps.onCollapse);

@@ -166,7 +166,7 @@ class Control {
 
         this.attrs.forEach((value, attr) => {
             let dirty = this.attrs.get(attr)[1];
-            console.log("this attr: ", attr);
+            
             if (update && !dirty) {
                 return;
             }

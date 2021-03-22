@@ -16,10 +16,19 @@ function sleep(ms) {
     let textboxObject = new pglet.Textbox({value: "Your Name", description: "Please provide your name"});
     let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
     let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
-
-    let stackObject = new pglet.Stack({childControls: [textObject, textboxObject, ddObject, checkBoxObject]});
+    let navObject = new pglet.Nav({value: "nav1", items: [
+                        new pglet.Item({text: "heading1", items: [new pglet.Item({text: "sub1", icon: "mail", iconColor: "yellow"}), new pglet.Item({text: "sub2", icon: "chat", iconColor: "blue"})]}),
+                        new pglet.Item({text: "heading2"})
+                    ]});
+                    
+    let stackObject = new pglet.Stack({childControls: [textObject, textboxObject, ddObject, checkBoxObject, navObject]});
     // console.log("call getCmdStr: ", stackObject.getCmdStr());
     const id = await p.add(stackObject);
+
+    let spinButtonObject = new pglet.SpinButton({label: "test spin button", min: 0, max: 10})
+    let sliderObject = new pglet.Slider({label: "test slider", step: 1, min: 0, max: 100, showValue: true});
+    let toggleObject = new pglet.Toggle({label: "test toggle", onText: "on", offText: "off"})
+    await p.add(new pglet.Stack({ childControls: [sliderObject, spinButtonObject, toggleObject], width: "50%"}));
 
     // for (let i = 0; i < 11; i++) {
     //     progressObject.label = `Doing step ${i}..`
