@@ -30,15 +30,15 @@ function sleep(ms) {
     let toggleObject = new pglet.Toggle({label: "test toggle", onText: "on", offText: "off"})
     await p.add(new pglet.Stack({ childControls: [sliderObject, spinButtonObject, toggleObject], width: "50%"}));
 
-    // for (let i = 0; i < 11; i++) {
-    //     progressObject.label = `Doing step ${i}..`
-    //     progressObject.value = (i*10)
-    //     await sleep(1000);
-    //     await p.update(progressObject);
+    for (let i = 0; i < 11; i++) {
+        progressObject.label = `Doing step ${i}..`
+        progressObject.value = (i*10)
+        await sleep(1000);
+        await p.update(progressObject);
 
-    // }
-    // progressObject.label = "Completed!"
-    // await p.update(progressObject);
+    }
+    progressObject.label = "Completed!"
+    await p.update(progressObject);
     
     console.log(id);
     async function greeterButtonHandler(e) {

@@ -69,17 +69,17 @@ export class Connection {
         }
     }
     
-    async add(controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string | void> {
+    async add(controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string> {
         let cmd = fireAndForget ? "addf" : "add";
         return this.addOrReplace(cmd, controls, to, at, trim, fireAndForget);
     }
     
-    async replace(controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string | void> {
+    async replace(controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string> {
         let cmd = fireAndForget ? "replacef" : "replace";
         return this.addOrReplace(cmd, controls, to, at, trim, fireAndForget);
     }
 
-    async addOrReplace(cmdString: string, controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string | void> {
+    async addOrReplace(cmdString: string, controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string> {
         let controlsArray: Control[] = [].concat(controls);
 
         let cmd = cmdString;
@@ -113,7 +113,7 @@ export class Connection {
         return result;   
     }
 
-    update(controls: Control[] | Control, fireAndForget?: boolean): Promise<string> {
+    async update(controls: Control[] | Control, fireAndForget?: boolean): Promise<string> {
         let controlsArray: Control[] = [].concat(controls);
         
         let cmd = fireAndForget ? "setf" : "set";
@@ -125,13 +125,13 @@ export class Connection {
         })
 
         let slines = lines.join("\n")
-
-        let result = this.send(`${cmd}\n${slines}`);
-
+        console.log("cmd: ", `${cmd}\n${slines}`);
+        let result = await this.send(`${cmd}\n${slines}`);
+        console.log("result: ", result);
         return result;
     }
 
-    getValue(ctrl: string | Control): Promise<string> {
+    async getValue(ctrl: string | Control): Promise<string> {
         let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
         return this.send(`get ${value} value`);
     }

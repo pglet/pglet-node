@@ -2,7 +2,7 @@ import { ControlProperties, Control } from './Control'
 
 
 interface TextboxProperties extends ControlProperties {
-    value: string,
+    value?: string,
     label?: string,
     placeholder?: string,
     errorMessage?: string,
