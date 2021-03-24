@@ -3,7 +3,7 @@ import { Connection } from './Connection';
 
 interface ControlProperties {
     id?: string,
-    childControls?: Control[],
+    //childControls?: Control[],
     visible?: boolean,
     disabled?: boolean,
     width?: string,

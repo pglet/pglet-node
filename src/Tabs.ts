@@ -4,18 +4,20 @@ interface TabProperties extends ControlProperties {
     text?: string,
     key?: string,
     icon?: string,
-    count?: string,
+    count?: string
 }
 
 interface TabsProperties extends ControlProperties {
     value?: string,
-    solid?: boolean
+    solid?: boolean,
+    tabs: Tab[]
 }
 
 class Tab extends Control{
 
     constructor(tabProps: TabProperties) {
-        super(tabProps);       
+        super(tabProps); 
+
     }
 
     getControlName() {
@@ -50,17 +52,21 @@ class Tab extends Control{
 }
 
 class Tabs extends Control {
+    _tabs: Tab[] = [];
 
     constructor(tabsProps: TabsProperties) {
         super(tabsProps);
+        tabsProps.tabs.forEach(tab => {
+            this._tabs.push(tab);
+        })
     }
 
     getControlName() {
         return "tabs";
     }
 
-    protected getChildren(): Control[] | null {
-        return super.getChildren();
+    protected getChildren(): Control[] {
+        return this._tabs;
     }
 
     /* accessors */ 

@@ -7,7 +7,8 @@ interface StackProperties extends ControlProperties {
     verticalFill?: boolean,
     verticalAlign?: string,
     gap?: string,
-    wrap?: string
+    wrap?: string,
+    childControls?: Control[]
 }
 
 class Stack extends Control {
