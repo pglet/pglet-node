@@ -73,7 +73,7 @@ class Tabs extends Control {
     get solid() {
         return this.attrs.get('solid')[0];     
     }
-    set solid(newSolid: string) {
+    set solid(newSolid: boolean) {
         this.setAttr("solid", newSolid);
     }
 }
