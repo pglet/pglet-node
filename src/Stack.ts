@@ -17,9 +17,10 @@ class Stack extends Control {
     constructor(stackProps: StackProperties) {
         super(stackProps);
         if (stackProps.childControls && stackProps.childControls.length > 0) {
-            stackProps.childControls.forEach(ctrl => {
-                this._childControls.push(ctrl);
-            })
+            this._childControls.push(...stackProps.childControls)
+            // stackProps.childControls.forEach(ctrl => {
+            //     this._childControls.push(ctrl);
+            // })
         }
     }
 

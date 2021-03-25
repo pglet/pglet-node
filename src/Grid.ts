@@ -1,3 +1,4 @@
+import { CpuInfo } from 'node:os';
 import { ControlProperties, Control } from './Control'
 
 interface ColumnProperties extends ControlProperties {
@@ -13,7 +14,7 @@ interface ColumnProperties extends ControlProperties {
     maxWidth?: number,
     onClick?: boolean,
     onClickAction?: any,
-    templateControls?: Control[];
+    childControls?: Control[];
 }
 
 interface GridProperties extends ControlProperties {
@@ -27,8 +28,9 @@ interface GridProperties extends ControlProperties {
     onItemInvoke?: any
 }
 
+//internal class
 class Columns extends Control{
-    private _columns: any = [];
+    private _columns: Column[] = [];
 
     constructor(props) {
         super(props);
@@ -56,17 +58,15 @@ class Columns extends Control{
 }
 
 class Column extends Control{
-    private _templateControls: Control[] = [];
+    private _childControls: Control[] = [];
 
     constructor(columnProps: ColumnProperties) {
         super(columnProps); 
         if (columnProps.onClickAction) {
             super.addEventHandler("click", columnProps.onClickAction);
         }
-        if (columnProps.templateControls && columnProps.templateControls.length > 0) {
-            columnProps.templateControls.forEach(ctrl => {
-                this._templateControls.push(ctrl);
-            })
+        if (columnProps.childControls && columnProps.childControls.length > 0) {
+            this._childControls.push(...columnProps.childControls)
         }      
     }
 
@@ -75,7 +75,7 @@ class Column extends Control{
     }
 
     protected getChildren(): Control[] {
-        return this._templateControls;
+        return this._childControls;
     }
 
     /* accessors */ 
@@ -129,6 +129,7 @@ class Column extends Control{
     }
 }
 
+//internal class
 class Items extends Control{
     private _items: any = [];
 
@@ -144,6 +145,9 @@ class Items extends Control{
     getControlName() {
         return "items";
     }
+    getChildren() {
+        return this._items;
+    }
 
     /* accessors */ 
     get items() {
@@ -151,9 +155,6 @@ class Items extends Control{
     }
     addItem(item: any) {
         this._items.push(item);
-    }
-    getChildren() {
-        return this._items;
     }
 
 }
@@ -188,10 +189,11 @@ class Grid extends Control {
         return "grid";
     }
 
-    protected getChildren(): any[] | null {
-        let children = [].concat(this._columns);
+    protected getChildren(): any[] {
+        return [...this._columns.getChildren(), ...this._items.getChildren()]
+        // let children = [].concat(this._columns);
 
-        return children.concat(this._items);
+        // return children.concat(this._items);
     }
 
     /* accessors */ 

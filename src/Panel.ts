@@ -17,43 +17,43 @@ interface PanelProperties extends ControlProperties {
     onDismiss?: any
 }
 
+// internal class
 class Footer {
     private _controls: Control[] = []
 
     constructor(controls: Control[]) {
         controls.forEach(ctrl => {
-            this._controls.push(ctrl);
+            this.addControl(ctrl);
         })
     }
 
     getControlName() {
         return "footer";
     }
-
     protected getChildren(): Control[] {
         return this._controls;
     }
+
     /* accessors */ 
     get controls() {
         return this._controls;  
     }
-    set controls(newControls: Control[]) {
-        this._controls.concat(newControls);
+    addControl(ctrl: Control) {
+        this._controls.push(ctrl);
     }
 
 }
 
 class Panel extends Control {
-    private _controls: Control[] = [];
+    private _footer: Footer;
+    //private _controls: Control[] = [];
 
     constructor(panelProps: PanelProperties) {
         super(panelProps);
         if (panelProps.onDismiss) {
             super.addEventHandler("dismiss", panelProps.onDismiss);
         }
-        panelProps.footer.forEach(ctrl => {
-            this._controls.push(ctrl);
-        })
+        this._footer = new Footer(panelProps.footer);
     }
 
     getControlName() {
@@ -61,7 +61,7 @@ class Panel extends Control {
     }
 
     protected getChildren(): Control[] {
-        return this._controls;
+        return this._footer.controls;
     }
 
     /* accessors */ 

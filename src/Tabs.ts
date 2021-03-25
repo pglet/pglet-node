@@ -4,7 +4,8 @@ interface TabProperties extends ControlProperties {
     text?: string,
     key?: string,
     icon?: string,
-    count?: string
+    count?: string,
+    childControls?: Control[]
 }
 
 interface TabsProperties extends ControlProperties {
@@ -14,14 +15,22 @@ interface TabsProperties extends ControlProperties {
 }
 
 class Tab extends Control{
+    private _childControls: Control[] = [];
 
     constructor(tabProps: TabProperties) {
-        super(tabProps); 
+        super(tabProps);
+        if (tabProps.childControls && tabProps.childControls.length > 0) {
+            this._childControls.push(...tabProps.childControls);
+        }
 
     }
 
     getControlName() {
         return "tab";
+    }
+
+    protected getChildren(): Control[] {
+        return this._childControls;
     }
 
     /* accessors */ 

@@ -68,7 +68,7 @@ class Dropdown extends Control {
         return "dropdown";
     }
 
-    protected getChildren(): any[] | null {
+    protected getChildren(): any[] {
         return this._options;
     }
 
