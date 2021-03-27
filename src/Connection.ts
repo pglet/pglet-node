@@ -133,6 +133,7 @@ export class Connection {
 
     async getValue(ctrl: string | Control): Promise<string> {
         let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
+        console.log("getValue: ", value);
         return this.send(`get ${value} value`);
     }
 

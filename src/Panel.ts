@@ -61,7 +61,8 @@ class Panel extends Control {
     }
 
     protected getChildren(): Control[] {
-        return this._footer.controls;
+        return this._footer.controls
+        ;
     }
 
     /* accessors */ 

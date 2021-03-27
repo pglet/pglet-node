@@ -129,14 +129,18 @@ class Column extends Control{
     }
 }
 
+interface ItemObject {
+    [key: string]: any
+}
 //internal class
 class Items extends Control{
-    private _items: any = [];
+    private _items: Item[] = [];
 
     constructor(props) {
         super(props);  
         if (props.items && props.items.length > 0) {
             props.items.forEach(item => {
+                console.log("preItem: ", item);
                 this.addItem(item);
             })
         }        
@@ -154,15 +158,30 @@ class Items extends Control{
         return this._items;     
     }
     addItem(item: any) {
-        this._items.push(item);
+        
+        let props: ItemObject = {};
+        //let names = Object.getOwnPropertyNames(item);
+        let descriptors = Object.getOwnPropertyDescriptors(item);
+        Object.entries(item).forEach(entry => {
+            console.log("entry: ", entry);
+            const [prop, val]: any = entry;
+            props[prop] = val;
+            
+        })
+        //this._items.push(item);
+        
+        this._items.push(
+            new Item(props)
+        );
     }
 
 }
 
+// internal class
 class Item extends Control{
 
     constructor(props) {
-         super(props);     
+         super(props);  
     }
 
     getControlName() {
@@ -190,7 +209,7 @@ class Grid extends Control {
     }
 
     protected getChildren(): any[] {
-        return [...this._columns.getChildren(), ...this._items.getChildren()]
+        return [this._columns, this._items]
         // let children = [].concat(this._columns);
 
         // return children.concat(this._items);
