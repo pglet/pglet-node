@@ -23,7 +23,7 @@ interface GridProperties extends ControlProperties {
     headerVisible?: boolean,
     shimmerLines?: number,
     columns: Column[],
-    items: Item[],
+    items: any[],
     onSelect?: any,
     onItemInvoke?: any
 }
@@ -140,7 +140,6 @@ class Items extends Control{
         super(props);  
         if (props.items && props.items.length > 0) {
             props.items.forEach(item => {
-                console.log("preItem: ", item);
                 this.addItem(item);
             })
         }        
@@ -161,9 +160,9 @@ class Items extends Control{
         
         let props: ItemObject = {};
         //let names = Object.getOwnPropertyNames(item);
-        let descriptors = Object.getOwnPropertyDescriptors(item);
+        //let descriptors = Object.getOwnPropertyDescriptors(item);
         Object.entries(item).forEach(entry => {
-            console.log("entry: ", entry);
+            //console.log("entry: ", entry);
             const [prop, val]: any = entry;
             props[prop] = val;
             

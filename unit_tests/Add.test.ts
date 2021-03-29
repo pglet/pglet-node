@@ -1,7 +1,7 @@
 import { Stack, Textbox, page } from "../src/index";
 
 function getPage() {
-    return page("test page", {noWindow: true});
+    return page({name: "add test page", noWindow: true});
 }
 
 test('add single control', async () => {

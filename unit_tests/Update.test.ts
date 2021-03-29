@@ -1,12 +1,14 @@
 import { Textbox, page } from "../src/index";
 
-function getPage() {
-    return page("test page", {noWindow: true});
+async function getPage() {
+    return page({name: "updatetest page", noWindow: true});
+    
 }
 
 test('update single control by object', async () => {
     let p = await getPage();
-    let textbox = new Textbox({id: "textbox1", value: "val1"})
+    await p.send("clean");
+    let textbox = new Textbox({id: "textbox1", value: "val1"});
     await p.add(textbox);
     let value = await p.getValue(textbox);
 

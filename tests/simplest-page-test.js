@@ -14,8 +14,11 @@ function sleep(ms) {
     // let tablist = [new pglet.Tab({text: "tab1", icon: "Sunny"}), new pglet.Tab({text: "tab2", icon: "Cloudy"})]
     // await p.add(new pglet.Tabs({tabs: tablist}));
     // let textObject = new pglet.Text({id: "heading", value: "greeter app test"});
-    let textboxObject = new pglet.Textbox({value: "Your Name", description: "Please provide your name", fake: "value"});
-    p.add(textboxObject);
+    //let textboxObject = new pglet.Textbox({value: "Your Name", description: "Please provide your name"});
+    let textboxObject = new pglet.Textbox({id: "textbox1", value: "val1"});
+    await p.add(textboxObject);
+    let textboxObjectValue = await p.getValue(textboxObject);
+    console.log("returned value: ", textboxObjectValue);
     // let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
     // let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
     // let navObject = new pglet.Nav({value: "nav1", items: [
