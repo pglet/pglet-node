@@ -14,6 +14,9 @@ import Checkbox from './Checkbox';
 import Slider from './Slider';
 import SpinButton from './SpinButton';
 import Toggle from './Toggle';
+import Dialog from './Dialog';
+import Panel from './Panel';
+import { Option, ChoiceGroup } from './ChoiceGroup'
 import { Message, MessageButton } from './Message';
 import { Toolbar, ToolbarItem} from './Toolbar';
 import { Nav, Item } from './Nav';
@@ -184,5 +187,5 @@ function buildArgs(action: string, args: any) {
     return pargs;
 }
 export {
-    page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton
+    page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel
 }

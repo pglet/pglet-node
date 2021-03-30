@@ -28,6 +28,22 @@ function sleep(ms) {
     await p.add(messageObject);
     let textboxObject = new pglet.Textbox({id: "textbox1", value: "val1"});
     await p.add(textboxObject);
+    let choiceGroupObject = new pglet.ChoiceGroup({
+                                value: "choiceGroup1", label: "choice group",
+                                options: [new pglet.Option({ key: "key1", text: "value1"}), new pglet.Option({ key: "key2", text: "value2"})]  
+                            });
+    await p.add(choiceGroupObject);
+    let dialogObject = new pglet.Dialog({
+        open: true, title: "dialog1", subText: "subtext1", autoDismiss: true,
+        footer: [new pglet.Button({text: "OK"}), new pglet.Button({text: "CANCEL"})]
+    });
+    await p.add(dialogObject);
+    let panelObject = new pglet.Panel({
+                        open: true, title: "panel1", type: "small", autoDismiss: true,
+                        footer: [new pglet.Button({text: "OK"}), new pglet.Button({text: "CANCEL"})]
+                    });
+    await p.add(panelObject);
+  
     // let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
     // let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
     // let navObject = new pglet.Nav({value: "nav1", items: [

@@ -25,7 +25,7 @@ class Control {
         // console.log("outerstack childControls: ", this._childControls);
         this.attrs = new Map();
         Object.keys(controlProps).forEach(key => {
-            if (key != "id" && key != "childControls" && key != "onClick" && key != "onDismiss" && key != "columns" && key != "items" && key != "tabs" && key != "overflow" && key != "far") {
+            if (key != "id" && key != "childControls" && key != "onClick" && key != "onDismiss" && key != "columns" && key != "items" && key != "tabs" && key != "overflow" && key != "far" && key != "options" && key != "footer" && key != "buttons") {
                 this.setAttr(key, controlProps[key]);
             }       
         })

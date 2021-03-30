@@ -1,16 +1,15 @@
 import { ControlProperties, Control } from './Control'
 
-// interface FooterProperties extends ControlProperties {
-//     childControls?: []
-// }
-
-interface PanelProperties extends ControlProperties {
+interface DialogProperties extends ControlProperties {
     open?: boolean,
     title?: string,
-    type?: string,
+    subText?: string,
     autoDismiss?: boolean,
-    lightDismiss?: boolean,
+    largeHeader?: boolean,
     width?: string,
+    maxWidth?: string,
+    height?: string,
+    fixedTop?: boolean,
     blocking?: boolean,
     data?: string,
     footer: Control[],
@@ -45,19 +44,19 @@ class Footer extends Control {
 
 }
 
-class Panel extends Control {
+class Dialog extends Control {
     private _footer: Footer;
 
-    constructor(panelProps: PanelProperties) {
-        super(panelProps);
-        if (panelProps.onDismiss) {
-            super.addEventHandler("dismiss", panelProps.onDismiss);
+    constructor(dialogProps: DialogProperties) {
+        super(dialogProps);
+        if (dialogProps.onDismiss) {
+            super.addEventHandler("dismiss", dialogProps.onDismiss);
         }
-        this._footer = new Footer({childControls: panelProps.footer});
+        this._footer = new Footer({childControls: dialogProps.footer});
     }
 
     getControlName() {
-        return "panel";
+        return "dialog";
     }
 
     protected getChildren(): Control[] {
@@ -77,11 +76,11 @@ class Panel extends Control {
     set title(newTitle: string) {
         this.setAttr("title", newTitle);
     }
-    get type() {
-        return this.attrs.get('type')[0];     
+    get subText() {
+        return this.attrs.get('subText')[0];     
     }
-    set type(newType: string) {
-        this.setAttr("type", newType);
+    set subText(newSubText: string) {
+        this.setAttr("subText", newSubText);
     }
     get autoDismiss() {
         return this.attrs.get('autoDismiss')[0];     
@@ -89,11 +88,11 @@ class Panel extends Control {
     set autoDismiss(newAutoDismiss: boolean) {
         this.setAttr("autoDismiss", newAutoDismiss);
     }
-    get lightDismiss() {
-        return this.attrs.get('lightDismiss')[0];     
+    get largeHeader() {
+        return this.attrs.get('largeHeader')[0];     
     }
-    set lightDismiss(newLightDismiss: boolean) {
-        this.setAttr("lightDismiss", newLightDismiss);
+    set largeHeader(newLargeHeader: boolean) {
+        this.setAttr("largeHeader", newLargeHeader);
     }
     get width() {
         return this.attrs.get('width')[0];     
@@ -101,10 +100,28 @@ class Panel extends Control {
     set width(newWidth: string) {
         this.setAttr("width", newWidth);
     }
+    get maxWidth() {
+        return this.attrs.get('maxWidth')[0];     
+    }
+    set maxWidth(newMaxWidth: string) {
+        this.setAttr("maxWidth", newMaxWidth);
+    }
+    get height() {
+        return this.attrs.get('height')[0];     
+    }
+    set height(newHeight: string) {
+        this.setAttr("height", newHeight);
+    }
+    get fixedTop() {
+        return this.attrs.get('fixedTop')[0];     
+    }
+    set fixedTop(newFixedTop: boolean) {
+        this.setAttr("fixedTop", newFixedTop);
+    }
     get blocking() {
         return this.attrs.get('blocking')[0];     
     }
-    set blocking(newBlocking: string) {
+    set blocking(newBlocking: boolean) {
         this.setAttr("blocking", newBlocking);
     }
     get data() {
@@ -115,4 +132,4 @@ class Panel extends Control {
     }
 }
 
-export = Panel;
+export = Dialog;
