@@ -44,6 +44,10 @@ class Columns extends Control{
     getControlName() {
         return "columns";
     }
+    
+    getChildren() {
+        return this._columns;
+    }
 
     /* accessors */ 
     get columns() {
@@ -52,9 +56,7 @@ class Columns extends Control{
     addColumn(column: Column) {
         this._columns.push(column);
     }
-    getChildren() {
-        return this._columns;
-    }
+
 }
 
 class Column extends Control{

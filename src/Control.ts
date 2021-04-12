@@ -1,4 +1,5 @@
 import { Connection } from './Connection';
+import { StringHash } from './Utils';
 
 
 interface ControlProperties {
@@ -15,6 +16,7 @@ interface ControlProperties {
 class Control {
     protected _id: string | null;
     // protected _childControls: Control[] | null;
+    protected _uid: string | null 
     protected _eventHandlers: any = {};
     protected connection: Connection | null;
     protected attrs: any = {};
@@ -24,10 +26,14 @@ class Control {
         //this._childControls = controlProps.childControls ? controlProps.childControls : new Array<Control>();
         // console.log("outerstack childControls: ", this._childControls);
         this.attrs = new Map();
+        let excludedAttrs = ["id", "childControls", "onClick", "onDismiss", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons"]
         Object.keys(controlProps).forEach(key => {
-            if (key != "id" && key != "childControls" && key != "onClick" && key != "onDismiss" && key != "columns" && key != "items" && key != "tabs" && key != "overflow" && key != "far" && key != "options" && key != "footer" && key != "buttons") {
+            // if (key != "id" && key != "childControls" && key != "onClick" && key != "onDismiss" && key != "columns" && key != "items" && key != "tabs" && key != "overflow" && key != "far" && key != "options" && key != "footer" && key != "buttons") {
+            //     this.setAttr(key, controlProps[key]);
+            // }    
+            if (excludedAttrs.indexOf(key) < 0) {
                 this.setAttr(key, controlProps[key]);
-            }       
+            }   
         })
         // console.log("ctrl and its attrs: ", this.getControlName(), this._id, this.attrs);
     }
@@ -105,12 +111,12 @@ class Control {
     set margin(newMargin: string) {
         this.setAttr("margin", newMargin);
     }
-    // get attrs() {
-    //     return this._attrs;
-    // }
-    // set attrs(newAttr: any) {
-    //     this._attrs = newAttr;
-    // }
+
+    // why can't this be protected?
+    populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: String[]) {
+        
+
+    }
 
     getCmdStr(update?: boolean, indent?: string, index?: any, connection?: Connection): string {
         if (connection) {

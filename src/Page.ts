@@ -1,8 +1,11 @@
 import { ControlProperties, Control } from './Control'
 import { Alignment } from './Alignment';
+import { Connection } from './Connection';
 
 
 interface PageProperties extends ControlProperties {
+    connection?: Connection,
+    url?: string,
     title?: string,
     verticalFill?: boolean,
     horizontalAlign?: string,
@@ -12,15 +15,25 @@ interface PageProperties extends ControlProperties {
 }
 
 class Page extends Control {
+    private _controls: Control[] = [];
+    private _index: Map<string, Control> = new Map();
+    private _conn: Connection;
+    private _url: string;
 
     constructor(pageProps: PageProperties) {
-        pageProps.id = "page";
         super(pageProps);
+        // pageProps.id = "page";
         if (pageProps.horizontalAlign && !(pageProps.horizontalAlign in Alignment)) {
             throw "horizontalAlign must be of Alignment type"
         }
         if (pageProps.verticalAlign && !(pageProps.verticalAlign in Alignment)) {
             throw "verticalAlign must be of Alignment type"
+        }
+        if (pageProps.connection) {
+            this._conn = pageProps.connection;
+        }
+        if (pageProps.url) {
+            this._url = pageProps.url;
         }
     }
 
@@ -28,6 +41,31 @@ class Page extends Control {
         return "page";
     }
 
+    getControl(id: string): Control {
+        return this._index.get(id);
+    }
+
+    update(controls: Control[]) {
+        if (controls.length == 0) {
+            return this._update([this]);
+        }
+        else {
+            return this._update(controls);
+        }
+    }
+
+    private _update(controls: Control[]) {
+        let addedControls = [];
+        let commandList = [];
+
+        controls.forEach(ctrl => {
+            ctrl.populateUpdateCommands(this._index, addedControls, commandList);
+        });
+    }
+
+    getChildren() {
+        return this._controls;
+    }
     /* accessors */ 
     get title() {
         return this.attrs.get('title')[0];     

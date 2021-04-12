@@ -4,6 +4,7 @@ import os from 'os';
 import cp from 'child_process';
 import compareVersions from 'compare-versions';
 import request from 'request';
+import Page from './Page';
 import Text from './Text';
 import Textbox from './Textbox';
 import Stack from './Stack';
@@ -131,8 +132,8 @@ let page = async (...args: any) => {
 
     var conn = new Connection(match.groups.connId);
     //conn.pageUrl = match.groups.pageUrl;
-
-    return conn;
+    return new Page({connection: conn, url: match.groups.pageUrl})
+    //return conn;
 }
 
 function buildArgs(action: string, args: any) {
