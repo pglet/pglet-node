@@ -15,8 +15,8 @@ interface ControlProperties {
 
 class Control {
     protected _id: string | null;
-    // protected _childControls: Control[] | null;
-    protected _uid: string | null 
+    protected _page: Control | null;
+    protected _uid: string | null;
     protected _eventHandlers: any = {};
     protected connection: Connection | null;
     protected attrs: any = {};
@@ -69,6 +69,18 @@ class Control {
     }
  
     /* accessors */ 
+    get uid() {
+        return this._uid;
+    }
+    set uid(uid: string) {
+        this._uid = uid;
+    }
+    get page() {
+        return this._page;
+    }
+    set page(page: Control) {
+        this._page = page;
+    }
     get id() {
         return this._id;     
     }

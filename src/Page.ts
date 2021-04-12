@@ -54,13 +54,31 @@ class Page extends Control {
         }
     }
 
-    private _update(controls: Control[]) {
-        let addedControls = [];
-        let commandList = [];
+    private async _update(controls: Control[]) {
+        let addedControls: Control[]  = [];
+        let commandList: string[] = [];
 
         controls.forEach(ctrl => {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
+
+        if (commandList.length == 0) {
+            return;
+        }
+
+        let ids = await this._conn.sendBatch(commandList);
+
+        if (ids != "") {
+            let n = 0;
+            ids.split(/\r?\n/).forEach(line => {
+                line.split(" ").forEach(id => {
+                    addedControls[n].uid = id;
+                    addedControls[n].page = this;
+                    this._index.set(id, addedControls[n]);
+                    n += 1
+                })
+            })
+        }
     }
 
     getChildren() {

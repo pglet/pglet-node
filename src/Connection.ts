@@ -68,7 +68,7 @@ export class Connection {
             });
         }
     }
-    
+    /*
     async add(controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string> {
         let cmd = fireAndForget ? "addf" : "add";
         return this.addOrReplace(cmd, controls, to, at, trim, fireAndForget);
@@ -129,7 +129,7 @@ export class Connection {
         let result = await this.send(`${cmd}\n${slines}`);
         console.log("result: ", result);
         return result;
-    }
+    }*/
 
     async getValue(ctrl: string | Control): Promise<string> {
         let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
@@ -144,7 +144,19 @@ export class Connection {
         return this.send(`${cmd} ${ctrlValue} value="${value}"`);
     }
 
-    send(command: string): Promise<string> {
+    async sendBatch (commands: string[]): Promise<string> {
+        await this._send("begin");
+        commands.forEach(async cmd => {
+            await this._send(cmd);
+        })
+        return this._send("end");
+    }
+
+    async send(command: string): Promise<string> {
+        return this._send(command);
+    }
+
+    private _send(command: string): Promise<string> {
         let waitResult = !command.match(/\w+/g)[0].endsWith('f');
 
         if (os.type() === "Windows_NT") {
@@ -196,7 +208,7 @@ export class Connection {
         } else {
 
             // fire-and-forget command
-            return new Promise<string>((resolve, reject): void => {
+            return new Promise<string>((resolve, reject) => {
                 this._commandClient.write(command + '\n', (err) => {
                     if (err) {
                         reject(err);
