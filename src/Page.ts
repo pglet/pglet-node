@@ -2,7 +2,6 @@ import { ControlProperties, Control } from './Control'
 import { Alignment } from './Alignment';
 import { Connection } from './Connection';
 
-
 interface PageProperties extends ControlProperties {
     connection?: Connection,
     url?: string,
@@ -45,8 +44,8 @@ class Page extends Control {
         return this._index.get(id);
     }
 
-    update(controls: Control[]) {
-        if (controls.length == 0) {
+    update(controls?: Control[]) {
+        if (!controls.length) {
             return this._update([this]);
         }
         else {
@@ -54,7 +53,7 @@ class Page extends Control {
         }
     }
 
-    private async _update(controls: Control[]) {
+    private async _update(controls: Control[]): Promise<string> {
         let addedControls: Control[]  = [];
         let commandList: string[] = [];
 
@@ -79,11 +78,43 @@ class Page extends Control {
                 })
             })
         }
+        return ids;
+    }
+
+    add(controls: Control[]) {
+        this._controls.push(...controls);
+        return this.update();
+    }
+
+    insert(at: number, controls: Control[]) {
+        let n = at;
+        controls.forEach(ctrl => {
+            this._controls.splice(n, 0, ctrl);
+            n += 1;
+        })
+        return this.update();
+    }
+
+    remove(controls: Control[]) {
+        controls.forEach(ctrl => {
+            let index = controls.indexOf(ctrl);
+
+            if (index > -1) {
+                this._controls.splice(index, 1);
+            }
+        })
+        return this.update();
+    }
+    
+    removeAt(index) {
+        this._controls.splice(index, 1);
+        return this.update();
     }
 
     getChildren() {
         return this._controls;
     }
+
     /* accessors */ 
     get title() {
         return this.attrs.get('title')[0];     

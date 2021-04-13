@@ -1,5 +1,7 @@
 import { Connection } from './Connection';
 import { StringHash } from './Utils';
+import Diff from 'diff';
+import { ENGINE_METHOD_PKEY_ASN1_METHS } from 'node:constants';
 
 
 interface ControlProperties {
@@ -18,6 +20,7 @@ class Control {
     protected _page: Control | null;
     protected _uid: string | null;
     protected _eventHandlers: any = {};
+    protected _previousChildren: Control[];
     protected connection: Connection | null;
     protected attrs: any = {};
 
@@ -126,7 +129,74 @@ class Control {
 
     // why can't this be protected?
     populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: String[]) {
-        
+        let updateAttrs = this.getCmdAttrs(true);
+
+        if (updateAttrs.length > 0) {
+            commandList.push(`set ${updateAttrs.join(' ')}`);
+        }
+
+        let hashes = new Map<number, Control>();
+        let previousInts: number[] = [];
+        let currentInts: number[] = [];
+
+        this._previousChildren.forEach(ctrl => {
+            let hash = StringHash(ctrl.getCmdStr());
+            hashes.set(hash, ctrl);
+            previousInts.push(hash);
+        })
+
+        this.getChildren().forEach(ctrl => {
+            let hash = StringHash(ctrl.getCmdStr());
+            hashes.set(hash, ctrl);
+            currentInts.push(hash);
+        })
+
+        let diffList = Diff.diffArrays(previousInts, currentInts);
+
+        let n = 0;
+        diffList.forEach(changeObject => {
+            if (changeObject.added) {
+                //insert control
+                changeObject.value.forEach(val => {
+                    let ctrl = hashes.get(val);
+                    //TODO change getCmdStr signature.
+                    let cmd = ctrl.getCmdStr(false, '', addedControls);
+                    commandList.push(`add to="${this.uid}" at="${n}"\n${cmd}`);
+                    n += 1;
+                })
+            }
+            else if (changeObject.removed) {
+                // remove control
+                let ids = [];
+                changeObject.value.forEach(val => {
+                    let ctrl = hashes.get(val);
+                    this.removeControlRecursively(controlMap, ctrl);
+                    ids.push(ctrl.uid);
+                })
+                
+                commandList.push(`remove ${ids.join(' ')}`);
+
+            }
+            else {
+                // leave control
+                changeObject.value.forEach(val => {
+                    let ctrl = hashes.get(val);
+                    ctrl.populateUpdateCommands(controlMap, addedControls, commandList);
+                    n += 1;
+                })
+
+            }
+        })
+        this._previousChildren.length = 0;
+        this._previousChildren.push(...this.getChildren());
+
+    }
+
+    private removeControlRecursively(map: Map<string, Control>, control: Control) {
+        control.getChildren().forEach(ctrl => {
+            this.removeControlRecursively(map, ctrl);
+        })
+        map.delete(control.uid);
 
     }
 

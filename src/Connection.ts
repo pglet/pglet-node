@@ -5,7 +5,6 @@ import { Event } from './Event';
 import { Control } from './Control';
 import { throws } from 'assert';
 
-
 export class Connection {
     private connId = ""
     private _commandClient: any;
