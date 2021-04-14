@@ -29,7 +29,7 @@ export class Connection {
             this._commandClient.on('data', (data: any) => {
                 // parse result
                 const result = this.parseResult(data);
-
+                
                 let fn = this._commandResolve;
                 let value = result.value;
                 if (result.error) {
@@ -157,7 +157,6 @@ export class Connection {
 
     private _send(command: string): Promise<string> {
         let waitResult = !command.match(/\w+/g)[0].endsWith('f');
-
         if (os.type() === "Windows_NT") {
             // Windows
             return this.sendWindows(command, waitResult);

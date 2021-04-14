@@ -45,7 +45,7 @@ class Page extends Control {
     }
 
     update(controls?: Control[]) {
-        if (!controls.length) {
+        if (!controls) {
             return this._update([this]);
         }
         else {

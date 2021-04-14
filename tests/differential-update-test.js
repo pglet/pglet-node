@@ -3,7 +3,7 @@ const pglet = require("../build/index.js");
 (async () => {
     p = await pglet.page("index", { noWindow: false });
 
-    await p.send("clean");
+    //await p.send("clean");
     
     let textObject = new pglet.Text({id: "heading", value: "initial value"});
     let textboxObject = new pglet.Textbox({value: "Your age", description: "What is your age?"});
@@ -14,7 +14,7 @@ const pglet = require("../build/index.js");
 
     let stackObject = new pglet.Stack({childControls: [textObject, textboxObject, checkBoxObject]});
 
-    const id = await p.add(stackObject);
+    const id = await p.add([stackObject]);
     console.log(id);
 
     textObject.value = "updated value";

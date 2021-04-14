@@ -1,7 +1,6 @@
 import { Connection } from './Connection';
 import { StringHash } from './Utils';
-import Diff from 'diff';
-import { ENGINE_METHOD_PKEY_ASN1_METHS } from 'node:constants';
+import * as diff from 'diff';
 
 
 interface ControlProperties {
@@ -20,7 +19,7 @@ class Control {
     protected _page: Control | null;
     protected _uid: string | null;
     protected _eventHandlers: any = {};
-    protected _previousChildren: Control[];
+    protected _previousChildren: Control[] = [];
     //protected connection: Connection | null;
     protected attrs: any = {};
 
@@ -46,14 +45,12 @@ class Control {
     }
     
     protected getAttr(key: string) {
-        // this.attrs = {...this.attrs, key: [value, true]};
         // console.log("getAttr called with argument: ", key);
         return this.attrs.get(key)[0];
 
     }
 
     protected setAttr(key: string, value: any) {
-        // this.attrs = {...this.attrs, key: [value, true]};
         this.attrs.set(key, [value, true]);
         // console.log("attrs so far: ", this.attrs);
     }
@@ -152,8 +149,8 @@ class Control {
             currentInts.push(hash);
         })
 
-        let diffList = Diff.diffArrays(previousInts, currentInts);
-
+        let diffList = diff.diffArrays(previousInts, currentInts);
+        
         let n = 0;
         diffList.forEach(changeObject => {
             if (changeObject.added) {
@@ -161,7 +158,7 @@ class Control {
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
                     //TODO change getCmdStr signature.
-                    let cmd = ctrl.getCmdStr(false, '', controlMap, addedControls);
+                    let cmd = ctrl.getCmdStr('', controlMap, addedControls);
                     commandList.push(`add to="${this.uid}" at="${n}"\n${cmd}`);
                     n += 1;
                 })
