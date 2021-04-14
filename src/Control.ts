@@ -21,7 +21,7 @@ class Control {
     protected _uid: string | null;
     protected _eventHandlers: any = {};
     protected _previousChildren: Control[];
-    protected connection: Connection | null;
+    //protected connection: Connection | null;
     protected attrs: any = {};
 
     constructor(controlProps: ControlProperties) {
@@ -66,9 +66,10 @@ class Control {
         this._eventHandlers[eventName] = handler;
         // console.log("control eventHandlers: ", this._eventHandlers, this.getControlName());
         //only used for previously instantiated controls
-        if (this.connection) {
+
+        /*if (this.connection) {
             this.connection.addEventHandlers(this._id, eventName, handler);
-        }
+        }*/
     }
  
     /* accessors */ 
@@ -160,7 +161,7 @@ class Control {
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
                     //TODO change getCmdStr signature.
-                    let cmd = ctrl.getCmdStr(false, '', addedControls);
+                    let cmd = ctrl.getCmdStr(false, '', controlMap, addedControls);
                     commandList.push(`add to="${this.uid}" at="${n}"\n${cmd}`);
                     n += 1;
                 })
@@ -200,42 +201,43 @@ class Control {
 
     }
 
-    getCmdStr(update?: boolean, indent?: string, index?: any, connection?: Connection): string {
-        if (connection) {
+    getCmdStr(indent?: string, index?: Map<string, Control>, addedControls?: Control[]): string {
+        /*if (connection) {
             this.connection = connection;
+        }*/
+
+        if (this.uid && index && index.has(this.uid)) {
+            index.delete(this.uid);
         }
-        
+
         if(!indent) {
             indent = '';
         }
 
         let lines = [];
         let parts = [];
-
-        if (!update) {
-            parts.push(indent + this.getControlName());
-        }
+        
         // console.log("current ctrl attrs: ", this.attrs);
-        let attrParts = this.getCmdAttrs(update);
+        let attrParts = this.getCmdAttrs(false);
         // console.log("returned attr parts: ", attrParts);
-
-        if (attrParts.length > 0 || !update) {
-            parts.push(...attrParts);
-        }
+        parts.push(indent + this.getControlName(), ...attrParts);     
 
         lines.push(parts.join(' '));
 
-        if(index) {
-            index.push(this);
+        if(addedControls) {
+            addedControls.push(this);
         }
 
         this.getChildren().forEach(control => {
-             let childCmd = control.getCmdStr(update, (indent+"  "), index);
+             let childCmd = control.getCmdStr((indent+"  "), index);
              if (childCmd != "") {
                  lines.push(childCmd);
              }
         })
         
+        this._previousChildren.length = 0;
+        this._previousChildren.push(...this.getChildren());
+
         return lines.join('\n');
     }
 
