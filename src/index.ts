@@ -27,7 +27,7 @@ import { Control}  from './Control';
 import { Connection } from './Connection';
 
 
-const PGLET_VERSION: string = "0.2.0";
+const PGLET_VERSION: string = "0.2.4";
 
 var pgletExe: string = null;
 var _installPromise: any = null;
@@ -118,9 +118,10 @@ async function download(url: string, filePath: string) {
 }
 
 let page = async (...args: any) => {
+    
     await _install();
     const pargs = buildArgs("page", args);
-
+    console.log("pgletExe", pgletExe)
     //console.log(pargs);
     //console.log(pgletExe);
 

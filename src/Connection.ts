@@ -29,6 +29,7 @@ export class Connection {
             this._commandClient.on('data', (data: any) => {
                 // parse result
                 const result = this.parseResult(data);
+                console.log("commandClient data: ", result);
                 
                 let fn = this._commandResolve;
                 let value = result.value;

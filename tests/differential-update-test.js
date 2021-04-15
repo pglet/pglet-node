@@ -22,7 +22,7 @@ const pglet = require("../build/index.js");
     textboxObject.description = "What is your shoe size?";
     checkBoxObject.value = false;
 
-    p.update([textObject, textboxObject, checkBoxObject]);
+    //p.update([textObject, textboxObject, checkBoxObject]);
 
     
     

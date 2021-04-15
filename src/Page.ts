@@ -46,21 +46,25 @@ class Page extends Control {
 
     update(controls?: Control[]) {
         if (!controls) {
-            return this._update([this]);
+            return this._update();
         }
         else {
             return this._update(controls);
         }
     }
 
-    private async _update(controls: Control[]): Promise<string> {
+    private async _update(controls?: Control[]): Promise<string> {
         let addedControls: Control[]  = [];
         let commandList: string[] = [];
-
+        if (!controls) {
+            return;
+        }
         controls.forEach(ctrl => {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
-
+        console.log("commandList: ", commandList);
+        console.log("addedControls: ", addedControls);
+        console.log("control map: ", ...this._index.entries());
         if (commandList.length == 0) {
             return;
         }

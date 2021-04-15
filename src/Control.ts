@@ -136,13 +136,13 @@ class Control {
         let hashes = new Map<number, Control>();
         let previousInts: number[] = [];
         let currentInts: number[] = [];
-
+        console.log("previous children: ", this._previousChildren);
         this._previousChildren.forEach(ctrl => {
             let hash = StringHash(ctrl.getCmdStr());
             hashes.set(hash, ctrl);
             previousInts.push(hash);
         })
-
+        console.log("current children: ", this.getChildren());
         this.getChildren().forEach(ctrl => {
             let hash = StringHash(ctrl.getCmdStr());
             hashes.set(hash, ctrl);
