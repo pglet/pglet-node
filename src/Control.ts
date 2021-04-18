@@ -221,12 +221,13 @@ class Control {
 
         lines.push(parts.join(' '));
 
-        if(addedControls) {
+        if (addedControls) {
+            console.log("added control: ", this)
             addedControls.push(this);
         }
 
         this.getChildren().forEach(control => {
-             let childCmd = control.getCmdStr((indent+"  "), index);
+             let childCmd = control.getCmdStr((indent+"  "), index, addedControls);
              if (childCmd != "") {
                  lines.push(childCmd);
              }

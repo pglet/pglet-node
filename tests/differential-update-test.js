@@ -15,7 +15,7 @@ const pglet = require("../build/index.js");
     let stackObject = new pglet.Stack({childControls: [textObject, textboxObject, checkBoxObject]});
 
     const id = await p.add([stackObject]);
-    console.log(id);
+    console.log("id: ", id);
 
     textObject.value = "updated value";
     textboxObject.value = "Your shoe size";
@@ -26,10 +26,10 @@ const pglet = require("../build/index.js");
 
     
     
-    while(true) {
-        const e = await p.waitEvent();
-        console.log(e);
+    // while(true) {
+    //     const e = await p.waitEvent();
+    //     console.log(e);
 
-    }
+    // }
 })(); 
 

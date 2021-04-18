@@ -21,7 +21,7 @@ class Page extends Control {
 
     constructor(pageProps: PageProperties) {
         super(pageProps);
-        // pageProps.id = "page";
+        this.uid = "page";
         if (pageProps.horizontalAlign && !(pageProps.horizontalAlign in Alignment)) {
             throw "horizontalAlign must be of Alignment type"
         }
@@ -46,7 +46,7 @@ class Page extends Control {
 
     update(controls?: Control[]) {
         if (!controls) {
-            return this._update();
+            return this._update([this]);
         }
         else {
             return this._update(controls);
@@ -70,11 +70,14 @@ class Page extends Control {
         }
 
         let ids = await this._conn.sendBatch(commandList);
+        console.log("ids: ", ids);
 
         if (ids != "") {
             let n = 0;
             ids.split(/\r?\n/).forEach(line => {
+                
                 line.split(" ").forEach(id => {
+
                     addedControls[n].uid = id;
                     addedControls[n].page = this;
                     this._index.set(id, addedControls[n]);
