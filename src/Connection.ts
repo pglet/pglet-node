@@ -145,18 +145,11 @@ export class Connection {
     }
 
     async sendBatch (commands: string[]): Promise<string> {
-        let beginCommand = await this._send("begin");
+        await this._send("begin"); //returns null
         for (const cmd of commands) {
-            console.log("in command loop", cmd);
-            await this._send(cmd);
+            await this._send(cmd); //returns null
         }
-        // commands.forEach(async cmd => {
-        //     console.log("in command loop", cmd);
-        //     let loopCommand = await this._send(cmd);
-        //     console.log("loop Command: ", loopCommand);
-        // })
-        console.log("out of loop")
-        return this._send("end");
+        return this._send("end"); //returns results of intervening commands in text list
     }
 
     async send(command: string): Promise<string> {

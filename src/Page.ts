@@ -60,6 +60,7 @@ class Page extends Control {
             return;
         }
         controls.forEach(ctrl => {
+            console.log("control for populating commands", ctrl.getControlName());
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
         console.log("commandList: ", commandList);
@@ -70,7 +71,6 @@ class Page extends Control {
         }
 
         let ids = await this._conn.sendBatch(commandList);
-        console.log("ids: ", ids);
 
         if (ids != "") {
             let n = 0;

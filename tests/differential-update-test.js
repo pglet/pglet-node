@@ -1,5 +1,9 @@
 const pglet = require("../build/index.js");
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 (async () => {
     p = await pglet.page("index", { noWindow: false });
 
@@ -21,8 +25,8 @@ const pglet = require("../build/index.js");
     textboxObject.value = "Your shoe size";
     textboxObject.description = "What is your shoe size?";
     checkBoxObject.value = false;
-
-    //p.update([textObject, textboxObject, checkBoxObject]);
+    await sleep(3000);
+    p.update([stackObject]);
 
     
     

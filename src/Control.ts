@@ -1,6 +1,7 @@
 import { Connection } from './Connection';
 import { StringHash } from './Utils';
 import * as diff from 'diff';
+import { threadId } from 'node:worker_threads';
 
 
 interface ControlProperties {
@@ -40,7 +41,7 @@ class Control {
         // console.log("ctrl and its attrs: ", this.getControlName(), this._id, this.attrs);
     }
 
-    protected getControlName() {
+    getControlName() {
         throw new Error("must be overridden in child class");
     }
     
@@ -52,7 +53,6 @@ class Control {
 
     protected setAttr(key: string, value: any) {
         this.attrs.set(key, [value, true]);
-        // console.log("attrs so far: ", this.attrs);
     }
      
     protected getEventHandlers() {
@@ -125,7 +125,6 @@ class Control {
         this.setAttr("margin", newMargin);
     }
 
-    // why can't this be protected?
     populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: String[]) {
         let updateAttrs = this.getCmdAttrs(true);
 
@@ -137,27 +136,37 @@ class Control {
         let previousInts: number[] = [];
         let currentInts: number[] = [];
         console.log("previous children: ", this._previousChildren);
-        this._previousChildren.forEach(ctrl => {
+        const previousChildren = this._previousChildren;
+        previousChildren.forEach(ctrl => {
+            console.log("previous child cmdstr: ", ctrl.getCmdStr());
             let hash = StringHash(ctrl.getCmdStr());
             hashes.set(hash, ctrl);
             previousInts.push(hash);
         })
         console.log("current children: ", this.getChildren());
-        this.getChildren().forEach(ctrl => {
+        //deep clone array
+        const currentChildren = [];
+        this.getChildren().forEach(child => {
+            currentChildren.push(Object.assign(Object.create(Object.getPrototypeOf(child)), child));
+        });
+        currentChildren.forEach(ctrl => {
+            console.log("current child cmdstr: ", ctrl.getCmdStr());
             let hash = StringHash(ctrl.getCmdStr());
             hashes.set(hash, ctrl);
             currentInts.push(hash);
         })
+        //console.log("previous ints: ", previousInts);
+        //console.log("current ints: ", currentInts);
 
         let diffList = diff.diffArrays(previousInts, currentInts);
         
         let n = 0;
         diffList.forEach(changeObject => {
+            console.log("change object: ", changeObject);
             if (changeObject.added) {
                 //insert control
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
-                    //TODO change getCmdStr signature.
                     let cmd = ctrl.getCmdStr('', controlMap, addedControls);
                     commandList.push(`add to="${this.uid}" at="${n}"\n${cmd}`);
                     n += 1;
@@ -185,8 +194,13 @@ class Control {
 
             }
         })
+        
         this._previousChildren.length = 0;
-        this._previousChildren.push(...this.getChildren());
+        this._previousChildren.push(...currentChildren);
+        this._previousChildren.forEach(ctrl => {
+            console.log(`${this.getControlName()} ${ctrl.getCmdStr()}`)
+        })
+        
 
     }
 
@@ -222,11 +236,14 @@ class Control {
         lines.push(parts.join(' '));
 
         if (addedControls) {
-            console.log("added control: ", this)
+            //console.log("added control: ", this)
             addedControls.push(this);
         }
-
-        this.getChildren().forEach(control => {
+        const currentChildren = [];
+        this.getChildren().forEach(child => {
+            currentChildren.push(Object.assign(Object.create(Object.getPrototypeOf(child)), child));
+        });
+        currentChildren.forEach(control => {
              let childCmd = control.getCmdStr((indent+"  "), index, addedControls);
              if (childCmd != "") {
                  lines.push(childCmd);
@@ -234,7 +251,7 @@ class Control {
         })
         
         this._previousChildren.length = 0;
-        this._previousChildren.push(...this.getChildren());
+        this._previousChildren.push(...currentChildren);
 
         return lines.join('\n');
     }
