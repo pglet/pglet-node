@@ -1,5 +1,5 @@
 import { Connection } from './Connection';
-import { StringHash } from './Utils';
+import { StringHash, GetId } from './Utils';
 import * as diff from 'diff';
 import { threadId } from 'node:worker_threads';
 
@@ -127,6 +127,7 @@ class Control {
 
     populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: String[]) {
         let updateAttrs = this.getCmdAttrs(true);
+        console.log("updateAttrs: ", updateAttrs);
 
         if (updateAttrs.length > 0) {
             commandList.push(`set ${updateAttrs.join(' ')}`);
@@ -135,23 +136,23 @@ class Control {
         let hashes = new Map<number, Control>();
         let previousInts: number[] = [];
         let currentInts: number[] = [];
-        console.log("previous children: ", this._previousChildren);
+        //console.log("previous children: ", this._previousChildren);
         const previousChildren = this._previousChildren;
         previousChildren.forEach(ctrl => {
             console.log("previous child cmdstr: ", ctrl.getCmdStr());
-            let hash = StringHash(ctrl.getCmdStr());
+            let hash = GetId(ctrl);
             hashes.set(hash, ctrl);
             previousInts.push(hash);
         })
-        console.log("current children: ", this.getChildren());
+        //console.log("current children: ", this.getChildren());
         //deep clone array
-        const currentChildren = [];
-        this.getChildren().forEach(child => {
-            currentChildren.push(Object.assign(Object.create(Object.getPrototypeOf(child)), child));
-        });
+        const currentChildren = this.getChildren();
+        // this.getChildren().forEach(child => {
+        //     currentChildren.push(Object.assign(Object.create(Object.getPrototypeOf(child)), child));
+        // });
         currentChildren.forEach(ctrl => {
             console.log("current child cmdstr: ", ctrl.getCmdStr());
-            let hash = StringHash(ctrl.getCmdStr());
+            let hash = GetId(ctrl);
             hashes.set(hash, ctrl);
             currentInts.push(hash);
         })
@@ -197,9 +198,9 @@ class Control {
         
         this._previousChildren.length = 0;
         this._previousChildren.push(...currentChildren);
-        this._previousChildren.forEach(ctrl => {
-            console.log(`${this.getControlName()} ${ctrl.getCmdStr()}`)
-        })
+        // this._previousChildren.forEach(ctrl => {
+        //     console.log(`${this.getControlName()} ${ctrl.getCmdStr()}`)
+        // })
         
 
     }
@@ -239,10 +240,10 @@ class Control {
             //console.log("added control: ", this)
             addedControls.push(this);
         }
-        const currentChildren = [];
-        this.getChildren().forEach(child => {
-            currentChildren.push(Object.assign(Object.create(Object.getPrototypeOf(child)), child));
-        });
+        const currentChildren = this.getChildren();
+        // this.getChildren().forEach(child => {
+        //     currentChildren.push(Object.assign(Object.create(Object.getPrototypeOf(child)), child));
+        // });
         currentChildren.forEach(control => {
              let childCmd = control.getCmdStr((indent+"  "), index, addedControls);
              if (childCmd != "") {
@@ -265,11 +266,12 @@ class Control {
     private getCmdAttrs(update?: boolean): string[] {
         let parts = [];
 
-        if (update && !this._id) {
+        if (update && !this.uid) {
             return parts;
         }
 
         this.attrs.forEach((value, attr) => {
+            console.log("value, attr: ", value, attr);
             let dirty = this.attrs.get(attr)[1];
             
             if (update && !dirty) {

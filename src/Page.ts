@@ -63,9 +63,9 @@ class Page extends Control {
             console.log("control for populating commands", ctrl.getControlName());
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
-        console.log("commandList: ", commandList);
-        console.log("addedControls: ", addedControls);
-        console.log("control map: ", ...this._index.entries());
+        //console.log("commandList: ", commandList);
+        //console.log("addedControls: ", addedControls);
+        //console.log("control map: ", ...this._index.entries());
         if (commandList.length == 0) {
             return;
         }
