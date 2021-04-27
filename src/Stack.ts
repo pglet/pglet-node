@@ -33,6 +33,12 @@ class Stack extends Control {
     }
 
     /* accessors */ 
+    get childControls() {
+        return this._childControls;
+    }
+    set childControls(ctrl: Control[]) {
+        this._childControls.push(...ctrl);
+    }
     get horizontal() {
         return this.attrs.get('horizontal')[0];     
     }

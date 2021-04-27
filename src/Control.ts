@@ -26,19 +26,13 @@ class Control {
 
     constructor(controlProps: ControlProperties) {
         this._id = controlProps.id ? controlProps.id : undefined;
-        //this._childControls = controlProps.childControls ? controlProps.childControls : new Array<Control>();
-        // console.log("outerstack childControls: ", this._childControls);
         this.attrs = new Map();
         let excludedAttrs = ["id", "childControls", "onClick", "onDismiss", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons"]
-        Object.keys(controlProps).forEach(key => {
-            // if (key != "id" && key != "childControls" && key != "onClick" && key != "onDismiss" && key != "columns" && key != "items" && key != "tabs" && key != "overflow" && key != "far" && key != "options" && key != "footer" && key != "buttons") {
-            //     this.setAttr(key, controlProps[key]);
-            // }    
+        Object.keys(controlProps).forEach(key => {  
             if (excludedAttrs.indexOf(key) < 0) {
                 this.setAttr(key, controlProps[key]);
             }   
         })
-        // console.log("ctrl and its attrs: ", this.getControlName(), this._id, this.attrs);
     }
 
     getControlName() {
@@ -46,7 +40,6 @@ class Control {
     }
     
     protected getAttr(key: string) {
-        // console.log("getAttr called with argument: ", key);
         return this.attrs.get(key)[0];
 
     }
@@ -127,7 +120,6 @@ class Control {
 
     populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: String[]) {
         let updateAttrs = this.getCmdAttrs(true);
-        console.log("updateAttrs: ", updateAttrs);
 
         if (updateAttrs.length > 0) {
             commandList.push(`set ${updateAttrs.join(' ')}`);
@@ -136,35 +128,34 @@ class Control {
         let hashes = new Map<number, Control>();
         let previousInts: number[] = [];
         let currentInts: number[] = [];
-        //console.log("previous children: ", this._previousChildren);
+        
         const previousChildren = this._previousChildren;
         previousChildren.forEach(ctrl => {
-            console.log("previous child cmdstr: ", ctrl.getCmdStr());
+            //console.log("previous child cmdstr: ", ctrl.getCmdStr());
             let hash = GetId(ctrl);
             hashes.set(hash, ctrl);
             previousInts.push(hash);
         })
-        //console.log("current children: ", this.getChildren());
+
         //deep clone array
-        const currentChildren = this.getChildren();
         // this.getChildren().forEach(child => {
         //     currentChildren.push(Object.assign(Object.create(Object.getPrototypeOf(child)), child));
         // });
+
+        const currentChildren = this.getChildren();
         currentChildren.forEach(ctrl => {
-            console.log("current child cmdstr: ", ctrl.getCmdStr());
+            //console.log("current child cmdstr: ", ctrl.getCmdStr());
             let hash = GetId(ctrl);
             hashes.set(hash, ctrl);
             currentInts.push(hash);
         })
-        //console.log("previous ints: ", previousInts);
-        //console.log("current ints: ", currentInts);
-
+        //console.log("hashmap: ", hashes);
         let diffList = diff.diffArrays(previousInts, currentInts);
-        
         let n = 0;
         diffList.forEach(changeObject => {
             console.log("change object: ", changeObject);
             if (changeObject.added) {
+                console.log("insert");
                 //insert control
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
@@ -174,6 +165,7 @@ class Control {
                 })
             }
             else if (changeObject.removed) {
+                console.log("remove");
                 // remove control
                 let ids = [];
                 changeObject.value.forEach(val => {
@@ -186,6 +178,7 @@ class Control {
 
             }
             else {
+                console.log("leave");
                 // leave control
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
@@ -198,11 +191,6 @@ class Control {
         
         this._previousChildren.length = 0;
         this._previousChildren.push(...currentChildren);
-        // this._previousChildren.forEach(ctrl => {
-        //     console.log(`${this.getControlName()} ${ctrl.getCmdStr()}`)
-        // })
-        
-
     }
 
     private removeControlRecursively(map: Map<string, Control>, control: Control) {
@@ -210,13 +198,9 @@ class Control {
             this.removeControlRecursively(map, ctrl);
         })
         map.delete(control.uid);
-
     }
 
     getCmdStr(indent?: string, index?: Map<string, Control>, addedControls?: Control[]): string {
-        /*if (connection) {
-            this.connection = connection;
-        }*/
 
         if (this.uid && index && index.has(this.uid)) {
             index.delete(this.uid);
@@ -229,21 +213,16 @@ class Control {
         let lines = [];
         let parts = [];
         
-        // console.log("current ctrl attrs: ", this.attrs);
         let attrParts = this.getCmdAttrs(false);
-        // console.log("returned attr parts: ", attrParts);
         parts.push(indent + this.getControlName(), ...attrParts);     
 
         lines.push(parts.join(' '));
 
         if (addedControls) {
-            //console.log("added control: ", this)
             addedControls.push(this);
         }
         const currentChildren = this.getChildren();
-        // this.getChildren().forEach(child => {
-        //     currentChildren.push(Object.assign(Object.create(Object.getPrototypeOf(child)), child));
-        // });
+
         currentChildren.forEach(control => {
              let childCmd = control.getCmdStr((indent+"  "), index, addedControls);
              if (childCmd != "") {
@@ -271,7 +250,7 @@ class Control {
         }
 
         this.attrs.forEach((value, attr) => {
-            console.log("value, attr: ", value, attr);
+            //console.log("value, attr: ", value, attr);
             let dirty = this.attrs.get(attr)[1];
             
             if (update && !dirty) {
@@ -283,19 +262,19 @@ class Control {
             this.attrs.set(attr, [value[0], false]);
         })
         
-        if (this._id) {
-            if (!update) {
-                parts.unshift(`id="${this.stringifyAttr(this._id)}"`)
-            }
-            else if (parts.length > 0) {
-                parts.unshift(`${this.stringifyAttr(this._id)}`)
-            }
+        if (!update && this._id) {
+            parts.unshift(`id="${this.stringifyAttr(this._id)}"`)
         }
+        else if (update && parts.length > 0) {
+            parts.unshift(`${this.stringifyAttr(this.uid)}`)
+        }
+        
 
         return parts;
     }
 
     protected getChildren() {
+        //return new Array<Control>();
         return [];
     }
 }

@@ -22,14 +22,13 @@ export class Connection {
             this._commandResolve = null;
             this._commandReject = null;
             this._commandClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}` : `${os.tmpdir()}/CoreFxPipe_${connId}`, () => {
-                //console.log("Connected to command pipe.");
                 this._commandClient.setNoDelay(true);
             });
 
             this._commandClient.on('data', (data: any) => {
                 // parse result
                 const result = this.parseResult(data);
-                console.log("commandClient data: ", result);
+                //console.log("commandClient data: ", result);
                 
                 let fn = this._commandResolve;
                 let value = result.value;
@@ -48,7 +47,6 @@ export class Connection {
 
             this._eventResolve = null;
             this._eventClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}.events` : `${os.tmpdir()}/CoreFxPipe_${connId}.events`, () => {
-                //console.log("Connected to event pipe.");
             });
 
             this._eventClient.on('data', (data) => {
@@ -68,72 +66,9 @@ export class Connection {
             });
         }
     }
-    /*
-    async add(controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string> {
-        let cmd = fireAndForget ? "addf" : "add";
-        return this.addOrReplace(cmd, controls, to, at, trim, fireAndForget);
-    }
-    
-    async replace(controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string> {
-        let cmd = fireAndForget ? "replacef" : "replace";
-        return this.addOrReplace(cmd, controls, to, at, trim, fireAndForget);
-    }
-
-    async addOrReplace(cmdString: string, controls: Control[] | Control, to?: string, at?: number, trim?: number, fireAndForget?: boolean ): Promise<string> {
-        let controlsArray: Control[] = [].concat(controls);
-
-        let cmd = cmdString;
-        cmd += to ? ` to="${to}"` : "";
-        cmd += at ? ` at="${at}"` : "";
-        cmd += trim ? ` trim="${trim}"` : "";
-
-        let index = [];
-
-        controlsArray.forEach(ctrl => {
-            if (ctrl.id) {
-                this.removeEventHandlers(ctrl.id);
-            }
-            cmd += `\n${ctrl.getCmdStr(false, '', index, this)}`;
-        })
-        console.log("cmd:\n", cmd);
-        let result = await this.send(cmd);
-        console.log("result:\n", result);
-        let ids = result.split(" ");
-
-        for(let i = 0; i < ids.length; i++) {
-            index[i].id = ids[i];
-            //resubscribe to event handlers
-            let handlers = index[i].getEventHandlers();
-
-            Object.keys(handlers).forEach(event => {
-                this.addEventHandlers(ids[i], event, handlers[event]);
-            })
-        }
-        
-        return result;   
-    }
-
-    async update(controls: Control[] | Control, fireAndForget?: boolean): Promise<string> {
-        let controlsArray: Control[] = [].concat(controls);
-        
-        let cmd = fireAndForget ? "setf" : "set";
-
-        let lines = [];
-        
-        controlsArray.forEach(ctrl => {
-            lines.push(ctrl.getCmdStr(true));
-        })
-
-        let slines = lines.join("\n")
-        console.log("cmd: ", `${cmd}\n${slines}`);
-        let result = await this.send(`${cmd}\n${slines}`);
-        console.log("result: ", result);
-        return result;
-    }*/
 
     async getValue(ctrl: string | Control): Promise<string> {
         let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
-        console.log("getValue: ", value);
         return this.send(`get ${value} value`);
     }
 

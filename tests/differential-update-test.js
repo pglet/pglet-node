@@ -18,22 +18,26 @@ function sleep(ms) {
 
     let stackObject = new pglet.Stack({childControls: [textObject, textboxObject, checkBoxObject]});
 
+    
     const id = await p.add([stackObject]);
     console.log("id: ", id);
-
+    
+    let textObject2 = new pglet.Text({value: "New text"});
     textObject.value = "updated value";
     textboxObject.value = "Your shoe size";
     textboxObject.description = "What is your shoe size?";
     checkBoxObject.value = false;
+    stackObject.childControls.push(textObject2);
+    //console.log("stack child controls: ", stackObject.childControls);
     await sleep(3000);
-    p.update([stackObject]);
+    p.update();
 
     
     
-    // while(true) {
-    //     const e = await p.waitEvent();
-    //     console.log(e);
+    while(true) {
+        const e = await p.waitEvent();
+        console.log(e);
 
-    // }
+    }
 })(); 
 

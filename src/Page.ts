@@ -1,6 +1,7 @@
 import { ControlProperties, Control } from './Control'
 import { Alignment } from './Alignment';
 import { Connection } from './Connection';
+import { Event } from './Event';
 
 interface PageProperties extends ControlProperties {
     connection?: Connection,
@@ -44,6 +45,10 @@ class Page extends Control {
         return this._index.get(id);
     }
 
+    waitEvent(): Promise <string | Event> {
+        return this._conn.waitEvent();
+    }
+
     update(controls?: Control[]) {
         if (!controls) {
             return this._update([this]);
@@ -60,11 +65,9 @@ class Page extends Control {
             return;
         }
         controls.forEach(ctrl => {
-            console.log("control for populating commands", ctrl.getControlName());
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
         //console.log("commandList: ", commandList);
-        //console.log("addedControls: ", addedControls);
         //console.log("control map: ", ...this._index.entries());
         if (commandList.length == 0) {
             return;
@@ -72,7 +75,7 @@ class Page extends Control {
 
         let ids = await this._conn.sendBatch(commandList);
 
-        if (ids != "") {
+        if (ids) {
             let n = 0;
             ids.split(/\r?\n/).forEach(line => {
                 
