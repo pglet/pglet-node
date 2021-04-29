@@ -121,6 +121,14 @@ class Page extends Control {
         return this.update();
     }
 
+    clean() {
+        this._previousChildren.length = 0;
+        this.getChildren().forEach(ctrl => {
+            ctrl.removeControlRecursively(this._index, ctrl);
+        })
+        return this._conn.send(`clean ${this.uid}`)
+    }
+
     getChildren() {
         return this._controls;
     }

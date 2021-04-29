@@ -7,7 +7,7 @@ function sleep(ms) {
 (async () => {
     p = await pglet.page("index", { noWindow: false });
 
-    //await p.send("clean");
+    await p.clean();
     
     let textObject = new pglet.Text({id: "heading", value: "initial value"});
     let textboxObject = new pglet.Textbox({value: "Your age", description: "What is your age?"});
@@ -31,6 +31,8 @@ function sleep(ms) {
     //console.log("stack child controls: ", stackObject.childControls);
     await sleep(3000);
     p.update();
+    await sleep(1000);
+    p.clean();
 
     
     

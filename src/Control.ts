@@ -193,7 +193,7 @@ class Control {
         this._previousChildren.push(...currentChildren);
     }
 
-    private removeControlRecursively(map: Map<string, Control>, control: Control) {
+    removeControlRecursively(map: Map<string, Control>, control: Control) {
         control.getChildren().forEach(ctrl => {
             this.removeControlRecursively(map, ctrl);
         })

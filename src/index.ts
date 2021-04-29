@@ -4,6 +4,8 @@ import os from 'os';
 import cp from 'child_process';
 import compareVersions from 'compare-versions';
 import request from 'request';
+import { StringDecoder } from 'string_decoder';
+const decoder = new StringDecoder('utf8');
 import Page from './Page';
 import Text from './Text';
 import Textbox from './Textbox';
@@ -137,6 +139,33 @@ let page = async (...args: any) => {
     //return conn;
 }
 
+let app = async (...args: any) => {
+    
+    await _install();
+    const pargs = buildArgs("app", args);
+
+    var res = cp.spawn(pgletExe, pargs);
+
+    let url: string;
+    let page: Page;
+    res.stdout.on('data', (data) => {
+
+        console.log("spawn result: ", decoder.write(Buffer.from(data)));
+        if (!url) {
+            url = decoder.write(Buffer.from(data)).trim();
+            return;
+        }
+        else {
+            page = new Page({connection: new Connection(decoder.write(Buffer.from(data)).trim()), url: url});
+            // ??
+        }
+
+    })
+
+
+
+}
+
 function buildArgs(action: string, args: any) {
 
     var pageName = null;
@@ -189,5 +218,5 @@ function buildArgs(action: string, args: any) {
     return pargs;
 }
 export {
-    page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel
+    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel
 }
