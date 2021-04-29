@@ -122,6 +122,7 @@ async function download(url: string, filePath: string) {
 let page = async (...args: any) => {
     
     await _install();
+
     const pargs = buildArgs("page", args);
     console.log("pgletExe", pgletExe)
     //console.log(pargs);
@@ -142,13 +143,20 @@ let page = async (...args: any) => {
 let app = async (...args: any) => {
     
     await _install();
-    const pargs = buildArgs("app", args);
 
-    var res = cp.spawn(pgletExe, pargs);
+    var fn = null;
+    if (args.length > 0 && typeof args[args.length - 1] === 'function') {
+        fn = args[args.length - 1];
+    } else {
+        throw "The last argument must be a function.";
+    }
+
+    const pargs = buildArgs("app", args);
+    var child = cp.spawn(pgletExe, pargs);
 
     let url: string;
     let page: Page;
-    res.stdout.on('data', (data) => {
+    child.stdout.on('data', (data) => {
 
         console.log("spawn result: ", decoder.write(Buffer.from(data)));
         if (!url) {
@@ -157,9 +165,8 @@ let app = async (...args: any) => {
         }
         else {
             page = new Page({connection: new Connection(decoder.write(Buffer.from(data)).trim()), url: url});
-            // ??
+            fn(page);
         }
-
     })
 
 
