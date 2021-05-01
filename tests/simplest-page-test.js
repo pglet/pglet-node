@@ -7,7 +7,7 @@ function sleep(ms) {
 (async () => {
     p = await pglet.page("index", { noWindow: false });
 
-    await p.send("clean");
+    await p.clean();
     
     // let progressObject = new pglet.Progress({label: "testProgress", width: "100%"})
     // await p.add(progressObject);
@@ -20,29 +20,29 @@ function sleep(ms) {
                             overflow: [new pglet.ToolbarItem({text: "overflowTool", icon: "Color"})],
                             far: [new pglet.ToolbarItem({text: "farTool", icon: "Cut", iconOnly: true})]
                         });
-    await p.add(toolbarObject);
+    await p.add([toolbarObject]);
     let messageObject = new pglet.Message({
                             value: "message1", dismiss: true, 
                             buttons: [new pglet.MessageButton({text: "yup", action: "yes"}), new pglet.MessageButton({text: "nope", action: "no"})]    
                         })
-    await p.add(messageObject);
+    await p.add([messageObject]);
     let textboxObject = new pglet.Textbox({id: "textbox1", value: "val1"});
-    await p.add(textboxObject);
+    await p.add([textboxObject]);
     let choiceGroupObject = new pglet.ChoiceGroup({
                                 value: "choiceGroup1", label: "choice group",
                                 options: [new pglet.Option({ key: "key1", text: "value1"}), new pglet.Option({ key: "key2", text: "value2"})]  
                             });
-    await p.add(choiceGroupObject);
+    await p.add([choiceGroupObject]);
     let dialogObject = new pglet.Dialog({
         open: true, title: "dialog1", subText: "subtext1", autoDismiss: true,
         footer: [new pglet.Button({text: "OK"}), new pglet.Button({text: "CANCEL"})]
     });
-    await p.add(dialogObject);
+    await p.add([dialogObject]);
     let panelObject = new pglet.Panel({
                         open: true, title: "panel1", type: "small", autoDismiss: true,
                         footer: [new pglet.Button({text: "OK"}), new pglet.Button({text: "CANCEL"})]
                     });
-    await p.add(panelObject);
+    await p.add([panelObject]);
   
     // let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
     // let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
@@ -71,19 +71,19 @@ function sleep(ms) {
     // await p.update(progressObject);
     
     // console.log(id);
-    // async function greeterButtonHandler(e) {
-    //     let name = await p.getValue(textboxObject);
-    //     // await p.send("clean")
-    //     await p.add(new pglet.Text({value: `Hello ${name}!`}))
-    //     return
-    // }
+    async function greeterButtonHandler(e) {
+        let name = await p.getValue(textboxObject);
+        //await p.clean();
+        await p.add([new pglet.Text({value: `Hello ${name}!`})])
+        return
+    }
 
-    // let buttonObject = new pglet.Button({text: "Say hello!", primary: true, onClick: greeterButtonHandler})
-    // await p.add(buttonObject);
+    let buttonObject = new pglet.Button({text: "Say hello!", primary: true, onClick: greeterButtonHandler})
+    await p.add([buttonObject]);
     let gridColumns = [new pglet.Column({name: "Name", fieldName: "name", sortable: "true"}), new pglet.Column({name: "Age", fieldName: "age", sortable: "true"})];
     let items = [{name: "Art Farmer", age: 58}, {name: "Jim Hall", age: 56}, {name: "Steve Gadd", age: 42}]
     let gridObject = new pglet.Grid({columns: gridColumns, items: items});
-    await p.add(gridObject);
+    await p.add([gridObject]);
     // console.log("DONE!");
     
     while(true) {

@@ -13,6 +13,7 @@ export class Connection {
     private _eventClient: any;
     private _eventResolve: any;
     private _eventHandlers: any = {};
+    onEvent: any;
 
     constructor(connId: string) {
         this.connId = connId;
@@ -52,6 +53,7 @@ export class Connection {
             this._eventClient.on('data', (data) => {
                 const result = this.parseEvent(data);
                 let controlEvents = this._eventHandlers ? this._eventHandlers[result.target] : null;
+                console.log("connection event handlers: ", this._eventHandlers);
 
                 if (controlEvents) {
                     let handler = controlEvents[result.name]

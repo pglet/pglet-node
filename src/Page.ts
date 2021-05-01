@@ -35,6 +35,7 @@ class Page extends Control {
         if (pageProps.url) {
             this._url = pageProps.url;
         }
+        this._conn.onEvent = this._onEvent;
     }
 
     getControlName() {
@@ -127,6 +128,11 @@ class Page extends Control {
             ctrl.removeControlRecursively(this._index, ctrl);
         })
         return this._conn.send(`clean ${this.uid}`)
+    }
+
+    private _onEvent() {
+        
+        
     }
 
     getChildren() {
