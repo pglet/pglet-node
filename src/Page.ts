@@ -2,6 +2,7 @@ import { ControlProperties, Control } from './Control'
 import { Alignment } from './Alignment';
 import { Connection } from './Connection';
 import { Event } from './Event';
+import { ControlEvent } from './ControlEvent';
 
 interface PageProperties extends ControlProperties {
     connection?: Connection,
@@ -35,7 +36,8 @@ class Page extends Control {
         if (pageProps.url) {
             this._url = pageProps.url;
         }
-        this._conn.onEvent = this._onEvent;
+        this._conn.onEvent = this._onEvent.bind(this);
+        
     }
 
     getControlName() {
@@ -130,8 +132,26 @@ class Page extends Control {
         return this._conn.send(`clean ${this.uid}`)
     }
 
-    private _onEvent() {
-        
+    getValue(ctrl: string | Control): Promise<string> {
+        let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
+        return this._conn.send(`get ${value} value`);
+    }
+
+    setValue(ctrl: string | Control, value: string, fireAndForget: boolean): Promise<string> {
+        let cmd = fireAndForget ? "setf" : "set";
+
+        let ctrlValue = (typeof ctrl === "string") ? ctrl : ctrl.id;
+        return this._conn.send(`${cmd} ${ctrlValue} value="${value}"`);
+    }
+
+    private _onEvent(e: Event) {
+        if (this._index.has(e.target)) {
+            let handler = this._index.get(e.target).eventHandlers[e.name];
+            let ce = new ControlEvent(e.target, e.name, e.data, this._index.get(e.target), this)
+            if (handler) {
+                handler(ce);
+            }
+        }
         
     }
 

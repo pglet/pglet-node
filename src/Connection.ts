@@ -4,6 +4,7 @@ import fs from 'fs';
 import { Event } from './Event';
 import { Control } from './Control';
 import { throws } from 'assert';
+import { ControlEvent } from './ControlEvent';
 
 export class Connection {
     private connId = ""
@@ -52,13 +53,9 @@ export class Connection {
 
             this._eventClient.on('data', (data) => {
                 const result = this.parseEvent(data);
-                let controlEvents = this._eventHandlers ? this._eventHandlers[result.target] : null;
-                console.log("connection event handlers: ", this._eventHandlers);
-
-                if (controlEvents) {
-                    let handler = controlEvents[result.name]
-                    handler();
-                }
+                //call page private _onEvent
+                this.onEvent(result);
+  
                 var fn = this._eventResolve;
                 this._eventResolve = null;
 
@@ -69,18 +66,6 @@ export class Connection {
         }
     }
 
-    async getValue(ctrl: string | Control): Promise<string> {
-        let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
-        return this.send(`get ${value} value`);
-    }
-
-    setValue(ctrl: string | Control, value: string, fireAndForget: boolean): Promise<string> {
-        let cmd = fireAndForget ? "setf" : "set";
-
-        let ctrlValue = (typeof ctrl === "string") ? ctrl : ctrl.id;
-        return this.send(`${cmd} ${ctrlValue} value="${value}"`);
-    }
-
     async sendBatch (commands: string[]): Promise<string> {
         await this._send("begin"); //returns null
         for (const cmd of commands) {
@@ -89,7 +74,7 @@ export class Connection {
         return this._send("end"); //returns results of intervening commands in text list
     }
 
-    async send(command: string): Promise<string> {
+    send(command: string): Promise<string> {
         return this._send(command);
     }
 
@@ -148,6 +133,7 @@ export class Connection {
                 this._commandClient.write(command + '\n', (err) => {
                     if (err) {
                         reject(err);
+         
                     } else {
                         resolve("");
                     }
@@ -187,12 +173,12 @@ export class Connection {
         });
     }
 
-    addEventHandlers(controlId: string, eventName: string, handler: any) {
-        let controlEvents = controlId in this._eventHandlers ? this._eventHandlers[controlId] : {};
+    // addEventHandlers(controlId: string, eventName: string, handler: any) {
+    //     let controlEvents = controlId in this._eventHandlers ? this._eventHandlers[controlId] : {};
 
-        controlEvents[eventName] = handler;
-        this._eventHandlers[controlId] = controlEvents;
-    }
+    //     controlEvents[eventName] = handler;
+    //     this._eventHandlers[controlId] = controlEvents;
+    // }
     
     protected removeEventHandlers(controlId: string): void {
         if (controlId in this._eventHandlers) {

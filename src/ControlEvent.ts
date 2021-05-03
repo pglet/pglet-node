@@ -1,11 +1,15 @@
 import { Event } from './Event';
+import { Control } from './Control';
+import Page from './Page';
 
 export class ControlEvent extends Event {
-    private _control: string;
-    private _page: string;
+    private _control: Control;
+    private _page: Page;
  
-    constructor(target: string, name: string, data: string, control: string, page: string) {
+    constructor(target: string, name: string, data: string, control: Control, page: Page) {
         super(target, name, data);
+        this._control = control;
+        this._page = page;
     }
 
     get control() {

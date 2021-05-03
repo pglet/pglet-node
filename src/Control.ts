@@ -54,15 +54,12 @@ class Control {
 
     protected addEventHandler(eventName: string, handler: any): void {
         this._eventHandlers[eventName] = handler;
-        // console.log("control eventHandlers: ", this._eventHandlers, this.getControlName());
-        //only used for previously instantiated controls
-
-        /*if (this.connection) {
-            this.connection.addEventHandlers(this._id, eventName, handler);
-        }*/
     }
  
-    /* accessors */ 
+    /* accessors */
+    get eventHandlers() {
+        return this._eventHandlers;
+    } 
     get uid() {
         return this._uid;
     }
@@ -137,11 +134,6 @@ class Control {
             previousInts.push(hash);
         })
 
-        //deep clone array
-        // this.getChildren().forEach(child => {
-        //     currentChildren.push(Object.assign(Object.create(Object.getPrototypeOf(child)), child));
-        // });
-
         const currentChildren = this.getChildren();
         currentChildren.forEach(ctrl => {
             //console.log("current child cmdstr: ", ctrl.getCmdStr());
@@ -149,7 +141,7 @@ class Control {
             hashes.set(hash, ctrl);
             currentInts.push(hash);
         })
-        //console.log("hashmap: ", hashes);
+
         let diffList = diff.diffArrays(previousInts, currentInts);
         let n = 0;
         diffList.forEach(changeObject => {
