@@ -1,4 +1,5 @@
 import { Connection } from './Connection';
+import Page from './Page';
 import { StringHash, GetId } from './Utils';
 import * as diff from 'diff';
 import { threadId } from 'node:worker_threads';
@@ -17,7 +18,7 @@ interface ControlProperties {
 
 class Control {
     protected _id: string | null;
-    protected _page: Control | null;
+    protected _page: Page | null;
     protected _uid: string | null;
     protected _eventHandlers: any = {};
     protected _previousChildren: Control[] = [];
@@ -27,7 +28,7 @@ class Control {
     constructor(controlProps: ControlProperties) {
         this._id = controlProps.id ? controlProps.id : undefined;
         this.attrs = new Map();
-        let excludedAttrs = ["id", "childControls", "onClick", "onDismiss", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons"]
+        let excludedAttrs = ["id", "childControls", "onClick", "onDismiss", "onChange", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons"]
         Object.keys(controlProps).forEach(key => {  
             if (excludedAttrs.indexOf(key) < 0) {
                 this.setAttr(key, controlProps[key]);
@@ -69,7 +70,7 @@ class Control {
     get page() {
         return this._page;
     }
-    set page(page: Control) {
+    set page(page: Page) {
         this._page = page;
     }
     get id() {
@@ -114,7 +115,14 @@ class Control {
     set margin(newMargin: string) {
         this.setAttr("margin", newMargin);
     }
-
+    async update() {
+        if (!this._page) {
+            throw `Control must be added to the page first.`
+        }
+        else {
+            return this._page.update([this]);
+        }
+    }
     populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: String[]) {
         let updateAttrs = this.getCmdAttrs(true);
 

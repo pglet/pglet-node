@@ -53,9 +53,9 @@ export class Connection {
 
             this._eventClient.on('data', (data) => {
                 const result = this.parseEvent(data);
+                console.log("eventClient data: ", result);
                 //call page private _onEvent
-                this.onEvent(result);
-  
+                this.onEvent(result); 
                 var fn = this._eventResolve;
                 this._eventResolve = null;
 

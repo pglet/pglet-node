@@ -133,7 +133,7 @@ class Page extends Control {
     }
 
     getValue(ctrl: string | Control): Promise<string> {
-        let value = (typeof ctrl === "string") ? ctrl : ctrl.id;
+        let value = (typeof ctrl === "string") ? ctrl : ctrl.uid;
         return this._conn.send(`get ${value} value`);
     }
 
@@ -145,6 +145,13 @@ class Page extends Control {
     }
 
     private _onEvent(e: Event) {
+        if (e.target == "page" && e.name == "change") {
+            console.log("e.data: ", e.data);
+            let props = JSON.parse(e.data);
+            props.forEach(prop => {
+                
+            })
+        }
         if (this._index.has(e.target)) {
             let handler = this._index.get(e.target).eventHandlers[e.name];
             let ce = new ControlEvent(e.target, e.name, e.data, this._index.get(e.target), this)

@@ -11,12 +11,17 @@ interface TextboxProperties extends ControlProperties {
     required?: boolean,
     passwordMask?: boolean,
     align?: string
+    fireOnChange?: boolean,
+    onChange?: any
 }
 
 class Textbox extends Control {
 
     constructor(textboxProps: TextboxProperties) {
         super(textboxProps);
+        if (textboxProps.onChange) {
+            super.addEventHandler("change", textboxProps.onChange);
+        }
     }
 
     getControlName() {
@@ -77,6 +82,12 @@ class Textbox extends Control {
     }
     set align(newAlign: string) {
         this.setAttr("align", newAlign);
+    }
+    get fireOnChange() {
+        return this.attrs.get('fireOnChange')[0];     
+    }
+    set fireOnChange(newFireOnChange: boolean) {
+        this.setAttr("fireOnChange", newFireOnChange);
     }
 }
 
