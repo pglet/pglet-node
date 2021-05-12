@@ -70,11 +70,12 @@ class Page extends Control {
         controls.forEach(ctrl => {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
-        //console.log("commandList: ", commandList);
+        console.log("commandList: ", commandList);
         //console.log("control map: ", ...this._index.entries());
         if (commandList.length == 0) {
             return;
         }
+
 
         let ids = await this._conn.sendBatch(commandList);
 
@@ -145,11 +146,19 @@ class Page extends Control {
     }
 
     private _onEvent(e: Event) {
+        //console.log("e.data: ", e.data);
         if (e.target == "page" && e.name == "change") {
-            console.log("e.data: ", e.data);
-            let props = JSON.parse(e.data);
-            props.forEach(prop => {
-                
+            let allProps = JSON.parse(e.data);
+            console.log("all Props: ", allProps);
+            allProps.forEach(props => {
+                let id = props["i"];
+                if (this._index.has(id)) {
+                    for (const [key, value] of Object.entries(props)) {
+                        if (key != "i") {
+                            this._index.get(id).setAttr(key, value, false)
+                        }
+                    }
+                }
             })
         }
         if (this._index.has(e.target)) {

@@ -53,7 +53,7 @@ export class Connection {
 
             this._eventClient.on('data', (data) => {
                 const result = this.parseEvent(data);
-                console.log("eventClient data: ", result);
+                
                 //call page private _onEvent
                 this.onEvent(result); 
                 var fn = this._eventResolve;
@@ -205,7 +205,7 @@ export class Connection {
 
     private parseEvent(data: any) {
         const result = data.toString().trim();
-
+        
         let re = /(?<target>[^\s]+)\s(?<name>[^\s]+)(\s(?<data>.+))*/;
         let match = re.exec(result);
 

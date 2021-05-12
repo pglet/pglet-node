@@ -11,7 +11,8 @@ interface TabProperties extends ControlProperties {
 interface TabsProperties extends ControlProperties {
     value?: string,
     solid?: boolean,
-    tabs: Tab[]
+    tabs: Tab[],
+    onChange?: any
 }
 
 class Tab extends Control{
@@ -22,7 +23,6 @@ class Tab extends Control{
         if (tabProps.childControls && tabProps.childControls.length > 0) {
             this._childControls.push(...tabProps.childControls);
         }
-
     }
 
     getControlName() {
@@ -68,6 +68,9 @@ class Tabs extends Control {
         tabsProps.tabs.forEach(tab => {
             this._tabs.push(tab);
         })
+        if (tabsProps.onChange) {
+            super.addEventHandler("change", tabsProps.onChange);
+        }
     }
 
     getControlName() {

@@ -16,3 +16,4 @@ test('Tabs add test', () => {
         `  tab text="tab2"` 
     );
 });
+

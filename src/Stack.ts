@@ -8,7 +8,9 @@ interface StackProperties extends ControlProperties {
     verticalAlign?: string,
     gap?: string,
     wrap?: string,
-    childControls?: Control[]
+    childControls?: Control[],
+    onSubmit?: boolean,
+    onSubmitHandler?: any
 }
 
 class Stack extends Control {
@@ -74,6 +76,19 @@ class Stack extends Control {
     }
     set wrap(newWrap: string) {
         this.setAttr("wrap", newWrap);
+    }
+    get onSubmit() {
+        return this.attrs.get('onSubmit')[0];     
+    }
+    set onSubmit(newOnSubmit: boolean) {
+        this.setAttr("onSubmit", newOnSubmit);
+    }
+    get onSubmitHandler() {
+        return this.getEventHandler('onSubmitHandler');     
+    }
+    set onSubmitHandler(newOnSubmitHandler: any) {
+        this.addEventHandler ("onSubmitHandler", newOnSubmitHandler);
+        
     }
 }
 

@@ -28,7 +28,7 @@ class Control {
     constructor(controlProps: ControlProperties) {
         this._id = controlProps.id ? controlProps.id : undefined;
         this.attrs = new Map();
-        let excludedAttrs = ["id", "childControls", "onClick", "onDismiss", "onChange", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons"]
+        let excludedAttrs = ["id", "childControls", "onClick", "onChange", "onDismiss", "onChangeHandler", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons"]
         Object.keys(controlProps).forEach(key => {  
             if (excludedAttrs.indexOf(key) < 0) {
                 this.setAttr(key, controlProps[key]);
@@ -41,16 +41,18 @@ class Control {
     }
     
     protected getAttr(key: string) {
-        return this.attrs.get(key)[0];
+        let value = this.attrs.get(key)[0];
+
+        return value;
 
     }
 
-    protected setAttr(key: string, value: any) {
-        this.attrs.set(key, [value, true]);
+    setAttr(key: string, value: any, dirty?: boolean) {
+        this.attrs.set(key, [value, dirty ? dirty : true]);
     }
      
-    protected getEventHandlers() {
-        return this._eventHandlers;
+    protected getEventHandler(eventName: string) {
+        return this._eventHandlers[eventName];
     }
 
     protected addEventHandler(eventName: string, handler: any): void {
@@ -153,7 +155,7 @@ class Control {
         let diffList = diff.diffArrays(previousInts, currentInts);
         let n = 0;
         diffList.forEach(changeObject => {
-            console.log("change object: ", changeObject);
+            //console.log("change object: ", changeObject);
             if (changeObject.added) {
                 console.log("insert");
                 //insert control
@@ -251,7 +253,8 @@ class Control {
 
         this.attrs.forEach((value, attr) => {
             //console.log("value, attr: ", value, attr);
-            let dirty = this.attrs.get(attr)[1];
+            //let dirty = this.attrs.get(attr)[1];
+            let dirty = value[1];
             
             if (update && !dirty) {
                 return;

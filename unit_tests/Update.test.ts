@@ -7,18 +7,18 @@ async function getPage() {
 
 test('update single control by object', async () => {
     let p = await getPage();
-    await p.send("clean");
+    await p.clean();
     let textbox = new Textbox({id: "textbox1", value: "val1"});
-    await p.add(textbox);
+    await p.add([textbox]);
     let value = await p.getValue(textbox);
 
     expect(value).toBe("val1");
 
     textbox.value = "val2";
-    await p.update(textbox);
-    let newValue = await p.getValue(textbox);
+    await p.update();
+    let newValue;
 
-    expect(newValue).toBe("val2");
+    expect(textbox.value).toBe("val2");
 });
 
 // test('update single control by returned id', async () => {

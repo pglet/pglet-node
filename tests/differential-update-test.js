@@ -30,9 +30,11 @@ function sleep(ms) {
     stackObject.childControls.push(textObject2);
     //console.log("stack child controls: ", stackObject.childControls);
     await sleep(3000);
+    
     p.update();
-    await sleep(1000);
-    p.clean();
+   
+    // await sleep(1000);
+    // p.clean();
 
     
     

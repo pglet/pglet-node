@@ -29,7 +29,7 @@ import { Control}  from './Control';
 import { Connection } from './Connection';
 
 
-const PGLET_VERSION: string = "0.2.4";
+const PGLET_VERSION: string = "0.3.1";
 
 var pgletExe: string = null;
 var _installPromise: any = null;
@@ -56,7 +56,7 @@ async function _doInstall() {
 
     if (pgletInPath != null) {
         pgletExe = pgletInPath;
-        //console.log("pglet found in PATH:", pgletExe);
+        console.log("pglet found in PATH:", pgletExe);
         return;
     }
 
@@ -77,7 +77,7 @@ async function _doInstall() {
     }
 
     if (!installedVer || compareVersions(installedVer, ver) < 0) {
-        //console.log(`Installing Pglet v${ver}...`)
+        console.log(`Installing Pglet v${ver}...`)
 
         var target = null;
         const platform = os.type();
@@ -124,9 +124,10 @@ let page = async (...args: any) => {
     await _install();
 
     const pargs = buildArgs("page", args);
+    pargs.push("--all-events");
     console.log("pgletExe", pgletExe)
     //console.log(pargs);
-    //console.log(pgletExe);
+    console.log(pgletExe);
 
     var res = cp.spawnSync(pgletExe, pargs, { encoding : 'utf8' });
     var result = res.stdout.trim();
@@ -143,7 +144,7 @@ let page = async (...args: any) => {
 let app = async (...args: any) => {
     
     await _install();
-
+    console.log("pgletExe", pgletExe)
     var fn = null;
     if (args.length > 0 && typeof args[args.length - 1] === 'function') {
         fn = args[args.length - 1];
@@ -152,6 +153,7 @@ let app = async (...args: any) => {
     }
 
     const pargs = buildArgs("app", args);
+    pargs.push("--all-events");
     var child = cp.spawn(pgletExe, pargs);
 
     let url: string;
@@ -216,6 +218,11 @@ function buildArgs(action: string, args: any) {
         pargs.push("--token");
         pargs.push(opts.token);
     }
+
+    // if (opts && opts.allEvents) {
+    //     pargs.push("--all-events");
+    //     pargs.push(opts.token);
+    // }
 
     // if (os.type() !== "Windows_NT") {
     //     // enforce Unix Domain Sockets for non-Windows platforms

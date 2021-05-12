@@ -11,16 +11,16 @@ interface TextboxProperties extends ControlProperties {
     required?: boolean,
     passwordMask?: boolean,
     align?: string
-    fireOnChange?: boolean,
-    onChange?: any
+    onchange?: boolean,
+    onChangeHandler?: any
 }
 
 class Textbox extends Control {
 
     constructor(textboxProps: TextboxProperties) {
         super(textboxProps);
-        if (textboxProps.onChange) {
-            super.addEventHandler("change", textboxProps.onChange);
+        if (textboxProps.onChangeHandler) {
+            super.addEventHandler("change", textboxProps.onChangeHandler);
         }
     }
 
@@ -83,11 +83,18 @@ class Textbox extends Control {
     set align(newAlign: string) {
         this.setAttr("align", newAlign);
     }
-    get fireOnChange() {
-        return this.attrs.get('fireOnChange')[0];     
+    get onChange() {
+        return this.attrs.get('onchange')[0];     
     }
-    set fireOnChange(newFireOnChange: boolean) {
-        this.setAttr("fireOnChange", newFireOnChange);
+    set onChange(newOnChange: boolean) {
+        this.setAttr("onchange", newOnChange);
+    }
+    get onChangeHandler() {
+        return this.getEventHandler('onChangeHandler');     
+    }
+    set onChangeHandler(newOnChangeHandler: any) {
+        this.addEventHandler ("onChangeHandler", newOnChangeHandler);
+        
     }
 }
 

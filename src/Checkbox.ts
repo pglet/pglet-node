@@ -4,13 +4,17 @@ import { ControlProperties, Control } from './Control'
 interface CheckboxProperties extends ControlProperties {
     value?: boolean,
     label?: string,
-    boxSide?: string,   
+    boxSide?: string,
+    onChange?: any   
 }
 
 class Checkbox extends Control {
 
     constructor(checkboxProps: CheckboxProperties) {
         super(checkboxProps);
+        if (checkboxProps.onChange) {
+            super.addEventHandler("change", checkboxProps.onChange);
+        }
     }
 
     getControlName() {
