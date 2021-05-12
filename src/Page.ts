@@ -149,7 +149,7 @@ class Page extends Control {
         //console.log("e.data: ", e.data);
         if (e.target == "page" && e.name == "change") {
             let allProps = JSON.parse(e.data);
-            console.log("all Props: ", allProps);
+            //console.log("all Props: ", allProps);
             allProps.forEach(props => {
                 let id = props["i"];
                 if (this._index.has(id)) {

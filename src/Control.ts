@@ -40,8 +40,15 @@ class Control {
         throw new Error("must be overridden in child class");
     }
     
-    protected getAttr(key: string) {
+    protected getAttr(key: string, type?: string) {
+
         let value = this.attrs.get(key)[0];
+        if (type == 'boolean' && (value && typeof(value) == "string")) {
+            return value == "true";
+        }
+        else if (type == "number" && (value && typeof(value) == "string")) {
+            return parseFloat(value);
+        }
 
         return value;
 
