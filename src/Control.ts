@@ -1,8 +1,7 @@
 import { Connection } from './Connection';
 import Page from './Page';
-import { StringHash, GetId } from './Utils';
+import { GetId } from './Utils';
 import * as diff from 'diff';
-import { threadId } from 'node:worker_threads';
 
 
 interface ControlProperties {

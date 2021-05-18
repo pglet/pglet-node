@@ -1,4 +1,3 @@
-import { CpuInfo } from 'node:os';
 import { ControlProperties, Control } from './Control'
 
 interface ColumnProperties extends ControlProperties {
