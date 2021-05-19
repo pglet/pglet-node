@@ -43,7 +43,8 @@ function sleep(ms) {
                         footer: [new pglet.Button({text: "OK"}), new pglet.Button({text: "CANCEL"})]
                     });
     await p.add([panelObject]);
-  
+    let datePickerObject = new pglet.DatePicker({label: "choose a date", value: "2021, 05, 19"});
+    await p.add([datePickerObject]);
     // let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
     // let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
     // let navObject = new pglet.Nav({value: "nav1", items: [
