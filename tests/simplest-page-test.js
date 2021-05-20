@@ -60,6 +60,29 @@ function sleep(ms) {
     });
 
     await p.add([verticalBarchartObject]);
+
+    let lineChartObject = new pglet.Linechart({legend: true, tooltips: true, strokeWidth: 5, yMin: 1, yMax: 10, xType: 'number', width: "500", lines: [
+                                new pglet.LineData({legend: "line 1", points: [
+                                    new pglet.Point({x: 0, y: 0}),
+                                    new pglet.Point({x: 1, y: 10}),
+                                    new pglet.Point({x: 2, y: 20}),
+                                    new pglet.Point({x: 3, y: 50}),
+                                    new pglet.Point({x: 4, y: 100}),
+                                    new pglet.Point({x: 5, y: 90}),
+                                    new pglet.Point({x: 6, y: 50}),
+                                    new pglet.Point({x: 7, y: 30}),
+                                    new pglet.Point({x: 8, y: 20}),
+                                    new pglet.Point({x: 9, y: 5})
+                                ]})
+                            ]})
+    await p.add([lineChartObject]);
+
+    let pieChartObject = new pglet.Piechart({tooltips: true, width: "50%", innerRadius: 40, innerValue: 35, points: [
+                            new pglet.Point({color: "red", value: 35}),
+                            new pglet.Point({color: "blue", value: 65})
+                        ]})
+    await p.add([pieChartObject]);
+    
     // let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
     // let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
     // let navObject = new pglet.Nav({value: "nav1", items: [

@@ -23,6 +23,8 @@ import Point from './Point';
 import VerticalBarchart from './VerticalBarchart';
 import DatePicker from './DatePicker';
 import Barchart from './Barchart';
+import Piechart from './Piechart';
+import { Linechart, LineData } from './Linechart';
 import { Option, ChoiceGroup } from './ChoiceGroup'
 import { Message, MessageButton } from './Message';
 import { Toolbar, ToolbarItem} from './Toolbar';
@@ -236,5 +238,5 @@ function buildArgs(action: string, args: any) {
     return pargs;
 }
 export {
-    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker
+    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart
 }
