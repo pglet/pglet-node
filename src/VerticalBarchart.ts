@@ -58,10 +58,16 @@ class VerticalBarchart extends Control {
     }
 
     protected getChildren(): Control[] {
-        return this._data.getChildren();
+        return [this._data];
     }
 
     /* accessors */ 
+    get points() {
+        return this._data.points;     
+    }
+    set points(newPoints: Point[]) {
+        this._data.points = newPoints;
+    }
     get legend() {
         return this.attrs.get('legend')[0];     
     }

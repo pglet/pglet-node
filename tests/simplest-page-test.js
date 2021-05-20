@@ -45,6 +45,21 @@ function sleep(ms) {
     await p.add([panelObject]);
     let datePickerObject = new pglet.DatePicker({label: "choose a date", value: "2021, 05, 19"});
     await p.add([datePickerObject]);
+    let barchartObject = new pglet.Barchart({points: [
+                            new pglet.Point({legend: 'A', x: 10, y: 100}),
+                            new pglet.Point({legend: 'B', x: 20, y: 100})
+                        ], dataMode: "fraction"})
+    await p.add([barchartObject]);
+    let verticalBarchartObject = new pglet.VerticalBarchart({yFormat:'{y}%', yTicks: 5, yMin: 0, yMax: 100, width: "100%", barWidth: 10})
+    let range = [...Array(100).keys()]
+    range.forEach(element => {
+        if (element < 70) {
+            return;
+        }
+        verticalBarchartObject.points.push(new pglet.Point({x: element, y: Math.floor(Math.random() * 100)}))
+    });
+
+    await p.add([verticalBarchartObject]);
     // let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
     // let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
     // let navObject = new pglet.Nav({value: "nav1", items: [

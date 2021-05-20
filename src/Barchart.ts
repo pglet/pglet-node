@@ -108,10 +108,16 @@ class Barchart extends Control {
     }
 
     protected getChildren(): Control[] {
-        return this._data.getChildren();
+        return [this._data];
     }
 
     /* accessors */ 
+    get points() {
+        return this._data.points;     
+    }
+    set points(newPoints: Point[]) {
+        this._data.points = newPoints;
+    }
     get tooltips() {
         return this.attrs.get('tooltips')[0];     
     }
