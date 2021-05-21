@@ -37,12 +37,12 @@ function sleep(ms) {
         open: true, title: "dialog1", subText: "subtext1", autoDismiss: true,
         footer: [new pglet.Button({text: "OK"}), new pglet.Button({text: "CANCEL"})]
     });
-    await p.add([dialogObject]);
+    //await p.add([dialogObject]);
     let panelObject = new pglet.Panel({
                         open: true, title: "panel1", type: "small", autoDismiss: true,
                         footer: [new pglet.Button({text: "OK"}), new pglet.Button({text: "CANCEL"})]
                     });
-    await p.add([panelObject]);
+    //await p.add([panelObject]);
     let datePickerObject = new pglet.DatePicker({label: "choose a date", value: "2021, 05, 19"});
     await p.add([datePickerObject]);
     let barchartObject = new pglet.Barchart({points: [
@@ -50,7 +50,7 @@ function sleep(ms) {
                             new pglet.Point({legend: 'B', x: 20, y: 100})
                         ], dataMode: "fraction"})
     await p.add([barchartObject]);
-    let verticalBarchartObject = new pglet.VerticalBarchart({yFormat:'{y}%', yTicks: 5, yMin: 0, yMax: 100, width: "100%", barWidth: 10})
+    let verticalBarchartObject = new pglet.VerticalBarchart({yFormat:'{y}%', yTicks: 5, yMin: 0, yMax: 100, width: "100%", barWidth: 10, height: 400})
     let range = [...Array(100).keys()]
     range.forEach(element => {
         if (element < 70) {
@@ -60,8 +60,22 @@ function sleep(ms) {
     });
 
     await p.add([verticalBarchartObject]);
-
-    let lineChartObject = new pglet.Linechart({legend: true, tooltips: true, strokeWidth: 5, yMin: 1, yMax: 10, xType: 'number', width: "500", lines: [
+    
+    let lineChartObject = new pglet.Linechart({legend: true, tooltips: true, yTicks: 4, yMin: 10, yMax: 10, xType: 'date', width: "500px", height: "400px", yFormat: "{y} °C", lines: [
+                        new pglet.LineData({legend: "t,  °C", color: "green"})
+                    ]})
+    await p.add([lineChartObject]);
+    let startDate = new Date(2021, 4, 1, 10, 5);
+    let m = 0;
+    for (const e of [...Array(60).keys()]) {
+        console.log("e: ", e);
+        let d = new Date(startDate.getTime() + (m*60000));
+        let v = Math.floor((Math.random() - 0.5) *  40);
+        lineChartObject.lines[0].points.push(new pglet.Point({x: d, y: v}));
+        m += 1
+    }
+    
+    let lineChartObject2 = new pglet.Linechart({legend: true, tooltips: true, strokeWidth: 5, yMin: 1, yMax: 10, xType: 'number', width: "500", lines: [
                                 new pglet.LineData({legend: "line 1", points: [
                                     new pglet.Point({x: 0, y: 0}),
                                     new pglet.Point({x: 1, y: 10}),
@@ -75,26 +89,24 @@ function sleep(ms) {
                                     new pglet.Point({x: 9, y: 5})
                                 ]})
                             ]})
-    await p.add([lineChartObject]);
+    await p.add([lineChartObject2]);
 
     let pieChartObject = new pglet.Piechart({tooltips: true, width: "50%", innerRadius: 40, innerValue: 35, points: [
                             new pglet.Point({color: "red", value: 35}),
                             new pglet.Point({color: "blue", value: 65})
                         ]})
     await p.add([pieChartObject]);
-    //c = Callout(target='button1', position='leftBottom', gap=100, beak=True, beak_width=10, page_padding=10,
-    // focus=False, cover=True, visible=True, controls=[
-    //     Text(value='This is callout')
-    //     ])
+
     let calloutButtonObject = new pglet.Button({text: "Callout button", primary: false, id: "button_callout"})
-    let buttonId = await p.add([calloutButtonObject]);
-    console.log("buttonId: ", buttonId);
-    let calloutObject = new pglet.Callout({target: "button_callout", position: "bottomAuto", beak: true, beakWidth: 20, visible: true, childControls: [
+    await p.add([calloutButtonObject]);
+    let calloutObject = new pglet.Callout({target: "button_callout", position: "bottomAuto", focus: true, beak: true, beakWidth: 20, visible: true, childControls: [
                             new pglet.Text({value: "big time callout!"})
                         ]})
    
     await p.add([calloutObject]);
-    
+    let smallSpinnerObject = new pglet.Spinner({label: "Small spinner", size: 'small', labelPosition: 'left'});
+    let largeSpinnerObject = new pglet.Spinner({label: "Large spinner", size: 'large', labelPosition: 'left'});
+    await p.add([smallSpinnerObject, largeSpinnerObject]);
     // let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
     // let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
     // let navObject = new pglet.Nav({value: "nav1", items: [

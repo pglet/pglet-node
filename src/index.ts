@@ -13,6 +13,7 @@ import Stack from './Stack';
 import Button from './Button';
 import Dropdown from './Dropdown';
 import Progress from './Progress';
+import Spinner from './Spinner';
 import Checkbox from './Checkbox';
 import Slider from './Slider';
 import SpinButton from './SpinButton';
@@ -238,5 +239,5 @@ function buildArgs(action: string, args: any) {
     return pargs;
 }
 export {
-    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout
+    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout
 }
