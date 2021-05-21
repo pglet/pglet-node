@@ -24,6 +24,7 @@ import VerticalBarchart from './VerticalBarchart';
 import DatePicker from './DatePicker';
 import Barchart from './Barchart';
 import Piechart from './Piechart';
+import Callout from './Callout';
 import { Linechart, LineData } from './Linechart';
 import { Option, ChoiceGroup } from './ChoiceGroup'
 import { Message, MessageButton } from './Message';
@@ -132,12 +133,11 @@ let page = async (...args: any) => {
     const pargs = buildArgs("page", args);
     pargs.push("--all-events");
     console.log("pgletExe", pgletExe)
-    //console.log(pargs);
-    console.log(pgletExe);
+    console.log(pargs);
 
     var res = cp.spawnSync(pgletExe, pargs, { encoding : 'utf8' });
     var result = res.stdout.trim();
-
+    console.log("result: ", result);
     let re = /(?<connId>[^\s]+)\s(?<pageUrl>[^\s]+)/;
     let match = re.exec(result);
 
@@ -238,5 +238,5 @@ function buildArgs(action: string, args: any) {
     return pargs;
 }
 export {
-    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart
+    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Checkbox, Control, Tabs, Tab, Column, Columns, Item, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout
 }

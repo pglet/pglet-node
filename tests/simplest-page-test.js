@@ -82,6 +82,18 @@ function sleep(ms) {
                             new pglet.Point({color: "blue", value: 65})
                         ]})
     await p.add([pieChartObject]);
+    //c = Callout(target='button1', position='leftBottom', gap=100, beak=True, beak_width=10, page_padding=10,
+    // focus=False, cover=True, visible=True, controls=[
+    //     Text(value='This is callout')
+    //     ])
+    let calloutButtonObject = new pglet.Button({text: "Callout button", primary: false, id: "button_callout"})
+    let buttonId = await p.add([calloutButtonObject]);
+    console.log("buttonId: ", buttonId);
+    let calloutObject = new pglet.Callout({target: "button_callout", position: "bottomAuto", beak: true, beakWidth: 20, visible: true, childControls: [
+                            new pglet.Text({value: "big time callout!"})
+                        ]})
+   
+    await p.add([calloutObject]);
     
     // let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
     // let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
