@@ -2,9 +2,6 @@ import os from 'os';
 import net from 'net';
 import fs from 'fs';
 import { Event } from './Event';
-import { Control } from './Control';
-import { throws } from 'assert';
-import { ControlEvent } from './ControlEvent';
 
 export class Connection {
     private connId = ""

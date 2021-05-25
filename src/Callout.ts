@@ -1,4 +1,3 @@
-import { throws } from 'node:assert';
 import { ControlProperties, Control } from './Control'
 
 interface CalloutProperties extends ControlProperties {

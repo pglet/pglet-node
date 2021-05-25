@@ -107,16 +107,16 @@ function sleep(ms) {
     let smallSpinnerObject = new pglet.Spinner({label: "Small spinner", size: 'small', labelPosition: 'left'});
     let largeSpinnerObject = new pglet.Spinner({label: "Large spinner", size: 'large', labelPosition: 'left'});
     await p.add([smallSpinnerObject, largeSpinnerObject]);
-    // let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"]});
-    // let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
-    // let navObject = new pglet.Nav({value: "nav1", items: [
-    //                     new pglet.Item({text: "heading1", items: [new pglet.Item({text: "sub1", icon: "mail", iconColor: "yellow"}), new pglet.Item({text: "sub2", icon: "chat", iconColor: "blue"})]}),
-    //                     new pglet.Item({text: "heading2"})
-    //                 ]});
+    let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"], optionValues: ["s", "m", "l"]});
+    let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
+    let navObject = new pglet.Nav({value: "nav1", items: [
+                        new pglet.Item({text: "heading1", items: [new pglet.Item({text: "sub1", icon: "mail", iconColor: "yellow"}), new pglet.Item({text: "sub2", icon: "chat", iconColor: "blue"})]}),
+                        new pglet.Item({text: "heading2"})
+                    ]});
                     
-    // let stackObject = new pglet.Stack({childControls: [textObject, textboxObject, ddObject, checkBoxObject, navObject]});
+    let stackObject = new pglet.Stack({childControls: [ddObject, checkBoxObject, navObject]});
     // // console.log("call getCmdStr: ", stackObject.getCmdStr());
-    // const id = await p.add(stackObject);
+    const id = await p.add([stackObject]);
 
     // let spinButtonObject = new pglet.SpinButton({label: "test spin button", min: 0, max: 10})
     // let sliderObject = new pglet.Slider({label: "test slider", step: 1, min: 0, max: 100, showValue: true});

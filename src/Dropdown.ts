@@ -26,11 +26,11 @@ class Option extends Control{
     }
 
     /* accessors */ 
-    get value() {
-        return this.attrs.get('value')[0];     
+    get text() {
+        return this.attrs.get('text')[0];     
     }
-    set value(newValue: string) {
-        this.setAttr("value", newValue);
+    set text(newText: string) {
+        this.setAttr("text", newText);
     }
     get key() {
         return this.attrs.get('key')[0];     
@@ -40,7 +40,7 @@ class Option extends Control{
     }
 }
 class Dropdown extends Control {
-    private _options: any = [];
+    private _options: Option[] = [];
 
     constructor(dropdownProps: DropdownProperties) {
         super(dropdownProps);
@@ -57,7 +57,7 @@ class Dropdown extends Control {
             }
             else {
                 for (let i = 0; i < dropdownProps.optionValues.length; i++) {
-                    this._options.push(new Object({key: dropdownProps.optionKeys[i], text: dropdownProps.optionValues[i]}));
+                    this._options.push(new Option({key: dropdownProps.optionKeys[i], text: dropdownProps.optionValues[i]}));
                 }
             }
         }

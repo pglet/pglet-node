@@ -1,12 +1,9 @@
-import { Connection } from './Connection';
 import Page from './Page';
 import { GetId } from './Utils';
 import * as diff from 'diff';
 
-
 interface ControlProperties {
     id?: string,
-    //childControls?: Control[],
     visible?: boolean,
     disabled?: boolean,
     width?: string,
@@ -21,7 +18,6 @@ class Control {
     protected _uid: string | null;
     protected _eventHandlers: any = {};
     protected _previousChildren: Control[] = [];
-    //protected connection: Connection | null;
     protected attrs: any = {};
 
     constructor(controlProps: ControlProperties) {
@@ -43,7 +39,7 @@ class Control {
 
         let value = this.attrs.get(key)[0];
         if (type == 'boolean' && (value && typeof(value) == "string")) {
-            return value == "true";
+            return (value == "true");
         }
         else if (type == "number" && (value && typeof(value) == "string")) {
             return parseFloat(value);

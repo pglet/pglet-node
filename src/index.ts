@@ -133,19 +133,17 @@ let page = async (...args: any) => {
 
     const pargs = buildArgs("page", args);
     pargs.push("--all-events");
-    console.log("pgletExe", pgletExe)
-    console.log(pargs);
+    
+    //console.log("pgletExe", pgletExe)
 
     var res = cp.spawnSync(pgletExe, pargs, { encoding : 'utf8' });
     var result = res.stdout.trim();
-    console.log("result: ", result);
     let re = /(?<connId>[^\s]+)\s(?<pageUrl>[^\s]+)/;
     let match = re.exec(result);
 
     var conn = new Connection(match.groups.connId);
-    //conn.pageUrl = match.groups.pageUrl;
+
     return new Page({connection: conn, url: match.groups.pageUrl})
-    //return conn;
 }
 
 let app = async (...args: any) => {

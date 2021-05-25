@@ -125,8 +125,20 @@ class Column extends Control{
     get resizable() {
         return this.attrs.get('resizable')[0];     
     }
-    set resizable(newResizable: string) {
+    set resizable(newResizable: boolean) {
         this.setAttr("resizable", newResizable);
+    }
+    get minWidth() {
+        return this.attrs.get('minWidth')[0];     
+    }
+    set minWidth(newMinWidth: number) {
+        this.setAttr("minWidth", newMinWidth);
+    }
+    get maxWidth() {
+        return this.attrs.get('maxWidth')[0];     
+    }
+    set maxWidth(newMaxWidth: number) {
+        this.setAttr("maxWidth", newMaxWidth);
     }
 }
 
@@ -169,7 +181,6 @@ class Items extends Control{
             props[prop] = val;
             
         })
-        //this._items.push(item);
         
         this._items.push(
             new Item(props)
@@ -234,6 +245,12 @@ class Grid extends Control {
     }
     set headerVisible(newHeaderVisible: boolean) {
         this.setAttr("headerVisible", newHeaderVisible);
+    }
+    get shimmerLines() {
+        return this.attrs.get('shimmerLines')[0];     
+    }
+    set shimmerLines(newShimmerLines: number) {
+        this.setAttr("shimmerLines", newShimmerLines);
     }
 
 }

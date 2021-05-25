@@ -44,12 +44,6 @@ class Image extends Control {
     set fit(newFit: string) {
         this.setAttr("fit", newFit);
     }
-    get description() {
-        return this.attrs.get('description')[0];     
-    }
-    set description(newDescription: string) {
-        this.setAttr("description", newDescription);
-    }
     get maximizeFrame() {
         return this.attrs.get('maximizeFrame')[0];     
     }
