@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface SpinButtonProperties extends ControlProperties {
     value?: number,
     label?: string,
@@ -13,7 +12,6 @@ interface SpinButtonProperties extends ControlProperties {
 }
 
 class SpinButton extends Control {
-
     constructor(spinButtonProps: SpinButtonProperties) {
         super(spinButtonProps);
         if (spinButtonProps.onChange) {

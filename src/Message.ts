@@ -17,21 +17,16 @@ interface MessageProperties extends ControlProperties {
     dismissIconColor?: string,
     data?: string,
     onDismiss?: any,
-    buttons?: MessageButton[]
+    buttons: MessageButton[]
 }
 
 class MessageButton extends Control {
-
     constructor(messageButtonProps: MessageButtonProperties) {
         super(messageButtonProps);
     }
 
     getControlName() {
         return "button";
-    }
-
-    protected getChildren(): [] {
-        return [];
     }
 
     /* accessors */ 

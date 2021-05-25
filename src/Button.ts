@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface ButtonProperties extends ControlProperties {
     primary?: boolean,
     compound?: boolean,
@@ -19,7 +18,6 @@ interface ButtonProperties extends ControlProperties {
 }
 
 class Button extends Control {
-
     constructor(buttonProps: ButtonProperties) {
         super(buttonProps);
         if (buttonProps.onClick) {

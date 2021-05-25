@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface ProgressProperties extends ControlProperties {
     value?: number,
     label?: string,
@@ -8,7 +7,6 @@ interface ProgressProperties extends ControlProperties {
 }
 
 class Progress extends Control {
-
     constructor(progressProps: ProgressProperties) {
         super(progressProps);
     }

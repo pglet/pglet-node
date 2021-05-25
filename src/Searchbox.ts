@@ -15,7 +15,6 @@ interface SearchboxProperties extends ControlProperties {
 }
 
 class Searchbox extends Control {
-
     constructor(searchboxProps: SearchboxProperties) {
         super(searchboxProps);
         if (searchboxProps.onChange) {

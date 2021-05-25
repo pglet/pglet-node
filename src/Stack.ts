@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface StackProperties extends ControlProperties {
     horizontal?: boolean,
     horizontalAlign?: string
@@ -10,7 +9,7 @@ interface StackProperties extends ControlProperties {
     wrap?: string,
     childControls?: Control[],
     onSubmit?: boolean,
-    onSubmitHandler?: any
+    //onSubmitHandler?: any
 }
 
 class Stack extends Control {
@@ -20,16 +19,12 @@ class Stack extends Control {
         super(stackProps);
         if (stackProps.childControls && stackProps.childControls.length > 0) {
             this._childControls.push(...stackProps.childControls)
-            // stackProps.childControls.forEach(ctrl => {
-            //     this._childControls.push(ctrl);
-            // })
         }
     }
 
     getControlName() {
         return "stack";
     }
-
     protected getChildren(): Control[] {
         return this._childControls;
     }
@@ -82,13 +77,6 @@ class Stack extends Control {
     }
     set onSubmit(newOnSubmit: boolean) {
         this.setAttr("onSubmit", newOnSubmit);
-    }
-    get onSubmitHandler() {
-        return this.getEventHandler('onSubmitHandler');     
-    }
-    set onSubmitHandler(newOnSubmitHandler: any) {
-        this.addEventHandler ("onSubmitHandler", newOnSubmitHandler);
-        
     }
 }
 

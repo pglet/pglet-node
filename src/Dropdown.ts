@@ -16,7 +16,6 @@ interface DropdownProperties extends ControlProperties {
 }
 
 class Option extends Control{
-
     constructor(optionProps: OptionProperties) {
         super(optionProps);       
     }
@@ -39,6 +38,7 @@ class Option extends Control{
         this.setAttr("key", newKey);
     }
 }
+
 class Dropdown extends Control {
     private _options: Option[] = [];
 
@@ -61,13 +61,11 @@ class Dropdown extends Control {
                 }
             }
         }
-
     }
 
     getControlName() {
         return "dropdown";
     }
-
     protected getChildren(): any[] {
         return this._options;
     }

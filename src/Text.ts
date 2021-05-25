@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface TextProperties extends ControlProperties {
     value: string,
     align?: string,
@@ -11,8 +10,6 @@ class Text extends Control {
 
     constructor(textProps: TextProperties) {
         super(textProps);
-        // does this need to be called??
-        //super.attrs = textProps
     }
 
     getControlName() {

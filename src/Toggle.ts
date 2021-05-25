@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface ToggleProperties extends ControlProperties {
     value?: boolean,
     label?: string,
@@ -12,7 +11,6 @@ interface ToggleProperties extends ControlProperties {
 }
 
 class Toggle extends Control {
-
     constructor(toggleProps: ToggleProperties) {
         super(toggleProps);
         if (toggleProps.onChange) {

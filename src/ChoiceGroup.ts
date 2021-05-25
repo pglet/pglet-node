@@ -16,7 +16,6 @@ interface ChoiceGroupProperties extends ControlProperties {
 }
 
 class Option extends Control {
-
     constructor(optionProps: OptionProperties) {
         super(optionProps);
     }
@@ -66,7 +65,6 @@ class ChoiceGroup extends Control{
     getControlName() {
         return "choicegroup";
     }
-
     protected getChildren(): Control[] {
         return this._options;
     }

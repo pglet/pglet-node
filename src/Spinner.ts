@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface SpinnerProperties extends ControlProperties {
     size?: string,
     label?: string,
@@ -8,7 +7,6 @@ interface SpinnerProperties extends ControlProperties {
 }
 
 class Spinner extends Control {
-
     constructor(spinnerProps: SpinnerProperties) {
         super(spinnerProps);
     }

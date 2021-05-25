@@ -1,6 +1,6 @@
 import { ControlProperties, Control } from './Control'
 
-interface ItemProperties extends ControlProperties {
+interface NavItemProperties extends ControlProperties {
     key?: string,
     text?: string,
     icon?: string,
@@ -8,24 +8,24 @@ interface ItemProperties extends ControlProperties {
     url?: string,
     newWindow?: boolean,
     expanded?: boolean,
-    items?: Item[];
+    items?: NavItem[];
 }
 
 interface NavProperties extends ControlProperties {
     value?: string,
-    items?: Item[],
+    items?: NavItem[],
     onChange?: any,
     onExpand?: any,
     onCollapse?: any
 }
 
-class Item extends Control{
-    private _items: Item[] = [];
+class NavItem extends Control{
+    private _items: NavItem[] = [];
 
-    constructor(itemProps: ItemProperties) {
-         super(itemProps);
-         if (itemProps.items && itemProps.items.length > 0) {
-             itemProps.items.forEach(item => {
+    constructor(navItemProps: NavItemProperties) {
+         super(navItemProps);
+         if (navItemProps.items && navItemProps.items.length > 0) {
+             navItemProps.items.forEach(item => {
                  this.addItems(item);
              })
          }  
@@ -34,11 +34,10 @@ class Item extends Control{
     getControlName() {
         return "item";
     }
-
     get items() {
         return this._items;
     }
-    addItems(item: Item) {
+    addItems(item: NavItem) {
         this._items.push(item);
     }
     getChildren() {
@@ -87,13 +86,12 @@ class Item extends Control{
     }
     set expanded(newExpanded: boolean) {
         this.setAttr("expanded", newExpanded);
-    }
-    
-
+    }  
 }
 
 class Nav extends Control {
-    private _items: Item[] = [];
+    private _items: NavItem[] = [];
+    
     constructor(navProps: NavProperties) {
         super(navProps);
         if (navProps.items && navProps.items.length > 0) {
@@ -115,10 +113,7 @@ class Nav extends Control {
     getControlName() {
         return "nav";
     }
-    get items() {
-        return this._items;
-    }
-    addItems(item: Item) {
+    addItems(item: NavItem) {
         this._items.push(item);
     }
     getChildren() {
@@ -126,15 +121,20 @@ class Nav extends Control {
     }
 
     /* accessors */ 
+    get items() {
+        return this._items;
+    }
+    set items(newItems: NavItem[]) {
+        this._items = newItems;
+    }
     get value() {
         return this.attrs.get('value')[0];     
     }
     set value(newValue: string) {
         this.setAttr("value", newValue);
     }
-
 }
 
 export {
-    Nav, Item
+    Nav, NavItem
 };

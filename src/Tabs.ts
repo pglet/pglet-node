@@ -28,7 +28,6 @@ class Tab extends Control{
     getControlName() {
         return "tab";
     }
-
     protected getChildren(): Control[] {
         return this._childControls;
     }
@@ -61,7 +60,7 @@ class Tab extends Control{
 }
 
 class Tabs extends Control {
-    _tabs: Tab[] = [];
+    private _tabs: Tab[] = [];
 
     constructor(tabsProps: TabsProperties) {
         super(tabsProps);
@@ -76,12 +75,17 @@ class Tabs extends Control {
     getControlName() {
         return "tabs";
     }
-
     protected getChildren(): Control[] {
         return this._tabs;
     }
 
     /* accessors */ 
+    get tabs() {
+        return this._tabs;
+    }
+    set tabs(newTabs: Tab[]) {
+        this._tabs = newTabs;
+    }
     get value() {
         return this.attrs.get('value')[0];     
     }

@@ -67,7 +67,6 @@ class Far extends Control{
     getChildren() {
         return this._farItems;
     }
-
 }
 
 class ToolbarItem extends Control{
@@ -86,7 +85,6 @@ class ToolbarItem extends Control{
     getControlName() {
         return "item";
     }
-
     protected getChildren(): Control[] {
         return this._childControls;
     }
@@ -137,7 +135,7 @@ class ToolbarItem extends Control{
     get split() {
         return this.attrs.get('split')[0];     
     }
-    set split(newSplit: string) {
+    set split(newSplit: boolean) {
         this.setAttr("split", newSplit);
     }
     get divider() {
@@ -152,6 +150,7 @@ class Toolbar extends Control {
     private _items: ToolbarItem[] = [];
     private _overflow: Overflow;
     private _far: Far;
+
     constructor(toolbarProps: ToolbarProperties) {
         super(toolbarProps);
         this._overflow = new Overflow({items: toolbarProps.overflow});
@@ -163,7 +162,6 @@ class Toolbar extends Control {
     getControlName() {
         return "toolbar";
     }
-
     protected getChildren(): Control[] {
         return [...this._items, this._far, this._overflow];
     }

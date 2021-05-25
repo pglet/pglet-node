@@ -30,7 +30,6 @@ class Callout extends Control {
     getControlName() {
         return "callout";
     }
-
     protected getChildren(): Control[] {
         return this._controls;
     }

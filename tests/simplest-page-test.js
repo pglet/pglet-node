@@ -110,8 +110,8 @@ function sleep(ms) {
     let ddObject = new pglet.Dropdown({label: "dropdown", optionKeys: ["small", "medium", "large"], optionValues: ["s", "m", "l"]});
     let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
     let navObject = new pglet.Nav({value: "nav1", items: [
-                        new pglet.Item({text: "heading1", items: [new pglet.Item({text: "sub1", icon: "mail", iconColor: "yellow"}), new pglet.Item({text: "sub2", icon: "chat", iconColor: "blue"})]}),
-                        new pglet.Item({text: "heading2"})
+                        new pglet.NavItem({text: "heading1", items: [new pglet.NavItem({text: "sub1", icon: "mail", iconColor: "yellow"}), new pglet.NavItem({text: "sub2", icon: "chat", iconColor: "blue"})]}),
+                        new pglet.NavItem({text: "heading2"})
                     ]});
                     
     let stackObject = new pglet.Stack({childControls: [ddObject, checkBoxObject, navObject]});

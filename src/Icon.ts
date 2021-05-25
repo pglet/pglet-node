@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface ImageProperties extends ControlProperties {
     name?: string,
     color?: string,
@@ -8,7 +7,6 @@ interface ImageProperties extends ControlProperties {
 }
 
 class Image extends Control {
-
     constructor(imageProps: ImageProperties) {
         super(imageProps);
     }
@@ -36,7 +34,6 @@ class Image extends Control {
     set size(newSize: string) {
         this.setAttr("size", newSize);
     }
-
 }
 
 export = Image;

@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface ImageProperties extends ControlProperties {
     src?: string,
     alt?: string,
@@ -10,7 +9,6 @@ interface ImageProperties extends ControlProperties {
 }
 
 class Image extends Control {
-
     constructor(imageProps: ImageProperties) {
         super(imageProps);
     }

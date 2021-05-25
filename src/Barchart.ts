@@ -21,7 +21,6 @@ class Data extends Control{
     getControlName() {
         return "data";
     }
-
     getChildren() {
         return this._points;
     }
@@ -33,8 +32,6 @@ class Data extends Control{
     set points(newPoints: Point[]) {
         this._points = newPoints;
     }
-
-
 }
 
 class Barchart extends Control {
@@ -48,7 +45,6 @@ class Barchart extends Control {
     getControlName() {
         return "barchart";
     }
-
     protected getChildren(): Control[] {
         return [this._data];
     }

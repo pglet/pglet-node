@@ -1,7 +1,6 @@
 import { ControlProperties, Control } from './Control'
 import Point from './Point';
 
-
 interface PiechartProperties extends ControlProperties {
     legend?: boolean,
     tooltips?: boolean,
@@ -24,7 +23,6 @@ class Data extends Control{
     getControlName() {
         return "data";
     }
-
     getChildren() {
         return this._points;
     }
@@ -36,8 +34,6 @@ class Data extends Control{
     set points(newPoints: Point[]) {
         this._points = newPoints;
     }
-
-
 }
 
 class Piechart extends Control {
@@ -51,7 +47,6 @@ class Piechart extends Control {
     getControlName() {
         return "piechart";
     }
-
     protected getChildren(): Control[] {
         return [this._data];
     }
@@ -87,7 +82,6 @@ class Piechart extends Control {
     set innerRadius(newInnerRadius: number) {
         this.setAttr("innerRadius", newInnerRadius);
     }
-
 }
 
 export = Piechart

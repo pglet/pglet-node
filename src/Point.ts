@@ -13,7 +13,6 @@ interface PointProperties extends ControlProperties {
 }
 
 class Point extends Control{
-
     constructor(pointProps: PointProperties) {
         super(pointProps);    
     }

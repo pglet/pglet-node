@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface SliderProperties extends ControlProperties {
     value?: number,
     label?: string,
@@ -15,7 +14,6 @@ interface SliderProperties extends ControlProperties {
 }
 
 class Slider extends Control {
-
     constructor(sliderProps: SliderProperties) {
         super(sliderProps);
         if (sliderProps.onChange) {

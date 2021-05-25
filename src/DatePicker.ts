@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface DatePickerProperties extends ControlProperties {
     value?: string,
     label?: string,
@@ -13,7 +12,6 @@ interface DatePickerProperties extends ControlProperties {
 }
 
 class DatePicker extends Control {
-
     constructor(datePickerProps: DatePickerProperties) {
         super(datePickerProps);
         if (datePickerProps.onChange) {
@@ -22,7 +20,6 @@ class DatePicker extends Control {
         if (datePickerProps.value) {
             this.value = new Date(datePickerProps.value);
         }
-
     }
 
     getControlName() {

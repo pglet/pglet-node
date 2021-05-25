@@ -17,7 +17,6 @@ interface LinechartProperties extends ControlProperties {
 
 interface LineDataProperties extends ControlProperties {
     color?: string,
-    legend?: string,
     points: Point[]
 }
 
@@ -35,7 +34,6 @@ class LineData extends Control{
     getControlName() {
         return "data";
     }
-
     getChildren() {
         return this._points;
     }
@@ -53,13 +51,6 @@ class LineData extends Control{
     set color(newColor: string) {
         this.setAttr("color", newColor);
     }
-    get legend() {
-        return this.attrs.get('legend')[0];     
-    }
-    set legend(newLegend: boolean) {
-        this.setAttr("legend", newLegend);
-    }
-
 }
 
 class Linechart extends Control {
@@ -67,11 +58,7 @@ class Linechart extends Control {
 
     constructor(linechartProps: LinechartProperties) {
         super(linechartProps);
-        this._lines.push(...linechartProps.lines);
-        // linechartProps.lines.forEach(line => {
-        //     this._lines.push(line);
-        // })
-        
+        this._lines.push(...linechartProps.lines);  
     }
 
     getControlName() {
@@ -143,7 +130,6 @@ class Linechart extends Control {
     set xType(newXType: string) {
         this.setAttr("xType", newXType);
     }
-
 }
 
 export  {

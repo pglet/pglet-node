@@ -279,7 +279,6 @@ class Control {
     }
 
     protected getChildren() {
-        //return new Array<Control>();
         return [];
     }
 }

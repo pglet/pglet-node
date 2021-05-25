@@ -14,7 +14,6 @@ interface LinkProperties extends ControlProperties {
 }
 
 class Link extends Control {
-
     constructor(linkProps: LinkProperties) {
         super(linkProps);
     }

@@ -1,7 +1,6 @@
 import { ControlProperties, Control } from './Control'
 import Point from './Point';
 
-
 interface VerticalBarchartProperties extends ControlProperties {
     legend?: boolean,
     tooltips?: boolean,
@@ -9,7 +8,7 @@ interface VerticalBarchartProperties extends ControlProperties {
     colors?: string,
     yMin?: number,
     yMax?: number,
-    yTicks?: string,
+    yTicks?: number,
     yFormat?: string,
     xType?: string,
     points: Point[]
@@ -29,7 +28,6 @@ class Data extends Control{
     getControlName() {
         return "data";
     }
-
     getChildren() {
         return this._points;
     }
@@ -41,8 +39,6 @@ class Data extends Control{
     set points(newPoints: Point[]) {
         this._points = newPoints;
     }
-
-
 }
 
 class VerticalBarchart extends Control {
@@ -56,7 +52,6 @@ class VerticalBarchart extends Control {
     getControlName() {
         return "verticalBarchart";
     }
-
     protected getChildren(): Control[] {
         return [this._data];
     }
@@ -122,7 +117,6 @@ class VerticalBarchart extends Control {
     set xType(newXType: string) {
         this.setAttr("xType", newXType);
     }
-
 }
 
 export = VerticalBarchart

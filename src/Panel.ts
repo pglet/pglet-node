@@ -1,9 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-// interface FooterProperties extends ControlProperties {
-//     childControls?: []
-// }
-
 interface PanelProperties extends ControlProperties {
     open?: boolean,
     title?: string,
@@ -42,7 +38,6 @@ class Footer extends Control {
     addControl(ctrl: Control) {
         this._controls.push(ctrl);
     }
-
 }
 
 class Panel extends Control {
@@ -59,7 +54,6 @@ class Panel extends Control {
     getControlName() {
         return "panel";
     }
-
     protected getChildren(): Control[] {
         return [this._footer];
     }
@@ -104,7 +98,7 @@ class Panel extends Control {
     get blocking() {
         return this.attrs.get('blocking')[0];     
     }
-    set blocking(newBlocking: string) {
+    set blocking(newBlocking: boolean) {
         this.setAttr("blocking", newBlocking);
     }
     get data() {

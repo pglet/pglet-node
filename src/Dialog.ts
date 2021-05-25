@@ -41,7 +41,6 @@ class Footer extends Control {
     addControl(ctrl: Control) {
         this._controls.push(ctrl);
     }
-
 }
 
 class Dialog extends Control {
@@ -58,7 +57,6 @@ class Dialog extends Control {
     getControlName() {
         return "dialog";
     }
-
     protected getChildren(): Control[] {
         return [this._footer];
     }

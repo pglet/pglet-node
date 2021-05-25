@@ -43,7 +43,6 @@ class Columns extends Control{
     getControlName() {
         return "columns";
     }
-    
     getChildren() {
         return this._columns;
     }
@@ -74,7 +73,6 @@ class Column extends Control{
     getControlName() {
         return "column";
     }
-
     protected getChildren(): Control[] {
         return this._childControls;
     }
@@ -170,28 +168,24 @@ class Items extends Control{
     get items() {
         return this._items;     
     }
-    addItem(item: any) {
-        
+    addItem(item: any) {   
         let props: ItemObject = {};
         //let names = Object.getOwnPropertyNames(item);
         //let descriptors = Object.getOwnPropertyDescriptors(item);
         Object.entries(item).forEach(entry => {
             //console.log("entry: ", entry);
             const [prop, val]: any = entry;
-            props[prop] = val;
-            
+            props[prop] = val;   
         })
         
         this._items.push(
             new Item(props)
         );
     }
-
 }
 
 // internal class
 class Item extends Control{
-
     constructor(props) {
          super(props);  
     }
@@ -204,6 +198,7 @@ class Item extends Control{
 class Grid extends Control {
     private _columns: Columns;
     private _items: Items;
+
     constructor(gridProps: GridProperties) {
         super(gridProps);
         this._columns = new Columns({columns: gridProps.columns});
@@ -219,12 +214,8 @@ class Grid extends Control {
     getControlName() {
         return "grid";
     }
-
     protected getChildren(): any[] {
         return [this._columns, this._items]
-        // let children = [].concat(this._columns);
-
-        // return children.concat(this._items);
     }
 
     /* accessors */ 
@@ -252,7 +243,6 @@ class Grid extends Control {
     set shimmerLines(newShimmerLines: number) {
         this.setAttr("shimmerLines", newShimmerLines);
     }
-
 }
 
 export {

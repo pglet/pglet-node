@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface CheckboxProperties extends ControlProperties {
     value?: boolean,
     label?: string,
@@ -9,7 +8,6 @@ interface CheckboxProperties extends ControlProperties {
 }
 
 class Checkbox extends Control {
-
     constructor(checkboxProps: CheckboxProperties) {
         super(checkboxProps);
         if (checkboxProps.onChange) {

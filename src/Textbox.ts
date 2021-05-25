@@ -1,6 +1,5 @@
 import { ControlProperties, Control } from './Control'
 
-
 interface TextboxProperties extends ControlProperties {
     value?: string,
     label?: string,
@@ -16,7 +15,6 @@ interface TextboxProperties extends ControlProperties {
 }
 
 class Textbox extends Control {
-
     constructor(textboxProps: TextboxProperties) {
         super(textboxProps);
         if (textboxProps.onChangeHandler) {
@@ -93,8 +91,7 @@ class Textbox extends Control {
         return this.getEventHandler('onChangeHandler');     
     }
     set onChangeHandler(newOnChangeHandler: any) {
-        this.addEventHandler ("onChangeHandler", newOnChangeHandler);
-        
+        this.addEventHandler ("onChangeHandler", newOnChangeHandler);       
     }
 }
 
