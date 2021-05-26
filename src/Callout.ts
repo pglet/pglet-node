@@ -2,7 +2,7 @@ import { ControlProperties, Control } from './Control'
 
 interface CalloutProperties extends ControlProperties {
     target?: string,
-    postion?: string,
+    position?: string,
     gap?: number,
     beak?: boolean,
     beakWidth?: number,
@@ -23,7 +23,9 @@ class Callout extends Control {
             super.addEventHandler("dismiss", calloutProps.onDismiss);
         }
         if (calloutProps.childControls) {
+            
             this._controls.push(...calloutProps.childControls);
+            console.log("calloutprops childControls: ", this._controls);
         }
     }
 
@@ -47,11 +49,11 @@ class Callout extends Control {
     set target(newTarget: string) {
         this.setAttr("target", newTarget);
     }
-    get postion() {
-        return this.attrs.get('postion')[0];     
+    get position() {
+        return this.attrs.get('position')[0];     
     }
-    set postion(newPostion: string) {
-        this.setAttr("postion", newPostion);
+    set position(newPosition: string) {
+        this.setAttr("position", newPosition);
     }
     get gap() {
         return this.attrs.get('gap')[0];     

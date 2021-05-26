@@ -99,7 +99,7 @@ function sleep(ms) {
 
     let calloutButtonObject = new pglet.Button({text: "Callout button", primary: false, id: "button_callout"})
     await p.add([calloutButtonObject]);
-    let calloutObject = new pglet.Callout({target: "button_callout", position: "bottomAuto", focus: true, beak: true, beakWidth: 20, visible: true, childControls: [
+    let calloutObject = new pglet.Callout({target: "button_callout", position: "leftBottom", gap: 100, focus: false, beak: true, beakWidth: 20, pagePadding: 10, visible: false, cover: true, childControls: [
                             new pglet.Text({value: "big time callout!"})
                         ]})
    

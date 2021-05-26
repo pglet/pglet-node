@@ -12,6 +12,7 @@ interface DialogProperties extends ControlProperties {
     fixedTop?: boolean,
     blocking?: boolean,
     data?: string,
+    childControls?: Control[],
     footer: Control[],
     onDismiss?: any
 }
@@ -45,11 +46,15 @@ class Footer extends Control {
 
 class Dialog extends Control {
     private _footer: Footer;
+    private _childControls: Control[] = [];
 
     constructor(dialogProps: DialogProperties) {
         super(dialogProps);
         if (dialogProps.onDismiss) {
             super.addEventHandler("dismiss", dialogProps.onDismiss);
+        }
+        if (dialogProps.childControls && dialogProps.childControls.length > 0) {
+            this._childControls.push(...dialogProps.childControls)
         }
         this._footer = new Footer({childControls: dialogProps.footer});
     }
@@ -58,7 +63,7 @@ class Dialog extends Control {
         return "dialog";
     }
     protected getChildren(): Control[] {
-        return [this._footer];
+        return [...this._childControls, this._footer];
     }
 
     /* accessors */ 
