@@ -97,12 +97,6 @@ class Callout extends Control {
     set visible(newVisible: boolean) {
         this.setAttr("visible", newVisible);
     }
-    get data() {
-        return this.attrs.get('data')[0];     
-    }
-    set data(newData: string) {
-        this.setAttr("data", newData);
-    }
 }
 
 export = Callout;

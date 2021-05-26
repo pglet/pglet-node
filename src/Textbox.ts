@@ -8,7 +8,11 @@ interface TextboxProperties extends ControlProperties {
     description?: string,
     multiline?: boolean,
     required?: boolean,
-    passwordMask?: boolean,
+    readonly?: boolean,
+    autoAdjustHeight?: boolean,
+    borderless?: boolean,
+    underlined?: boolean,
+    password?: boolean,
     align?: string
     onchange?: boolean,
     onChangeHandler?: any
@@ -69,11 +73,35 @@ class Textbox extends Control {
     set required(newRequired: boolean) {
         this.setAttr("required", newRequired);
     }
-    get passwordMask() {
-        return this.attrs.get('passwordMask')[0];     
+    get readOnly() {
+        return this.attrs.get('readOnly')[0];     
     }
-    set passwordMask(newPasswordMask: boolean) {
-        this.setAttr("password", newPasswordMask);
+    set readOnly(newReadOnly: boolean) {
+        this.setAttr("readOnly", newReadOnly);
+    }
+    get autoAdjustHeight() {
+        return this.attrs.get('autoAdjustHeight')[0];     
+    }
+    set autoAdjustHeight(newAutoAdjustHeight: boolean) {
+        this.setAttr("autoAdjustHeight", newAutoAdjustHeight);
+    }
+    get borderless() {
+        return this.attrs.get('borderless')[0];     
+    }
+    set borderless(newBorderless: boolean) {
+        this.setAttr("borderless", newBorderless);
+    }
+    get underlined() {
+        return this.attrs.get('underlined')[0];     
+    }
+    set underlined(newUnderlined: boolean) {
+        this.setAttr("underlined", newUnderlined);
+    }
+    get password() {
+        return this.attrs.get('password')[0];     
+    }
+    set password(newPassword: boolean) {
+        this.setAttr("password", newPassword);
     }
     get align() {
         return this.attrs.get('align')[0];     

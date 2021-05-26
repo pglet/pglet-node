@@ -1,6 +1,6 @@
 import { Dialog, Button, Text, Control } from "../src/index"
 
-test('dropdown test', () => {
+test('dialog add test', () => {
     let d = new Dialog({ open: true, title: "dialog1", subText: "dialog subtext", autoDismiss: true, 
                             footer: [new Button({text: "OK"}), new Button({text: "CANCEL"})], 
                             childControls: [new Text({value: "Do you want this?"})]

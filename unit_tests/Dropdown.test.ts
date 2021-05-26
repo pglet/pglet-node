@@ -1,6 +1,6 @@
 import { Dropdown, Control } from "../src/index"
 
-test('dropdown test', () => {
+test('dropdown add test', () => {
     let dd = new Dropdown({label: "myDropdown", optionValues: ["small", "medium", "large"], optionKeys: ["s", "m", "l"]});
     expect(dd instanceof Control).toBeTruthy();
     expect(dd instanceof Dropdown).toBeTruthy();

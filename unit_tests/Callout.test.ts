@@ -1,6 +1,6 @@
 import { Control, Button, Text, Callout } from "../src/index"
 
-test('dropdown test', () => {
+test('callout add test', () => {
     //let cob = new Button({id: "callout_button", text: "Callout Button", primary: false});
     let co = new Callout({target: "callout_button", position: "leftBottom", beak: true, beakWidth: 10, visible: true, focus: false, childControls: [
                             new Text({value: "Callout!"})
