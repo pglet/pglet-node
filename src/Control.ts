@@ -23,7 +23,7 @@ class Control {
     constructor(controlProps: ControlProperties) {
         this._id = controlProps.id ? controlProps.id : undefined;
         this.attrs = new Map();
-        let excludedAttrs = ["id", "childControls", "onClick", "onChange", "onDismiss", "onChangeHandler", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons", "points", "lines"]
+        let excludedAttrs = ["id", "childControls", "onClick", "onChange", "onDismiss", "onChangeHandler", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons", "points", "lines", "optionKeys", "optionValues"]
         Object.keys(controlProps).forEach(key => {  
             if (excludedAttrs.indexOf(key) < 0) {
                 this.setAttr(key, controlProps[key]);
