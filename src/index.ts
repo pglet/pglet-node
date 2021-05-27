@@ -21,11 +21,13 @@ import Toggle from './Toggle';
 import Dialog from './Dialog';
 import Panel from './Panel';
 import Point from './Point';
+import Searchbox from './Searchbox';
 import VerticalBarchart from './VerticalBarchart';
 import DatePicker from './DatePicker';
 import Barchart from './Barchart';
 import Piechart from './Piechart';
 import Callout from './Callout';
+import Icon from './Icon';
 import { Linechart, LineData } from './Linechart';
 import { Option, ChoiceGroup } from './ChoiceGroup'
 import { Message, MessageButton } from './Message';
@@ -237,5 +239,5 @@ function buildArgs(action: string, args: any) {
     return pargs;
 }
 export {
-    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout
+    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout, Searchbox, Icon
 }
