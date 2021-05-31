@@ -29,6 +29,7 @@ class Control {
                 this.setAttr(key, controlProps[key]);
             }   
         })
+        console.log("attrs: ", this.attrs);
     }
 
     getControlName() {

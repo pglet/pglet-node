@@ -8,7 +8,7 @@ interface TextboxProperties extends ControlProperties {
     description?: string,
     multiline?: boolean,
     required?: boolean,
-    readonly?: boolean,
+    readOnly?: boolean,
     autoAdjustHeight?: boolean,
     borderless?: boolean,
     underlined?: boolean,
@@ -19,8 +19,10 @@ interface TextboxProperties extends ControlProperties {
 }
 
 class Textbox extends Control {
+    _props: TextboxProperties;
     constructor(textboxProps: TextboxProperties) {
         super(textboxProps);
+        //this._props = textboxProps;
         if (textboxProps.onChangeHandler) {
             super.addEventHandler("change", textboxProps.onChangeHandler);
         }
@@ -32,85 +34,86 @@ class Textbox extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.get('value')[0];     
+        return this.getAttr('value', typeof(this._props.value));     
     }
     set value(newValue: string) {
         this.setAttr("value", newValue);
     }
     get label() {
-        return this.attrs.get('label')[0];     
+        //return this.getAttr('label', typeof(this._props.label));
+        return this.getAttr('label', typeof(this._props.multiline))    
     }
     set label(newLabel: string) {
         this.setAttr("label", newLabel);
     }
     get placeholder() {
-        return this.attrs.get('placeholder')[0];     
+        return this.getAttr('placeholder', typeof(this._props.placeholder));     
     }
     set placeholder(newPlaceholder: string) {
         this.setAttr("placeholder", newPlaceholder);
     }
     get errorMessage() {
-        return this.attrs.get('errorMessage')[0];     
+        return this.getAttr('errorMessage', typeof(this._props.errorMessage));     
     }
     set errorMessage(newErrorMessage: string) {
         this.setAttr("errorMessage", newErrorMessage);
     }
     get description() {
-        return this.attrs.get('description')[0];     
+        return this.getAttr('description', typeof(this._props.description));     
     }
     set description(newDescription: string) {
         this.setAttr("description", newDescription);
     }
     get multiline() {
-        return this.attrs.get('multiline')[0];     
+        return this.getAttr('multiline', typeof(this._props.multiline));     
     }
     set multiline(newMultiline: boolean) {
         this.setAttr("multiline", newMultiline);
     }
     get required() {
-        return this.attrs.get('required')[0];     
+        return this.getAttr('required', typeof(this._props.required));     
     }
     set required(newRequired: boolean) {
         this.setAttr("required", newRequired);
     }
     get readOnly() {
-        return this.attrs.get('readOnly')[0];     
+        return this.getAttr('readOnly', typeof(this._props.readOnly));     
     }
     set readOnly(newReadOnly: boolean) {
         this.setAttr("readOnly", newReadOnly);
     }
     get autoAdjustHeight() {
-        return this.attrs.get('autoAdjustHeight')[0];     
+        return this.getAttr('autoAdjustHeight', typeof(this._props.autoAdjustHeight));     
     }
     set autoAdjustHeight(newAutoAdjustHeight: boolean) {
         this.setAttr("autoAdjustHeight", newAutoAdjustHeight);
     }
     get borderless() {
-        return this.attrs.get('borderless')[0];     
+        return this.getAttr('borderless', typeof(this._props.borderless));     
     }
     set borderless(newBorderless: boolean) {
         this.setAttr("borderless", newBorderless);
     }
     get underlined() {
-        return this.attrs.get('underlined')[0];     
+        return this.getAttr('underlined', typeof(this._props.underlined));     
     }
     set underlined(newUnderlined: boolean) {
         this.setAttr("underlined", newUnderlined);
     }
     get password() {
-        return this.attrs.get('password')[0];     
+        return this.getAttr('password', typeof(this._props.password));     
     }
     set password(newPassword: boolean) {
         this.setAttr("password", newPassword);
     }
     get align() {
-        return this.attrs.get('align')[0];     
+        return this.getAttr('align', typeof(this._props.align));     
     }
     set align(newAlign: string) {
         this.setAttr("align", newAlign);
     }
     get onChange() {
-        return this.attrs.get('onchange')[0];     
+        return this.getAttr('onchange', typeof(this._props.onchange));     
     }
     set onChange(newOnChange: boolean) {
         this.setAttr("onchange", newOnChange);

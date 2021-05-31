@@ -95,8 +95,8 @@ class Page extends Control {
         return ids;
     }
 
-    add(controls: Control[]) {
-        this._controls.push(...controls);
+    add(controls: Control[] | Control) {   
+        controls instanceof Array ? this._controls.push(...controls) : this._controls.push(controls);
         return this.update();
     }
 

@@ -1,4 +1,4 @@
-const pglet = require("../build/index.js");
+const pglet = require("../dist/index.js");
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -10,7 +10,7 @@ function sleep(ms) {
     await p.clean();
     
     let textObject = new pglet.Text({id: "heading", value: "initial value"});
-    let textboxObject = new pglet.Textbox({value: "Your age", description: "What is your age?"});
+    let textboxObject = new pglet.Textbox({value: "Your age", description: "What is your age?", multiline: true});
     let checkBoxObject = new pglet.Checkbox({value: true, label: "testCheckbox"});
     // let gridColumns = [new pglet.Column({name: "Name", fieldName: "name", sortable: "true"}), new pglet.Column({name: "Age", fieldName: "age", sortable: "true"})];
     // let items = [new pglet.Item({name: "Art Farmer", age: 58}), new pglet.Item({name: "Jim Hall", age: 56}), new pglet.Item({name: "Steve Gadd", age: 42})]
@@ -19,7 +19,7 @@ function sleep(ms) {
     let stackObject = new pglet.Stack({childControls: [textObject, textboxObject, checkBoxObject]});
 
     
-    const id = await p.add([stackObject]);
+    const id = await p.add(stackObject);
     console.log("id: ", id);
     
     let textObject2 = new pglet.Text({value: "New text"});

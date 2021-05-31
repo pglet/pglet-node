@@ -1,4 +1,4 @@
-const pglet = require("../build/build.js");
+const pglet = require("../dist/index.js");
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -11,8 +11,8 @@ function sleep(ms) {
     
     // let progressObject = new pglet.Progress({label: "testProgress", width: "100%"})
     // await p.add(progressObject);
-    // let tablist = [new pglet.Tab({text: "tab1", icon: "Sunny"}), new pglet.Tab({text: "tab2", icon: "Cloudy"})]
-    // await p.add(new pglet.Tabs({tabs: tablist}));
+    let tablist = [new pglet.Tab({text: "tab1", icon: "Sunny"}), new pglet.Tab({text: "tab2", icon: "Cloudy"})]
+    await p.add(new pglet.Tabs({tabs: tablist}));
     // let textObject = new pglet.Text({id: "heading", value: "greeter app test"});
     //let textboxObject = new pglet.Textbox({value: "Your Name", description: "Please provide your name"});
     let toolbarObject = new pglet.Toolbar({
