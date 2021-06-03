@@ -40,7 +40,6 @@ class Textbox extends Control {
         this.setAttr("value", newValue);
     }
     get label() {
-        //return this.getAttr('label', typeof(this._props.label));
         return this.getAttr('label', typeof(this._props.multiline))    
     }
     set label(newLabel: string) {

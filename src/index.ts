@@ -161,6 +161,7 @@ let app = async (...args: any) => {
 
     const pargs = buildArgs("app", args);
     pargs.push("--all-events");
+    console.log("args: ", pargs);
     var child = cp.spawn(pgletExe, pargs);
 
     let url: string;

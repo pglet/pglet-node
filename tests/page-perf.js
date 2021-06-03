@@ -8,7 +8,9 @@ const Button = pglet.Button;
 const Checkbox = pglet.Checkbox;
 const Icon = pglet.Icon;
 
-async function main(page) {
+(async () => {
+    let page = await pglet.page("Performance");
+    await page.clean();
     page.title = "Stress test";
     page.horizontalAlign = 'center';
     await page.update();
@@ -30,7 +32,6 @@ async function main(page) {
     function onSearchHandler() {
         console.log("checkbox value: ", checkBox.value);
     }
-    await page.add([items, checkBox, new Searchbox({onSearch: onSearchHandler, triggerOnChange: true})]);
-}
+    await page.add([new Searchbox({onSearch: onSearchHandler, triggerOnChange: true}), checkBox, items]);
+})()
 
-pglet.app("Performance", main);

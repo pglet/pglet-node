@@ -5,7 +5,7 @@ function sleep(ms) {
 }
 
 (async () => {
-    p = await pglet.page("index", { noWindow: false });
+    p = await pglet.page("differential update", { noWindow: false });
 
     await p.clean();
     
@@ -40,6 +40,8 @@ function sleep(ms) {
     
     while(true) {
         const e = await p.waitEvent();
+        let control = p.getControl(e.target);
+        console.log("control from event loop: ", control);
         console.log(e);
 
     }

@@ -5,12 +5,18 @@ function sleep(ms) {
 }
 
 (async () => {
-    p = await pglet.page("index", { noWindow: false });
+    p = await pglet.page("simple testing", { noWindow: false });
 
     await p.clean();
     
     // let progressObject = new pglet.Progress({label: "testProgress", width: "100%"})
     // await p.add(progressObject);
+
+    function onSearchHandler() {
+        console.log("checkbox value: ", checkBoxObject.value);
+    }
+    let searchBoxObject = new pglet.Searchbox({onSearch: onSearchHandler, triggerOnChange: true})
+    await p.add(searchBoxObject);
     let tablist = [new pglet.Tab({text: "tab1", icon: "Sunny"}), new pglet.Tab({text: "tab2", icon: "Cloudy"})]
     await p.add(new pglet.Tabs({tabs: tablist}));
     // let textObject = new pglet.Text({id: "heading", value: "greeter app test"});
@@ -151,6 +157,8 @@ function sleep(ms) {
     
     while(true) {
         const e = await p.waitEvent();
+        let control = p.getControl(e.target);
+        console.log("control from event loop: ", control);
         console.log(e);
 
     }

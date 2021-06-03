@@ -12,7 +12,7 @@ class Image extends Control {
     }
 
     getControlName() {
-        return "image";
+        return "icon";
     }
 
     /* accessors */ 
