@@ -28,6 +28,7 @@ import Barchart from './Barchart';
 import Piechart from './Piechart';
 import Callout from './Callout';
 import Icon from './Icon';
+import { Event } from './Event';
 import { Linechart, LineData } from './Linechart';
 import { Option, ChoiceGroup } from './ChoiceGroup'
 import { Message, MessageButton } from './Message';
@@ -39,7 +40,7 @@ import { Control}  from './Control';
 import { Connection } from './Connection';
 
 
-const PGLET_VERSION: string = "0.3.1";
+const PGLET_VERSION: string = "0.4.2";
 
 var pgletExe: string = null;
 var _installPromise: any = null;
@@ -240,5 +241,5 @@ function buildArgs(action: string, args: any) {
     return pargs;
 }
 export {
-    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout, Searchbox, Icon
+    app, page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout, Searchbox, Icon, Event
 }

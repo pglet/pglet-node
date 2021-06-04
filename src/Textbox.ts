@@ -22,7 +22,7 @@ class Textbox extends Control {
     _props: TextboxProperties;
     constructor(textboxProps: TextboxProperties) {
         super(textboxProps);
-        //this._props = textboxProps;
+        this._props = textboxProps;
         if (textboxProps.onChangeHandler) {
             super.addEventHandler("change", textboxProps.onChangeHandler);
         }

@@ -38,7 +38,7 @@ class Control {
     
     protected getAttr(key: string, type?: string) {
 
-        let value = this.attrs.get(key)[0];
+        let value = this.attrs.has(key) ? this.attrs.get(key)[0] : undefined;
         if (type == 'boolean' && (value && typeof(value) == "string")) {
             return (value == "true");
         }

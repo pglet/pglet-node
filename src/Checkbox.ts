@@ -21,7 +21,7 @@ class Checkbox extends Control {
 
     /* accessors */ 
     get value() {
-        //return this.attrs.get('value', "boolean")[0]; 
+        //return this.attrs.get('value')[0]; 
         return this.getAttr('value', 'boolean');
     }
     set value(newValue: boolean) {
