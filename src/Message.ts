@@ -21,8 +21,10 @@ interface MessageProperties extends ControlProperties {
 }
 
 class MessageButton extends Control {
+    _props: MessageButtonProperties
     constructor(messageButtonProps: MessageButtonProperties) {
         super(messageButtonProps);
+        this._props = messageButtonProps
     }
 
     getControlName() {
@@ -31,24 +33,26 @@ class MessageButton extends Control {
 
     /* accessors */ 
     get text() {
-        return this.attrs.get('text')[0];     
+        return this.getAttr('text', typeof(this._props.text));     
     }
     set text(newText: string) {
         this.setAttr("text", newText);
     }
     get action() {
-        return this.attrs.get('action')[0];     
+        return this.getAttr('action', typeof(this._props.action));     
     }
     set action(newAction: string) {
         this.setAttr("action", newAction);
     }
 }
 
-class Message extends Control{
+class Message extends Control {
+    _props: MessageProperties
     private _buttons: MessageButton[] = [];
 
     constructor(messageProps: MessageProperties) {
         super(messageProps);
+        this._props = messageProps
         if (messageProps.onDismiss) {
             super.addEventHandler("dismiss", messageProps.onDismiss);
         }
@@ -65,61 +69,61 @@ class Message extends Control{
 
     /* accessors */ 
     get value() {
-        return this.attrs.get('value')[0];     
+        return this.getAttr('value', typeof(this._props.value));     
     }
     set value(newValue: string) {
         this.setAttr("value", newValue);
     }
     get type() {
-        return this.attrs.get('type')[0];     
+        return this.getAttr('type', typeof(this._props.type));     
     }
     set type(newType: string) {
         this.setAttr("type", newType);
     }
     get multiline() {
-        return this.attrs.get('multiline')[0];     
+        return this.getAttr('multiline', typeof(this._props.multiline));     
     }
     set multiline(newMultiline: boolean) {
         this.setAttr("multiline", newMultiline);
     }
     get truncated() {
-        return this.attrs.get('truncated')[0];     
+        return this.getAttr('truncated', typeof(this._props.truncated));     
     }
     set truncated(newTruncated: boolean) {
         this.setAttr("truncated", newTruncated);
     }
     get dismiss() {
-        return this.attrs.get('dismiss')[0];     
+        return this.getAttr('dismiss', typeof(this._props.dismiss));     
     }
     set dismiss(newDismiss: boolean) {
         this.setAttr("dismiss", newDismiss);
     }
     get icon() {
-        return this.attrs.get('icon')[0];     
+        return this.getAttr('icon', typeof(this._props.icon));     
     }
     set icon(newIcon: string) {
         this.setAttr("icon", newIcon);
     }
     get iconColor() {
-        return this.attrs.get('iconColor')[0];     
+        return this.getAttr('iconColor', typeof(this._props.iconColor));     
     }
     set iconColor(newIconColor: string) {
         this.setAttr("iconColor", newIconColor);
     }
     get dismissIcon() {
-        return this.attrs.get('dismissIcon')[0];     
+        return this.getAttr('dismissIcon', typeof(this._props.dismissIcon));     
     }
     set dismissIcon(newDismissIcon: string) {
         this.setAttr("dismissIcon", newDismissIcon);
     }
     get dismissIconColor() {
-        return this.attrs.get('dismissIconColor')[0];     
+        return this.getAttr('dismissIconColor', typeof(this._props.dismissIconColor));     
     }
     set dismissIconColor(newDismissIconColor: string) {
         this.setAttr("dismissIconColor", newDismissIconColor);
     }
     get data() {
-        return this.attrs.get('data')[0];     
+        return this.getAttr('data', typeof(this._props.data));     
     }
     set data(newData: string) {
         this.setAttr("data", newData);

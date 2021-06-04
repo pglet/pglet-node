@@ -10,7 +10,7 @@ interface PiechartProperties extends ControlProperties {
 }
 
 //internal classs
-class Data extends Control{
+class Data extends Control {
     private _points: Point[] = [];
 
     constructor(props) {
@@ -37,10 +37,12 @@ class Data extends Control{
 }
 
 class Piechart extends Control {
+    _props: PiechartProperties
     private _data: Data;
 
     constructor(piechartProps: PiechartProperties) {
         super(piechartProps);
+        this._props = piechartProps
         this._data = new Data({points: piechartProps.points})
     }
 
@@ -59,25 +61,25 @@ class Piechart extends Control {
         this._data.points = newPoints;
     }
     get legend() {
-        return this.attrs.get('legend')[0];     
+        return this.getAttr('legend', typeof(this._props.legend));     
     }
     set legend(newLegend: boolean) {
         this.setAttr("legend", newLegend);
     }
     get tooltips() {
-        return this.attrs.get('tooltips')[0];     
+        return this.getAttr('tooltips', typeof(this._props.tooltips));     
     }
     set tooltips(newTooltips: boolean) {
         this.setAttr("tooltips", newTooltips);
     }
     get innerValue() {
-        return this.attrs.get('innerValue')[0];     
+        return this.getAttr('innerValue', typeof(this._props.innerValue));     
     }
     set innerValue(newInnerValue: number) {
         this.setAttr("innerValue", newInnerValue);
     }
     get innerRadius() {
-        return this.attrs.get('innerRadius')[0];     
+        return this.getAttr('innerRadius', typeof(this._props.innerRadius));     
     }
     set innerRadius(newInnerRadius: number) {
         this.setAttr("innerRadius", newInnerRadius);

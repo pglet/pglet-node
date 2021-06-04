@@ -14,8 +14,10 @@ interface LinkProperties extends ControlProperties {
 }
 
 class Link extends Control {
+    _props: LinkProperties
     constructor(linkProps: LinkProperties) {
         super(linkProps);
+        this._props = linkProps
     }
 
     getControlName() {
@@ -24,55 +26,55 @@ class Link extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.get('value')[0];     
+        return this.getAttr('value', typeof(this._props.value));     
     }
     set value(newValue: string) {
         this.setAttr("value", newValue);
     }
     get url() {
-        return this.attrs.get('url')[0];     
+        return this.getAttr('url', typeof(this._props.url));     
     }
     set url(newUrl: string) {
         this.setAttr("url", newUrl);
     }
     get newWindow() {
-        return this.attrs.get('newWindow')[0];     
+        return this.getAttr('newWindow', typeof(this._props.newWindow));     
     }
     set newWindow(newNewWindow: boolean) {
         this.setAttr("newWindow", newNewWindow);
     }
     get title() {
-        return this.attrs.get('title')[0];     
+        return this.getAttr('title', typeof(this._props.title));     
     }
     set title(newTitle: string) {
         this.setAttr("title", newTitle);
     }
     get size() {
-        return this.attrs.get('size')[0];     
+        return this.getAttr('size', typeof(this._props.size));     
     }
     set size(newSize: string) {
         this.setAttr("size", newSize);
     }
     get bold() {
-        return this.attrs.get('bold')[0];     
+        return this.getAttr('bold', typeof(this._props.bold));     
     }
     set bold(newBold: boolean) {
         this.setAttr("bold", newBold);
     }
     get italic() {
-        return this.attrs.get('italic')[0];     
+        return this.getAttr('italic', typeof(this._props.italic));     
     }
     set italic(newItalic: boolean) {
         this.setAttr("italic", newItalic);
     }
     get pre() {
-        return this.attrs.get('pre')[0];     
+        return this.getAttr('pre', typeof(this._props.pre));     
     }
     set pre(newPre: boolean) {
         this.setAttr("password", newPre);
     }
     get align() {
-        return this.attrs.get('align')[0];     
+        return this.getAttr('align', typeof(this._props.align));     
     }
     set align(newAlign: string) {
         this.setAttr("align", newAlign);

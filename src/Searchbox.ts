@@ -15,8 +15,10 @@ interface SearchboxProperties extends ControlProperties {
 }
 
 class Searchbox extends Control {
+    _props: SearchboxProperties
     constructor(searchboxProps: SearchboxProperties) {
         super(searchboxProps);
+        this._props = searchboxProps
         if (searchboxProps.onChange) {
             super.addEventHandler("change", searchboxProps.onChange);
         }
@@ -37,43 +39,43 @@ class Searchbox extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.get('value')[0];
+        return this.getAttr('value', typeof(this._props.value));
     }
     set value(newValue: string) {
         this.setAttr("value", newValue);
     }
     get placeholder() {
-        return this.attrs.get('placeholder')[0];     
+        return this.getAttr('placeholder', typeof(this._props.placeholder));     
     }
     set placeholder(newPlaceholder: string) {
         this.setAttr("placeholder", newPlaceholder);
     }
     get underlined() {
-        return this.attrs.get('underlined')[0];     
+        return this.getAttr('underlined', typeof(this._props.underlined));     
     }
     set underlined(newUnderlined: boolean) {
         this.setAttr("underlined", newUnderlined);
     }
     get icon() {
-        return this.attrs.get('icon')[0];     
+        return this.getAttr('icon', typeof(this._props.icon));     
     }
     set icon(newIcon: string) {
         this.setAttr("icon", newIcon);
     }
     get iconColor() {
-        return this.attrs.get('iconColor')[0];     
+        return this.getAttr('iconColor', typeof(this._props.iconColor));     
     }
     set iconColor(newIconColor: string) {
         this.setAttr("iconColor", newIconColor);
     }
     get data() {
-        return this.attrs.get('data')[0];     
+        return this.getAttr('data', typeof(this._props.data));     
     }
     set data(newData: string) {
         this.setAttr("data", newData);
     }
     get triggerOnChange() {
-        return this.attrs.get('triggerOnChange')[0];     
+        return this.getAttr('triggerOnChange', typeof(this._props.triggerOnChange));     
     }
     set triggerOnChange(newTriggerOnChange: boolean) {
         this.setAttr("triggerOnChange", newTriggerOnChange);

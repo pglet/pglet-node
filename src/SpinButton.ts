@@ -12,8 +12,10 @@ interface SpinButtonProperties extends ControlProperties {
 }
 
 class SpinButton extends Control {
+    _props: SpinButtonProperties
     constructor(spinButtonProps: SpinButtonProperties) {
         super(spinButtonProps);
+        this._props = spinButtonProps
         if (spinButtonProps.onChange) {
             super.addEventHandler("change", spinButtonProps.onChange);
         }
@@ -25,40 +27,40 @@ class SpinButton extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.get('value')[0];     
+        return this.getAttr('value', typeof(this._props.value));     
     }
     set value(newValue: number) {
         this.setAttr("value", newValue);
     }
     get label() {
-        return this.attrs.get('label')[0];     
+        return this.getAttr('label', typeof(this._props.label));     
     }
     set label(newLabel: string) {
         this.setAttr("label", newLabel);
     }
     get min() {
-        return this.attrs.get('min')[0];     
+        return this.getAttr('min', typeof(this._props.min));     
     }
     set min(newMin: number) {
         this.setAttr("min", newMin);
     }
     get max() {
-        return this.attrs.get('min')[0];     
+        return this.getAttr('min', typeof(this._props.min));     
     }
     set max(newMax: number) {
         this.setAttr("max", newMax);
     }
     get step() {
-        return this.attrs.get('step')[0];     
+        return this.getAttr('step', typeof(this._props.step));     
     }
     set step(newStep: number) {
         this.setAttr("step", newStep);
     }
     get icon() {
-        return this.attrs.get('icon')[0];     
+        return this.getAttr('icon', typeof(this._props.icon));     
     }
     get data() {
-        return this.attrs.get('data')[0];     
+        return this.getAttr('data', typeof(this._props.data));     
     }
     set data(newData: string) {
         this.setAttr("data", newData);

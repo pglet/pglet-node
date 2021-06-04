@@ -28,7 +28,7 @@ interface GridProperties extends ControlProperties {
 }
 
 //internal class
-class Columns extends Control{
+class Columns extends Control {
     private _columns: Column[] = [];
 
     constructor(props) {
@@ -57,11 +57,13 @@ class Columns extends Control{
 
 }
 
-class Column extends Control{
+class Column extends Control {
+    _props: ColumnProperties
     private _childControls: Control[] = [];
 
     constructor(columnProps: ColumnProperties) {
-        super(columnProps); 
+        super(columnProps);
+        this._props = columnProps 
         if (columnProps.onClickAction) {
             super.addEventHandler("click", columnProps.onClickAction);
         }
@@ -79,61 +81,61 @@ class Column extends Control{
 
     /* accessors */ 
     get name() {
-        return this.attrs.get('name')[0];     
+        return this.getAttr('name', typeof(this._props.name));     
     }
     set name(newName: string) {
         this.setAttr("name", newName);
     }
     get icon() {
-        return this.attrs.get('icon')[0];     
+        return this.getAttr('icon', typeof(this._props.icon));     
     }
     set icon(newIcon: string) {
         this.setAttr("icon", newIcon);
     }
     get iconOnly() {
-        return this.attrs.get('iconOnly')[0];     
+        return this.getAttr('iconOnly', typeof(this._props.iconOnly));     
     }
     set iconOnly(newIconOnly: boolean) {
         this.setAttr("iconOnly", newIconOnly);
     }
     get fieldName() {
-        return this.attrs.get('fieldName')[0];     
+        return this.getAttr('fieldName', typeof(this._props.fieldName));     
     }
     set fieldName(newFieldName: string) {
         this.setAttr("fieldName", newFieldName);
     }
     get sortable() {
-        return this.attrs.get('sortable')[0];     
+        return this.getAttr('sortable', typeof(this._props.sortable));     
     }
     set sortable(newSortable: string) {
         this.setAttr("sortable", newSortable);
     }
     get sortField() {
-        return this.attrs.get('sortField')[0];     
+        return this.getAttr('sortField', typeof(this._props.sortField));     
     }
     set sortField(newSortField: string) {
         this.setAttr("sortField", newSortField);
     }
     get sorted() {
-        return this.attrs.get('sorted')[0];     
+        return this.getAttr('sorted', typeof(this._props.sorted));     
     }
     set sorted(newSorted: string) {
         this.setAttr("sorted", newSorted);
     }
     get resizable() {
-        return this.attrs.get('resizable')[0];     
+        return this.getAttr('resizable', typeof(this._props.resizable));     
     }
     set resizable(newResizable: boolean) {
         this.setAttr("resizable", newResizable);
     }
     get minWidth() {
-        return this.attrs.get('minWidth')[0];     
+        return this.getAttr('minWidth', typeof(this._props.minWidth));     
     }
     set minWidth(newMinWidth: number) {
         this.setAttr("minWidth", newMinWidth);
     }
     get maxWidth() {
-        return this.attrs.get('maxWidth')[0];     
+        return this.getAttr('maxWidth', typeof(this._props.maxWidth));     
     }
     set maxWidth(newMaxWidth: number) {
         this.setAttr("maxWidth", newMaxWidth);
@@ -145,7 +147,7 @@ interface ItemObject {
 }
 
 //internal class
-class Items extends Control{
+class Items extends Control {
     private _items: Item[] = [];
 
     constructor(props) {
@@ -185,7 +187,7 @@ class Items extends Control{
 }
 
 // internal class
-class Item extends Control{
+class Item extends Control {
     constructor(props) {
          super(props);  
     }
@@ -196,11 +198,13 @@ class Item extends Control{
 }
 
 class Grid extends Control {
+    _props: GridProperties
     private _columns: Columns;
     private _items: Items;
 
     constructor(gridProps: GridProperties) {
         super(gridProps);
+        this._props = gridProps
         this._columns = new Columns({columns: gridProps.columns});
         this._items = new Items({items: gridProps.items});
         if (gridProps.onItemInvoke) {
@@ -220,25 +224,25 @@ class Grid extends Control {
 
     /* accessors */ 
     get selection() {
-        return this.attrs.get('selection')[0];     
+        return this.getAttr('selection', typeof(this._props.selection));     
     }
     set selection(newSelection: string) {
         this.setAttr("selection", newSelection);
     }
     get compact() {
-        return this.attrs.get('compact')[0];     
+        return this.getAttr('compact', typeof(this._props.compact));     
     }
     set compact(newCompact: boolean) {
         this.setAttr("compact", newCompact);
     }
     get headerVisible() {
-        return this.attrs.get('headerVisible')[0];     
+        return this.getAttr('headerVisible', typeof(this._props.headerVisible));     
     }
     set headerVisible(newHeaderVisible: boolean) {
         this.setAttr("headerVisible", newHeaderVisible);
     }
     get shimmerLines() {
-        return this.attrs.get('shimmerLines')[0];     
+        return this.getAttr('shimmerLines', typeof(this._props.shimmerLines));     
     }
     set shimmerLines(newShimmerLines: number) {
         this.setAttr("shimmerLines", newShimmerLines);

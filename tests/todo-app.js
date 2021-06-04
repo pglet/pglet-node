@@ -21,7 +21,7 @@ async function addNewTask() {
     
 } 
 (async () => {
-    let p = await pglet.page("index", { noWindow: false });
+    let p = await pglet.page("TodoApp", { noWindow: false });
     // p.update("index", { title: "Node TODO with pglet", horizontalAlign: "center"})
     await p.add(new pglet.Stack({width: "70%", 
             childControls: [

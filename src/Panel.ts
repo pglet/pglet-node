@@ -41,10 +41,12 @@ class Footer extends Control {
 }
 
 class Panel extends Control {
+    _props: PanelProperties
     private _footer: Footer;
 
     constructor(panelProps: PanelProperties) {
         super(panelProps);
+        this._props = panelProps
         if (panelProps.onDismiss) {
             super.addEventHandler("dismiss", panelProps.onDismiss);
         }
@@ -60,49 +62,49 @@ class Panel extends Control {
 
     /* accessors */ 
     get open() {
-        return this.attrs.get('open')[0];     
+        return this.getAttr('open', typeof(this._props.open));     
     }
     set open(newOpen: boolean) {
         this.setAttr("open", newOpen);
     }
     get title() {
-        return this.attrs.get('title')[0];     
+        return this.getAttr('title', typeof(this._props.title));     
     }
     set title(newTitle: string) {
         this.setAttr("title", newTitle);
     }
     get type() {
-        return this.attrs.get('type')[0];     
+        return this.getAttr('type', typeof(this._props.type));     
     }
     set type(newType: string) {
         this.setAttr("type", newType);
     }
     get autoDismiss() {
-        return this.attrs.get('autoDismiss')[0];     
+        return this.getAttr('autoDismiss', typeof(this._props.autoDismiss));     
     }
     set autoDismiss(newAutoDismiss: boolean) {
         this.setAttr("autoDismiss", newAutoDismiss);
     }
     get lightDismiss() {
-        return this.attrs.get('lightDismiss')[0];     
+        return this.getAttr('lightDismiss', typeof(this._props.lightDismiss));     
     }
     set lightDismiss(newLightDismiss: boolean) {
         this.setAttr("lightDismiss", newLightDismiss);
     }
     get width() {
-        return this.attrs.get('width')[0];     
+        return this.getAttr('width', typeof(this._props.width));     
     }
     set width(newWidth: string) {
         this.setAttr("width", newWidth);
     }
     get blocking() {
-        return this.attrs.get('blocking')[0];     
+        return this.getAttr('blocking', typeof(this._props.blocking));     
     }
     set blocking(newBlocking: boolean) {
         this.setAttr("blocking", newBlocking);
     }
     get data() {
-        return this.attrs.get('data')[0];     
+        return this.getAttr('data', typeof(this._props.data));     
     }
     set data(newData: string) {
         this.setAttr("data", newData);

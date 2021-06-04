@@ -8,7 +8,7 @@ interface BarchartProperties extends ControlProperties {
 }
 
 //internal class
-class Data extends Control{
+class Data extends Control {
     private _points: Point[] = [];
 
     constructor(props) {
@@ -35,10 +35,12 @@ class Data extends Control{
 }
 
 class Barchart extends Control {
+    _props: BarchartProperties
     private _data: Data;
 
     constructor(barchartProps: BarchartProperties) {
         super(barchartProps);
+        this._props = barchartProps
         this._data = new Data({points: barchartProps.points})
     }
 
@@ -57,13 +59,13 @@ class Barchart extends Control {
         this._data.points = newPoints;
     }
     get tooltips() {
-        return this.attrs.get('tooltips')[0];     
+        return this.getAttr('tooltips', typeof(this._props.tooltips));     
     }
     set tooltips(newTooltips: boolean) {
         this.setAttr("tooltips", newTooltips);
     }
     get dataMode() {
-        return this.attrs.get('dataMode')[0];     
+        return this.getAttr('dataMode', typeof(this._props.dataMode));     
     }
     set dataMode(newDataMode: string) {
         this.setAttr("dataMode", newDataMode);

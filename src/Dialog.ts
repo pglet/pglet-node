@@ -45,11 +45,13 @@ class Footer extends Control {
 }
 
 class Dialog extends Control {
+    _props: DialogProperties
     private _footer: Footer;
     private _childControls: Control[] = [];
 
     constructor(dialogProps: DialogProperties) {
         super(dialogProps);
+        this._props = dialogProps
         if (dialogProps.onDismiss) {
             super.addEventHandler("dismiss", dialogProps.onDismiss);
         }
@@ -68,67 +70,67 @@ class Dialog extends Control {
 
     /* accessors */ 
     get open() {
-        return this.attrs.get('open')[0];     
+        return this.getAttr('open', typeof(this._props.open));     
     }
     set open(newOpen: boolean) {
         this.setAttr("open", newOpen);
     }
     get title() {
-        return this.attrs.get('title')[0];     
+        return this.getAttr('title', typeof(this._props.title));     
     }
     set title(newTitle: string) {
         this.setAttr("title", newTitle);
     }
     get subText() {
-        return this.attrs.get('subText')[0];     
+        return this.getAttr('subText', typeof(this._props.subText));     
     }
     set subText(newSubText: string) {
         this.setAttr("subText", newSubText);
     }
     get autoDismiss() {
-        return this.attrs.get('autoDismiss')[0];     
+        return this.getAttr('autoDismiss', typeof(this._props.autoDismiss));     
     }
     set autoDismiss(newAutoDismiss: boolean) {
         this.setAttr("autoDismiss", newAutoDismiss);
     }
     get largeHeader() {
-        return this.attrs.get('largeHeader')[0];     
+        return this.getAttr('largeHeader', typeof(this._props.largeHeader));     
     }
     set largeHeader(newLargeHeader: boolean) {
         this.setAttr("largeHeader", newLargeHeader);
     }
     get width() {
-        return this.attrs.get('width')[0];     
+        return this.getAttr('width', typeof(this._props.width));     
     }
     set width(newWidth: string) {
         this.setAttr("width", newWidth);
     }
     get maxWidth() {
-        return this.attrs.get('maxWidth')[0];     
+        return this.getAttr('maxWidth', typeof(this._props.maxWidth));     
     }
     set maxWidth(newMaxWidth: string) {
         this.setAttr("maxWidth", newMaxWidth);
     }
     get height() {
-        return this.attrs.get('height')[0];     
+        return this.getAttr('height', typeof(this._props.height));     
     }
     set height(newHeight: string) {
         this.setAttr("height", newHeight);
     }
     get fixedTop() {
-        return this.attrs.get('fixedTop')[0];     
+        return this.getAttr('fixedTop', typeof(this._props.fixedTop));     
     }
     set fixedTop(newFixedTop: boolean) {
         this.setAttr("fixedTop", newFixedTop);
     }
     get blocking() {
-        return this.attrs.get('blocking')[0];     
+        return this.getAttr('blocking', typeof(this._props.blocking));     
     }
     set blocking(newBlocking: boolean) {
         this.setAttr("blocking", newBlocking);
     }
     get data() {
-        return this.attrs.get('data')[0];     
+        return this.getAttr('data', typeof(this._props.data));     
     }
     set data(newData: string) {
         this.setAttr("data", newData);

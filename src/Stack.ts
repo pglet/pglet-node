@@ -13,10 +13,12 @@ interface StackProperties extends ControlProperties {
 }
 
 class Stack extends Control {
+    _props: StackProperties
     private _childControls: Control[] = [];
 
     constructor(stackProps: StackProperties) {
         super(stackProps);
+        this._props = stackProps
         if (stackProps.childControls && stackProps.childControls.length > 0) {
             this._childControls.push(...stackProps.childControls)
         }
@@ -37,43 +39,43 @@ class Stack extends Control {
         this._childControls.push(...ctrl);
     }
     get horizontal() {
-        return this.attrs.get('horizontal')[0];     
+        return this.getAttr('horizontal', typeof(this._props.horizontal));     
     }
     set horizontal(newHorizontal: boolean) {
         this.setAttr("horizontal", newHorizontal);
     }
     get horizontalAlign() {
-        return this.attrs.get('horizontalAlign')[0];     
+        return this.getAttr('horizontalAlign', typeof(this._props.horizontalAlign));     
     }
     set horizontalAlign(newHorizontalAlign: string) {
         this.setAttr("horizontalAlign", newHorizontalAlign);
     }
     get verticalFill() {
-        return this.attrs.get('verticalFill')[0];     
+        return this.getAttr('verticalFill', typeof(this._props.verticalFill));     
     }
     set verticalFill(newVerticalFill: boolean) {
         this.setAttr("verticalFill", newVerticalFill);
     }
     get verticalAlign() {
-        return this.attrs.get('verticalAlign')[0];     
+        return this.getAttr('verticalAlign', typeof(this._props.verticalAlign));     
     }
     set verticalAlign(newVerticalAlign: string) {
         this.setAttr("verticalAlign", newVerticalAlign);
     }
     get gap() {
-        return this.attrs.get('gap')[0];     
+        return this.getAttr('gap', typeof(this._props.gap));     
     }
     set gap(newGap: string) {
         this.setAttr("gap", newGap);
     }
     get wrap() {
-        return this.attrs.get('wrap')[0];     
+        return this.getAttr('wrap', typeof(this._props.wrap));     
     }
     set wrap(newWrap: string) {
         this.setAttr("wrap", newWrap);
     }
     get onSubmit() {
-        return this.attrs.get('onSubmit')[0];     
+        return this.getAttr('onSubmit', typeof(this._props.onSubmit));     
     }
     set onSubmit(newOnSubmit: boolean) {
         this.setAttr("onSubmit", newOnSubmit);

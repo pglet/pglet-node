@@ -42,10 +42,12 @@ class Data extends Control{
 }
 
 class VerticalBarchart extends Control {
+    _props: VerticalBarchartProperties
     private _data: Data;
 
     constructor(verticalBarchartProps: VerticalBarchartProperties) {
         super(verticalBarchartProps);
+        this._props = verticalBarchartProps
         this._data = new Data({points: verticalBarchartProps.points})
     }
 
@@ -64,55 +66,55 @@ class VerticalBarchart extends Control {
         this._data.points = newPoints;
     }
     get legend() {
-        return this.attrs.get('legend')[0];     
+        return this.getAttr('legend', typeof(this._props.legend));     
     }
     set legend(newLegend: boolean) {
         this.setAttr("legend", newLegend);
     }
     get tooltips() {
-        return this.attrs.get('tooltips')[0];     
+        return this.getAttr('tooltips', typeof(this._props.tooltips));     
     }
     set tooltips(newTooltips: boolean) {
         this.setAttr("tooltips", newTooltips);
     }
     get barWidth() {
-        return this.attrs.get('barWidth')[0];     
+        return this.getAttr('barWidth', typeof(this._props.barWidth));     
     }
     set barWidth(newBarWidth: number) {
         this.setAttr("barWidth", newBarWidth);
     }
     get colors() {
-        return this.attrs.get('colors')[0];     
+        return this.getAttr('colors', typeof(this._props.colors));     
     }
     set colors(newColors: string) {
         this.setAttr("colors", newColors);
     }
     get yMin() {
-        return this.attrs.get('yMin')[0];     
+        return this.getAttr('yMin', typeof(this._props.yMin));     
     }
     set yMin(newYMin: number) {
         this.setAttr("yMin", newYMin);
     }
     get yMax() {
-        return this.attrs.get('yMax')[0];     
+        return this.getAttr('yMax', typeof(this._props.yMax));     
     }
     set yMax(newYMax: number) {
         this.setAttr("yMax", newYMax);
     }
     get yTicks() {
-        return this.attrs.get('yTicks')[0];     
+        return this.getAttr('yTicks', typeof(this._props.yTicks));     
     }
     set yTicks(newYTicks: number) {
         this.setAttr("yTicks", newYTicks);
     }
     get yFormat() {
-        return this.attrs.get('yFormat')[0];     
+        return this.getAttr('yFormat', typeof(this._props.yFormat));     
     }
     set yFormat(newYFormat: string) {
         this.setAttr("yFormat", newYFormat);
     }
     get xType() {
-        return this.attrs.get('xType')[0];     
+        return this.getAttr('xType', typeof(this._props.xType));     
     }
     set xType(newXType: string) {
         this.setAttr("xType", newXType);

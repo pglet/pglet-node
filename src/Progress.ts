@@ -7,8 +7,10 @@ interface ProgressProperties extends ControlProperties {
 }
 
 class Progress extends Control {
+    _props: ProgressProperties
     constructor(progressProps: ProgressProperties) {
         super(progressProps);
+        this._props = progressProps
     }
 
     getControlName() {
@@ -17,19 +19,19 @@ class Progress extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.get('value')[0];
+        return this.getAttr('value', typeof(this._props.value));
     }
     set value(newValue: number) {
         this.setAttr("value", newValue);
     }
     get label() {
-        return this.attrs.get('label')[0];     
+        return this.getAttr('label', typeof(this._props.label));     
     }
     set label(newLabel: string) {
         this.setAttr("label", newLabel);
     }
     get description() {
-        return this.attrs.get('description')[0];     
+        return this.getAttr('description', typeof(this._props.description));     
     }
     set description(newDescription: string) {
         this.setAttr("description", newDescription);

@@ -12,9 +12,11 @@ interface PointProperties extends ControlProperties {
     yTooltip?: string,
 }
 
-class Point extends Control{
+class Point extends Control {
+    _props: PointProperties
     constructor(pointProps: PointProperties) {
-        super(pointProps);    
+        super(pointProps);
+        this._props = pointProps    
     }
 
     getControlName() {
@@ -23,55 +25,55 @@ class Point extends Control{
 
     /* accessors */ 
     get x() {
-        return this.attrs.get('x')[0];     
+        return this.getAttr('x', typeof(this._props.x));     
     }
     set x(newX: number) {
         this.setAttr("x", newX);
     }
     get y() {
-        return this.attrs.get('y')[0];     
+        return this.getAttr('y', typeof(this._props.y));     
     }
     set y(newY: number) {
         this.setAttr("y", newY);
     }
     get value() {
-        return this.attrs.get('value')[0];     
+        return this.getAttr('value', typeof(this._props.value));     
     }
     set value(newValue: number) {
         this.setAttr("value", newValue);
     }
     get tick() {
-        return this.attrs.get('tick')[0];     
+        return this.getAttr('tick', typeof(this._props.tick));     
     }
     set tick(newTick: number) {
         this.setAttr("tick", newTick);
     }
     get legend() {
-        return this.attrs.get('legend')[0];     
+        return this.getAttr('legend', typeof(this._props.legend));     
     }
     set legend(newLegend: string) {
         this.setAttr("legend", newLegend);
     }
     get color() {
-        return this.attrs.get('color')[0];     
+        return this.getAttr('color', typeof(this._props.color));     
     }
     set color(newColor: string) {
         this.setAttr("color", newColor);
     }
     get tooltip() {
-        return this.attrs.get('tooltip')[0];     
+        return this.getAttr('tooltip', typeof(this._props.tooltip));     
     }
     set tooltip(newTooltip: number) {
         this.setAttr("tooltip", newTooltip);
     }
     get xTooltip() {
-        return this.attrs.get('xTooltip')[0];     
+        return this.getAttr('xTooltip', typeof(this._props.xTooltip));     
     }
     set xTooltip(newXTooltip: string) {
         this.setAttr("xTooltip", newXTooltip);
     }
     get yTooltip() {
-        return this.attrs.get('yTooltip')[0];     
+        return this.getAttr('yTooltip', typeof(this._props.yTooltip));     
     }
     set yTooltip(newYTooltip: string) {
         this.setAttr("yTooltip", newYTooltip);

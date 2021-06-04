@@ -9,8 +9,10 @@ interface ImageProperties extends ControlProperties {
 }
 
 class Image extends Control {
+    _props: ImageProperties
     constructor(imageProps: ImageProperties) {
         super(imageProps);
+        this._props = imageProps
     }
 
     getControlName() {
@@ -19,31 +21,31 @@ class Image extends Control {
 
     /* accessors */ 
     get src() {
-        return this.attrs.get('src')[0];     
+        return this.getAttr('src', typeof(this._props.src));     
     }
     set src(newSrc: string) {
         this.setAttr("src", newSrc);
     }
     get alt() {
-        return this.attrs.get('alt')[0];     
+        return this.getAttr('alt', typeof(this._props.alt));     
     }
     set alt(newAlt: string) {
         this.setAttr("alt", newAlt);
     }
     get title() {
-        return this.attrs.get('title')[0];     
+        return this.getAttr('title', typeof(this._props.title));     
     }
     set title(newTitle: string) {
         this.setAttr("title", newTitle);
     }
     get fit() {
-        return this.attrs.get('fit')[0];     
+        return this.getAttr('fit', typeof(this._props.fit));     
     }
     set fit(newFit: string) {
         this.setAttr("fit", newFit);
     }
     get maximizeFrame() {
-        return this.attrs.get('maximizeFrame')[0];     
+        return this.getAttr('maximizeFrame', typeof(this._props.maximizeFrame));     
     }
     set maximizeFrame(newMaximizeFrame: boolean) {
         this.setAttr("maximizeFrame", newMaximizeFrame);

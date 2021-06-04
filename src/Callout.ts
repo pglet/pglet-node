@@ -15,10 +15,12 @@ interface CalloutProperties extends ControlProperties {
 }
 
 class Callout extends Control {
+    _props: CalloutProperties
     private _controls: Control[] = [];
 
     constructor(calloutProps: CalloutProperties) {
         super(calloutProps);
+        this._props = calloutProps
         if (calloutProps.onDismiss) {
             super.addEventHandler("dismiss", calloutProps.onDismiss);
         }
@@ -44,55 +46,55 @@ class Callout extends Control {
         this._controls = newControls 
     }
     get target() {
-        return this.attrs.get('target')[0];     
+        return this.getAttr('target', typeof(this._props.target));     
     }
     set target(newTarget: string) {
         this.setAttr("target", newTarget);
     }
     get position() {
-        return this.attrs.get('position')[0];     
+        return this.getAttr('position', typeof(this._props.position));     
     }
     set position(newPosition: string) {
         this.setAttr("position", newPosition);
     }
     get gap() {
-        return this.attrs.get('gap')[0];     
+        return this.getAttr('gap', typeof(this._props.gap));     
     }
     set gap(newGap: number) {
         this.setAttr("gap", newGap);
     }
     get beak() {
-        return this.attrs.get('beak')[0];     
+        return this.getAttr('beak', typeof(this._props.beak));     
     }
     set beak(newBeak: boolean) {
         this.setAttr("beak", newBeak);
     }
     get beakWidth() {
-        return this.attrs.get('beakWidth')[0];     
+        return this.getAttr('beakWidth', typeof(this._props.beakWidth));     
     }
     set beakWidth(newBeakWidth: number) {
         this.setAttr("beakWidth", newBeakWidth);
     }
     get pagePadding() {
-        return this.attrs.get('pagePadding')[0];     
+        return this.getAttr('pagePadding', typeof(this._props.pagePadding));     
     }
     set pagePadding(newPagePadding: number) {
         this.setAttr("pagePadding", newPagePadding);
     }
     get focus() {
-        return this.attrs.get('focus')[0];     
+        return this.getAttr('focus', typeof(this._props.focus));     
     }
     set focus(newFocus: boolean) {
         this.setAttr("focus", newFocus);
     }
     get cover() {
-        return this.attrs.get('cover')[0];     
+        return this.getAttr('cover', typeof(this._props.cover));     
     }
     set cover(newCover: boolean) {
         this.setAttr("cover", newCover);
     }
     get visible() {
-        return this.attrs.get('visible')[0];     
+        return this.getAttr('visible', typeof(this._props.visible));     
     }
     set visible(newVisible: boolean) {
         this.setAttr("visible", newVisible);

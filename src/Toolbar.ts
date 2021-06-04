@@ -22,7 +22,7 @@ interface ToolbarProperties extends ControlProperties {
 }
 
 //internal class
-class Overflow extends Control{
+class Overflow extends Control {
     private _overflowItems: ToolbarItem[] = [];
 
     constructor(props) {
@@ -46,7 +46,7 @@ class Overflow extends Control{
 }
 
 //internal class
-class Far extends Control{
+class Far extends Control {
     private _farItems: ToolbarItem[] = [];
 
     constructor(props) {
@@ -69,11 +69,13 @@ class Far extends Control{
     }
 }
 
-class ToolbarItem extends Control{
+class ToolbarItem extends Control {
+    _props: ToolbarItemProperties
     private _childControls: Control[] = [];
 
     constructor(toolbarItemProps: ToolbarItemProperties) {
-        super(toolbarItemProps); 
+        super(toolbarItemProps);
+        this._props = toolbarItemProps 
         if (toolbarItemProps.onClick) {
             super.addEventHandler("click", toolbarItemProps.onClick);
         }
@@ -91,55 +93,55 @@ class ToolbarItem extends Control{
 
     /* accessors */ 
     get text() {
-        return this.attrs.get('text')[0];     
+        return this.getAttr('text', typeof(this._props.text));     
     }
     set text(newText: string) {
         this.setAttr("text", newText);
     }
     get secondaryText() {
-        return this.attrs.get('secondaryText')[0];     
+        return this.getAttr('secondaryText', typeof(this._props.secondaryText));     
     }
     set secondaryText(newSecondaryText: string) {
         this.setAttr("secondaryText", newSecondaryText);
     }
     get url() {
-        return this.attrs.get('url')[0];     
+        return this.getAttr('url', typeof(this._props.url));     
     }
     set url(newUrl: string) {
         this.setAttr("url", newUrl);
     }
     get newWindow() {
-        return this.attrs.get('newWindow')[0];     
+        return this.getAttr('newWindow', typeof(this._props.newWindow));     
     }
     set newWindow(newNewWindow: boolean) {
         this.setAttr("newWindow", newNewWindow);
     }
     get icon() {
-        return this.attrs.get('icon')[0];     
+        return this.getAttr('icon', typeof(this._props.icon));     
     }
     set icon(newIcon: string) {
         this.setAttr("icon", newIcon);
     }
     get iconColor() {
-        return this.attrs.get('iconColor')[0];     
+        return this.getAttr('iconColor', typeof(this._props.iconColor));     
     }
     set iconColor(newIconColor: string) {
         this.setAttr("iconColor", newIconColor);
     }
     get iconOnly() {
-        return this.attrs.get('iconOnly')[0];     
+        return this.getAttr('iconOnly', typeof(this._props.iconOnly));     
     }
     set iconOnly(newIconOnly: boolean) {
         this.setAttr("iconOnly", newIconOnly);
     }
     get split() {
-        return this.attrs.get('split')[0];     
+        return this.getAttr('split', typeof(this._props.split));     
     }
     set split(newSplit: boolean) {
         this.setAttr("split", newSplit);
     }
     get divider() {
-        return this.attrs.get('divider')[0];     
+        return this.getAttr('divider', typeof(this._props.divider));     
     }
     set divider(newDivider: boolean) {
         this.setAttr("divider", newDivider);
@@ -147,12 +149,14 @@ class ToolbarItem extends Control{
 }
 
 class Toolbar extends Control {
+    _props: ToolbarProperties
     private _items: ToolbarItem[] = [];
     private _overflow: Overflow;
     private _far: Far;
 
     constructor(toolbarProps: ToolbarProperties) {
         super(toolbarProps);
+        this._props = toolbarProps
         this._overflow = new Overflow({items: toolbarProps.overflow});
         this._far = new Far({items: toolbarProps.far});
         this._items.push(...toolbarProps.items);
@@ -168,7 +172,7 @@ class Toolbar extends Control {
 
     /* accessors */ 
     get inverted() {
-        return this.attrs.get('inverted')[0];     
+        return this.getAttr('inverted', typeof(this._props.inverted));     
     }
     set inverted(newInverted: boolean) {
         this.setAttr("inverted", newInverted);

@@ -7,8 +7,10 @@ interface ImageProperties extends ControlProperties {
 }
 
 class Image extends Control {
+    _props: ImageProperties
     constructor(imageProps: ImageProperties) {
         super(imageProps);
+        this._props = imageProps
     }
 
     getControlName() {
@@ -17,19 +19,19 @@ class Image extends Control {
 
     /* accessors */ 
     get name() {
-        return this.attrs.get('name')[0];     
+        return this.getAttr('name', typeof(this._props.name));     
     }
     set name(newName: string) {
         this.setAttr("name", newName);
     }
     get color() {
-        return this.attrs.get('color')[0];     
+        return this.getAttr('color', typeof(this._props.color));     
     }
     set color(newColor: string) {
         this.setAttr("color", newColor);
     }
     get size() {
-        return this.attrs.get('size')[0];     
+        return this.getAttr('size', typeof(this._props.size));     
     }
     set size(newSize: string) {
         this.setAttr("size", newSize);

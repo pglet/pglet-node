@@ -7,8 +7,10 @@ interface SpinnerProperties extends ControlProperties {
 }
 
 class Spinner extends Control {
+    _props: SpinnerProperties
     constructor(spinnerProps: SpinnerProperties) {
         super(spinnerProps);
+        this._props = spinnerProps
     }
 
     getControlName() {
@@ -17,19 +19,19 @@ class Spinner extends Control {
 
     /* accessors */ 
     get size() {
-        return this.attrs.get('size')[0];
+        return this.getAttr('size', typeof(this._props.size));
     }
     set size(newSize: string) {
         this.setAttr("size", newSize);
     }
     get label() {
-        return this.attrs.get('label')[0];     
+        return this.getAttr('label', typeof(this._props.label));     
     }
     set label(newLabel: string) {
         this.setAttr("label", newLabel);
     }
     get labelPosition() {
-        return this.attrs.get('labelPosition')[0];     
+        return this.getAttr('labelPosition', typeof(this._props.labelPosition));     
     }
     set labelPosition(newLabelPosition: string) {
         this.setAttr("labelPosition", newLabelPosition);

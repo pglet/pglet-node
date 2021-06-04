@@ -11,8 +11,10 @@ interface ToggleProperties extends ControlProperties {
 }
 
 class Toggle extends Control {
+    _props: ToggleProperties
     constructor(toggleProps: ToggleProperties) {
         super(toggleProps);
+        this._props = toggleProps
         if (toggleProps.onChange) {
             super.addEventHandler("change", toggleProps.onChange);
         }
@@ -24,37 +26,37 @@ class Toggle extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.get('value')[0];     
+        return this.getAttr('value', typeof(this._props.value));     
     }
     set value(newValue: boolean) {
         this.setAttr("value", newValue);
     }
     get label() {
-        return this.attrs.get('label')[0];     
+        return this.getAttr('label', typeof(this._props.label));     
     }
     set label(newLabel: string) {
         this.setAttr("label", newLabel);
     }
     get inline() {
-        return this.attrs.get('inline')[0];     
+        return this.getAttr('inline', typeof(this._props.inline));     
     }
     set inline(newInline: boolean) {
         this.setAttr("inline", newInline);
     }
     get onText() {
-        return this.attrs.get('onText')[0];     
+        return this.getAttr('onText', typeof(this._props.onText));     
     }
     set onText(newOnText: string) {
         this.setAttr("onText", newOnText);
     }
     get offText() {
-        return this.attrs.get('offText')[0];     
+        return this.getAttr('offText', typeof(this._props.offText));     
     }
     set offText(newOffText: string) {
         this.setAttr("offText", newOffText);
     }
     get data() {
-        return this.attrs.get('data')[0];     
+        return this.getAttr('data', typeof(this._props.data));     
     }
     set data(newData: string) {
         this.setAttr("data", newData);

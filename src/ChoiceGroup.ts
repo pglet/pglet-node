@@ -16,8 +16,10 @@ interface ChoiceGroupProperties extends ControlProperties {
 }
 
 class Option extends Control {
+    _props: OptionProperties
     constructor(optionProps: OptionProperties) {
         super(optionProps);
+        this._props = optionProps
     }
 
     getControlName() {
@@ -26,36 +28,38 @@ class Option extends Control {
 
     /* accessors */ 
     get action() {
-        return this.attrs.get('action')[0];     
+        return this.getAttr('key', typeof(this._props.key));     
     }
-    set action(newAction: string) {
-        this.setAttr("action", newAction);
+    set action(newKey: string) {
+        this.setAttr("key", newKey);
     }
     get text() {
-        return this.attrs.get('text')[0];     
+        return this.getAttr('text', typeof(this._props.text));     
     }
     set text(newText: string) {
         this.setAttr("text", newText);
     }
     get icon() {
-        return this.attrs.get('icon')[0];     
+        return this.getAttr('icon', typeof(this._props.icon));     
     }
     set icon(newIcon: string) {
         this.setAttr("icon", newIcon);
     }
     get iconColor() {
-        return this.attrs.get('iconColor')[0];     
+        return this.getAttr('iconColor', typeof(this._props.iconColor));     
     }
     set iconColor(newIconColor: string) {
         this.setAttr("iconColor", newIconColor);
     }
 }
 
-class ChoiceGroup extends Control{
+class ChoiceGroup extends Control {
+    _props: ChoiceGroupProperties
     private _options: Option[] = [];
 
     constructor(choiceGroupProps: ChoiceGroupProperties) {
         super(choiceGroupProps);
+        this._props = choiceGroupProps
         if (choiceGroupProps.onChange) {
             super.addEventHandler("change", choiceGroupProps.onChange);
         }
@@ -71,19 +75,19 @@ class ChoiceGroup extends Control{
 
     /* accessors */ 
     get value() {
-        return this.attrs.get('value')[0];     
+        return this.getAttr('value', typeof(this._props.value));     
     }
     set value(newValue: string) {
         this.setAttr("value", newValue);
     }
     get label() {
-        return this.attrs.get('label')[0];     
+        return this.getAttr('label', typeof(this._props.label));     
     }
     set label(newLabel: string) {
         this.setAttr("label", newLabel);
     }
     get data() {
-        return this.attrs.get('data')[0];     
+        return this.getAttr('data', typeof(this._props.data));     
     }
     set data(newData: string) {
         this.setAttr("data", newData);

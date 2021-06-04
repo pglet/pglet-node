@@ -15,9 +15,11 @@ interface DropdownProperties extends ControlProperties {
     optionValues?: string[]
 }
 
-class Option extends Control{
+class Option extends Control {
+    _props: OptionProperties
     constructor(optionProps: OptionProperties) {
-        super(optionProps);       
+        super(optionProps);
+        this._props = optionProps       
     }
 
     getControlName() {
@@ -26,13 +28,13 @@ class Option extends Control{
 
     /* accessors */ 
     get text() {
-        return this.attrs.get('text')[0];     
+        return this.getAttr('text', typeof(this._props.text));     
     }
     set text(newText: string) {
         this.setAttr("text", newText);
     }
     get key() {
-        return this.attrs.get('key')[0];     
+        return this.getAttr('key', typeof(this._props.key));     
     }
     set key(newKey: string) {
         this.setAttr("key", newKey);
@@ -40,10 +42,12 @@ class Option extends Control{
 }
 
 class Dropdown extends Control {
+    _props: DropdownProperties
     private _options: Option[] = [];
 
     constructor(dropdownProps: DropdownProperties) {
         super(dropdownProps);
+        this._props = dropdownProps
         if (dropdownProps.optionKeys || dropdownProps.optionValues) {
             if (!dropdownProps.optionKeys) {
                 for (let i = 0; i < dropdownProps.optionValues.length; i++) {
@@ -72,31 +76,31 @@ class Dropdown extends Control {
 
     /* accessors */ 
     get value() {
-        return this.attrs.get('value')[0];     
+        return this.getAttr('value', typeof(this._props.value));     
     }
     set value(newValue: string) {
         this.setAttr("value", newValue);
     }
     get label() {
-        return this.attrs.get('label')[0];     
+        return this.getAttr('label', typeof(this._props.label));     
     }
     set label(newLabel: string) {
         this.setAttr("label", newLabel);
     }
     get placeholder() {
-        return this.attrs.get('placeholder')[0];     
+        return this.getAttr('placeholder', typeof(this._props.placeholder));     
     }
     set placeholder(newPlaceholder: string) {
         this.setAttr("placeholder", newPlaceholder);
     }
     get errorMessage() {
-        return this.attrs.get('errorMessage')[0];     
+        return this.getAttr('errorMessage', typeof(this._props.errorMessage));     
     }
     set errorMessage(newErrorMessage: string) {
         this.setAttr("errorMessage", newErrorMessage);
     }
     get data() {
-        return this.attrs.get('data')[0];     
+        return this.getAttr('data', typeof(this._props.data));     
     }
     set data(newData: string) {
         this.setAttr("data", newData);

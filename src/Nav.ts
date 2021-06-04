@@ -19,11 +19,13 @@ interface NavProperties extends ControlProperties {
     onCollapse?: any
 }
 
-class NavItem extends Control{
+class NavItem extends Control {
+    _props: NavItemProperties
     private _items: NavItem[] = [];
 
     constructor(navItemProps: NavItemProperties) {
          super(navItemProps);
+        this._props = navItemProps
          if (navItemProps.items && navItemProps.items.length > 0) {
              navItemProps.items.forEach(item => {
                  this.addItems(item);
@@ -46,43 +48,43 @@ class NavItem extends Control{
 
     /* accessors */
     get key() {
-        return this.attrs.get('key')[0];     
+        return this.getAttr('key', typeof(this._props.key));     
     }
     set key(newKey: string) {
         this.setAttr("key", newKey);
     }
     get text() {
-        return this.attrs.get('text')[0];     
+        return this.getAttr('text', typeof(this._props.text));     
     }
     set text(newText: string) {
         this.setAttr("text", newText);
     }
     get icon() {
-        return this.attrs.get('icon')[0];     
+        return this.getAttr('icon', typeof(this._props.icon));     
     }
     set icon(newIcon: string) {
         this.setAttr("icon", newIcon);
     }
     get iconColor() {
-        return this.attrs.get('iconColor')[0];     
+        return this.getAttr('iconColor', typeof(this._props.iconColor));     
     }
     set iconColor(newIconColor: string) {
         this.setAttr("iconColor", newIconColor);
     }
     get url() {
-        return this.attrs.get('url')[0];     
+        return this.getAttr('url', typeof(this._props.url));     
     }
     set url(newUrl: string) {
         this.setAttr("url", newUrl);
     }
     get newWindow() {
-        return this.attrs.get('newWindow')[0];     
+        return this.getAttr('newWindow', typeof(this._props.newWindow));     
     }
     set newWindow(newNewWindow: boolean) {
         this.setAttr("newWindow", newNewWindow);
     }
     get expanded() {
-        return this.attrs.get('expanded')[0];     
+        return this.getAttr('expanded', typeof(this._props.expanded));     
     }
     set expanded(newExpanded: boolean) {
         this.setAttr("expanded", newExpanded);
@@ -90,10 +92,12 @@ class NavItem extends Control{
 }
 
 class Nav extends Control {
+    _props: NavProperties
     private _items: NavItem[] = [];
     
     constructor(navProps: NavProperties) {
         super(navProps);
+        this._props = navProps
         if (navProps.items && navProps.items.length > 0) {
             navProps.items.forEach(nav => {
                 this.addItems(nav);
@@ -128,7 +132,7 @@ class Nav extends Control {
         this._items = newItems;
     }
     get value() {
-        return this.attrs.get('value')[0];     
+        return this.getAttr('value', typeof(this._props.value));     
     }
     set value(newValue: string) {
         this.setAttr("value", newValue);
