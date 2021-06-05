@@ -22,7 +22,7 @@ class SpinButton extends Control {
     }
 
     getControlName() {
-        return "spinButton";
+        return "spinbutton";
     }
 
     /* accessors */ 

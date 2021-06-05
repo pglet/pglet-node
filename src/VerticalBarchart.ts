@@ -52,7 +52,7 @@ class VerticalBarchart extends Control {
     }
 
     getControlName() {
-        return "verticalBarchart";
+        return "verticalbarchart";
     }
     protected getChildren(): Control[] {
         return [this._data];

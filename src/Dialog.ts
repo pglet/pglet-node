@@ -5,7 +5,7 @@ interface DialogProperties extends ControlProperties {
     title?: string,
     subText?: string,
     autoDismiss?: boolean,
-    largeHeader?: boolean,
+    type?: string,
     width?: string,
     maxWidth?: string,
     height?: string,
@@ -93,11 +93,11 @@ class Dialog extends Control {
     set autoDismiss(newAutoDismiss: boolean) {
         this.setAttr("autoDismiss", newAutoDismiss);
     }
-    get largeHeader() {
-        return this.getAttr('largeHeader', typeof(this._props.largeHeader));     
+    get type() {
+        return this.getAttr('type', typeof(this._props.type));     
     }
-    set largeHeader(newLargeHeader: boolean) {
-        this.setAttr("largeHeader", newLargeHeader);
+    set type(newType: string) {
+        this.setAttr("type", newType);
     }
     get width() {
         return this.getAttr('width', typeof(this._props.width));     

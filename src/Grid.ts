@@ -12,7 +12,6 @@ interface ColumnProperties extends ControlProperties {
     minWidth?: number,
     maxWidth?: number,
     onClick?: boolean,
-    onClickAction?: any,
     childControls?: Control[];
 }
 
@@ -64,9 +63,6 @@ class Column extends Control {
     constructor(columnProps: ColumnProperties) {
         super(columnProps);
         this._props = columnProps 
-        if (columnProps.onClickAction) {
-            super.addEventHandler("click", columnProps.onClickAction);
-        }
         if (columnProps.childControls && columnProps.childControls.length > 0) {
             this._childControls.push(...columnProps.childControls)
         }      

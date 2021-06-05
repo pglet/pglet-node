@@ -6,6 +6,10 @@ interface TextboxProperties extends ControlProperties {
     placeholder?: string,
     errorMessage?: string,
     description?: string,
+    prefix?: string,
+    suffix?: string,
+    icon?: string,
+    iconColor?: string,
     multiline?: boolean,
     required?: boolean,
     readOnly?: boolean,
@@ -62,6 +66,30 @@ class Textbox extends Control {
     }
     set description(newDescription: string) {
         this.setAttr("description", newDescription);
+    }
+    get prefix() {
+        return this.getAttr('prefix', typeof(this._props.prefix));     
+    }
+    set prefix(newPrefix: string) {
+        this.setAttr("prefix", newPrefix);
+    }
+    get suffix() {
+        return this.getAttr('suffix', typeof(this._props.suffix));     
+    }
+    set suffix(newSuffix: string) {
+        this.setAttr("suffix", newSuffix);
+    }
+    get icon() {
+        return this.getAttr('icon', typeof(this._props.icon));     
+    }
+    set icon(newIcon: string) {
+        this.setAttr("icon", newIcon);
+    }
+    get iconColor() {
+        return this.getAttr('iconColor', typeof(this._props.iconColor));     
+    }
+    set iconColor(newIconColor: string) {
+        this.setAttr("iconColor", newIconColor);
     }
     get multiline() {
         return this.getAttr('multiline', typeof(this._props.multiline));     
