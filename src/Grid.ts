@@ -136,6 +136,12 @@ class Column extends Control {
     set maxWidth(newMaxWidth: number) {
         this.setAttr("maxWidth", newMaxWidth);
     }
+    get onClick() {
+        return this.getAttr('onClick', typeof(this._props.onClick));      
+    }
+    set onClick(newOnClick: boolean) {
+        this.setAttr("onClick", newOnClick);     
+    }
 }
 
 interface ItemObject {
@@ -242,6 +248,18 @@ class Grid extends Control {
     }
     set shimmerLines(newShimmerLines: number) {
         this.setAttr("shimmerLines", newShimmerLines);
+    }
+    get onItemInvoke() {
+        return this.getEventHandler("itemInvoke");     
+    }
+    set onItemInvoke(newOnItemInvoke: any) {
+        this.addEventHandler("itemInvoke", newOnItemInvoke);
+    }
+    get onSelect() {
+        return this.getEventHandler("select");     
+    }
+    set onSelect(newOnSelect: any) {
+        this.addEventHandler("select", newOnSelect);
     }
 }
 

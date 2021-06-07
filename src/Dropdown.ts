@@ -12,7 +12,8 @@ interface DropdownProperties extends ControlProperties {
     errorMessage?: string,
     data?: string,
     optionKeys?: string[],
-    optionValues?: string[]
+    optionValues?: string[],
+    onChange: any
 }
 
 class Option extends Control {
@@ -65,6 +66,9 @@ class Dropdown extends Control {
                 }
             }
         }
+        if (dropdownProps.onChange) {
+            super.addEventHandler("change", dropdownProps.onChange);
+        }
     }
 
     getControlName() {
@@ -104,6 +108,12 @@ class Dropdown extends Control {
     }
     set data(newData: string) {
         this.setAttr("data", newData);
+    }
+    get onChange() {
+        return this.getEventHandler("change");     
+    }
+    set onChange(newOnChange: any) {
+        this.addEventHandler("change", newOnChange);
     }
 }
 

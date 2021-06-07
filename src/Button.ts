@@ -110,6 +110,12 @@ class Button extends Control {
     set newWindow(newNewWindow: boolean) {
         this.setAttr("newWindow", newNewWindow);
     }
+    get onClick() {
+        return this.getEventHandler("click");     
+    }
+    set onClick(newOnClick: any) {
+        this.addEventHandler("click", newOnClick);
+    }
 }
 
 export = Button;

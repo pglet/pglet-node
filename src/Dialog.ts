@@ -135,6 +135,12 @@ class Dialog extends Control {
     set data(newData: string) {
         this.setAttr("data", newData);
     }
+    get onDismiss() {
+        return this.getEventHandler("dismiss");     
+    }
+    set onDismiss(newOnDismiss: any) {
+        this.addEventHandler("dismiss", newOnDismiss);
+    }
 }
 
 export = Dialog;

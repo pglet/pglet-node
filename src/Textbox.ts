@@ -146,10 +146,10 @@ class Textbox extends Control {
         this.setAttr("onchange", newOnChange);
     }
     get onChangeHandler() {
-        return this.getEventHandler('onChangeHandler');     
+        return this.getEventHandler('change');     
     }
     set onChangeHandler(newOnChangeHandler: any) {
-        this.addEventHandler ("onChangeHandler", newOnChangeHandler);       
+        this.addEventHandler ("change", newOnChangeHandler);       
     }
 }
 

@@ -80,6 +80,30 @@ class Searchbox extends Control {
     set triggerOnChange(newTriggerOnChange: boolean) {
         this.setAttr("triggerOnChange", newTriggerOnChange);
     }
+    get onChange() {
+        return this.getEventHandler("change");     
+    }
+    set onChange(newOnChange: any) {
+        this.addEventHandler("change", newOnChange);
+    }
+    get onSearch() {
+        return this.getEventHandler("search");     
+    }
+    set onSearch(newOnSearch: any) {
+        this.addEventHandler("search", newOnSearch);
+    }
+    get onEscape() {
+        return this.getEventHandler("escape");     
+    }
+    set onEscape(newOnEscape: any) {
+        this.addEventHandler("escape", newOnEscape);
+    }
+    get onClear() {
+        return this.getEventHandler("clear");     
+    }
+    set onClear(newOnClear: any) {
+        this.addEventHandler("clear", newOnClear);
+    }
 }
 
 export = Searchbox;

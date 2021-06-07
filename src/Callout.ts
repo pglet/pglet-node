@@ -99,6 +99,12 @@ class Callout extends Control {
     set visible(newVisible: boolean) {
         this.setAttr("visible", newVisible);
     }
+    get onDismiss() {
+        return this.getEventHandler("dismiss");     
+    }
+    set onDismiss(newOnDismiss: any) {
+        this.addEventHandler("dismiss", newOnDismiss);
+    }
 }
 
 export = Callout;

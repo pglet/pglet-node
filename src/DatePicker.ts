@@ -71,6 +71,12 @@ class DatePicker extends Control {
     set underlined(newUnderlined: boolean) {
         this.setAttr("underlined", newUnderlined);
     }
+    get onChange() {
+        return this.getEventHandler("change");     
+    }
+    set onChange(newOnChange: any) {
+        this.addEventHandler("change", newOnChange);
+    }
 }
 
 export = DatePicker;

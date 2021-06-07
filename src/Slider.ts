@@ -82,6 +82,12 @@ class Slider extends Control {
     set data(newData: string) {
         this.setAttr("data", newData);
     }
+    get onChange() {
+        return this.getEventHandler("change");     
+    }
+    set onChange(newOnChange: any) {
+        this.addEventHandler("change", newOnChange);
+    }
 }
 
 export = Slider;

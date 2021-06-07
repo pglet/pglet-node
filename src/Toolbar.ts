@@ -146,6 +146,12 @@ class ToolbarItem extends Control {
     set divider(newDivider: boolean) {
         this.setAttr("divider", newDivider);
     }
+    get onClick() {
+        return this.getEventHandler("click");     
+    }
+    set onClick(newOnClick: any) {
+        this.addEventHandler("click", newOnClick);
+    }
 }
 
 class Toolbar extends Control {

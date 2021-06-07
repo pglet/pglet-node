@@ -137,6 +137,24 @@ class Nav extends Control {
     set value(newValue: string) {
         this.setAttr("value", newValue);
     }
+    get onChange() {
+        return this.getEventHandler("change");     
+    }
+    set onChange(newOnChange: any) {
+        this.addEventHandler("change", newOnChange);
+    }
+    get onExpand() {
+        return this.getEventHandler("expand");     
+    }
+    set onExpand(newOnExpand: any) {
+        this.addEventHandler("expand", newOnExpand);
+    }
+    get onCollapse() {
+        return this.getEventHandler("collapse");     
+    }
+    set onCollapse(newOnCollapse: any) {
+        this.addEventHandler("collapse", newOnCollapse);
+    }
 }
 
 export {

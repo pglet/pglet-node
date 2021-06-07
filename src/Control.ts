@@ -159,7 +159,7 @@ class Control {
         diffList.forEach(changeObject => {
             //console.log("change object: ", changeObject);
             if (changeObject.added) {
-                console.log("insert");
+                //console.log("insert");
                 //insert control
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
@@ -169,7 +169,7 @@ class Control {
                 })
             }
             else if (changeObject.removed) {
-                console.log("remove");
+                //console.log("remove");
                 // remove control
                 let ids = [];
                 changeObject.value.forEach(val => {
@@ -182,7 +182,7 @@ class Control {
 
             }
             else {
-                console.log("leave");
+                //console.log("leave");
                 // leave control
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);

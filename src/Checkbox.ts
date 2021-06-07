@@ -41,6 +41,12 @@ class Checkbox extends Control {
     set boxSide(newBoxSide: string) {
         this.setAttr("boxSide", newBoxSide);
     }
+    get onChange() {
+        return this.getEventHandler("change");     
+    }
+    set onChange(newOnChange: any) {
+        this.addEventHandler("change", newOnChange);
+    }
 }
 
 export = Checkbox;

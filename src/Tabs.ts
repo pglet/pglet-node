@@ -102,6 +102,12 @@ class Tabs extends Control {
     set solid(newSolid: boolean) {
         this.setAttr("solid", newSolid);
     }
+    get onChange() {
+        return this.getEventHandler("change");     
+    }
+    set onChange(newOnChange: any) {
+        this.addEventHandler("change", newOnChange);
+    }
 }
 
 export {
