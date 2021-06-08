@@ -52,12 +52,12 @@ class Dropdown extends Control {
         if (dropdownProps.optionKeys || dropdownProps.optionValues) {
             if (!dropdownProps.optionKeys) {
                 for (let i = 0; i < dropdownProps.optionValues.length; i++) {
-                    this._options.push(new Option({key: `key${i}`, text: dropdownProps.optionValues[i]}));
+                    this._options.push(new Option({key: dropdownProps.optionValues[i], text: dropdownProps.optionValues[i]}));
                 }
             } 
             else if (!dropdownProps.optionValues) {
                 for (let i = 0; i < dropdownProps.optionKeys.length; i++) {
-                    this._options.push(new Option({key: `key${i}`, text: dropdownProps.optionKeys[i]}));
+                    this._options.push(new Option({key: dropdownProps.optionKeys[i], text: dropdownProps.optionKeys[i]}));
                 }
             }
             else {

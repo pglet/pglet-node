@@ -47,8 +47,8 @@ class Stack extends Control {
     get childControls() {
         return this._childControls;
     }
-    set childControls(ctrl: Control[]) {
-        this._childControls.push(...ctrl);
+    set childControls(ctrls: Control[]) {
+        this._childControls = ctrls;
     }
     get horizontal() {
         return this.getAttr('horizontal', typeof(this._props.horizontal));     
