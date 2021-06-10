@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "description": "Pglet client for Node.js - easily build interactive web apps in Node.js",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "index.js",
+    "dist",
     "LICENSE",
     "README.md"
   ],
