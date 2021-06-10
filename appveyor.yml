@@ -9,6 +9,7 @@ environment:
 
 init:
 - ps: Install-Product node $env:NODE_VERSION
+- ps: npm install -g typescript
 
 build_script:
 # run tests
