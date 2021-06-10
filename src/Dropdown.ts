@@ -7,13 +7,13 @@ interface OptionProperties extends ControlProperties {
 
 interface DropdownProperties extends ControlProperties {
     value?: string,
-    label?: string
+    label?: string,
     placeholder?: string,
     errorMessage?: string,
     data?: string,
     optionKeys?: string[],
     optionValues?: string[],
-    onChange: any
+    onChange?: any
 }
 
 class Option extends Control {
