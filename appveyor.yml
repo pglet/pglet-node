@@ -44,6 +44,7 @@ build_script:
     $packageJson = Get-Content 'package.json' | ConvertFrom-Json
     $packageJson.version = $ver
     $packageJson | ConvertTo-Json -Depth 20 | Set-Content -Path 'package.json'
+- npm i
 - tsc
 - npm pack
 - IF "%APPVEYOR_REPO_TAG%"=="true" npm publish
