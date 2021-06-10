@@ -210,8 +210,8 @@ function buildArgs(action: string, args: any) {
         pargs.push(pageName);
     }
 
-    if (opts && opts.web) {
-        pargs.push("--web");
+    if (opts && opts.local) {
+        pargs.push("--local");
     }
     
     if (opts && opts.noWindow) {

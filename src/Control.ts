@@ -23,13 +23,13 @@ class Control {
     constructor(controlProps: ControlProperties) {
         this._id = controlProps.id ? controlProps.id : undefined;
         this.attrs = new Map();
-        let excludedAttrs = ["id", "childControls", "onClick", "onChange", "onSearch", "onEscape", "onClear", "onDismiss", "onChangeHandler", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons", "points", "lines", "optionKeys", "optionValues"]
+        let excludedAttrs = ["id", "childControls", "onClick", "onChange", "onSearch", "onEscape", "onClear", "onDismiss", "onChangeHandler", "onSubmit", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons", "points", "lines", "optionKeys", "optionValues"]
         Object.keys(controlProps).forEach(key => {  
             if (excludedAttrs.indexOf(key) < 0) {
                 this.setAttr(key, controlProps[key]);
             }   
         })
-        console.log("attrs: ", this.attrs);
+        // console.log("attrs: ", this.attrs);
     }
 
     getControlName() {
@@ -39,10 +39,12 @@ class Control {
     protected getAttr(key: string, type?: string) {
 
         let value = this.attrs.has(key) ? this.attrs.get(key)[0] : undefined;
+
         if (type == 'boolean' && (value && typeof(value) == "string")) {
             return (value == "true");
         }
         else if (type == "number" && (value && typeof(value) == "string")) {
+            console.log("getAttr float: ", parseFloat(value));
             return parseFloat(value);
         }
         return value;

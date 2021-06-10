@@ -17,7 +17,7 @@ interface MessageProperties extends ControlProperties {
     dismissIconColor?: string,
     data?: string,
     onDismiss?: any,
-    buttons: MessageButton[]
+    buttons?: MessageButton[]
 }
 
 class MessageButton extends Control {
@@ -56,7 +56,9 @@ class Message extends Control {
         if (messageProps.onDismiss) {
             super.addEventHandler("dismiss", messageProps.onDismiss);
         }
-        this._buttons.push(...messageProps.buttons)
+        if (messageProps.buttons && messageProps.buttons.length > 0) {
+            this._buttons.push(...messageProps.buttons)
+        }
     }
 
     getControlName() {

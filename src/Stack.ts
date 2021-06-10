@@ -21,7 +21,7 @@ interface StackProperties extends ControlProperties {
     scrollx?: boolean,
     scrolly?: boolean,
     childControls?: Control[],
-    onSubmit?: boolean,
+    onSubmit?: any,
 }
 
 class Stack extends Control {
@@ -34,6 +34,10 @@ class Stack extends Control {
         if (stackProps.childControls && stackProps.childControls.length > 0) {
             this._childControls.push(...stackProps.childControls)
         }
+        if (stackProps.onSubmit) {
+            this.onSubmit = stackProps.onSubmit;
+            //super.addEventHandler("submit", stackProps.onSubmit);
+        } 
     }
 
     getControlName() {
@@ -165,10 +169,18 @@ class Stack extends Control {
         this.setAttr("scrolly", newScrolly);
     }
     get onSubmit() {
-        return this.getAttr('onSubmit', typeof(this._props.onSubmit));     
+        return this.getEventHandler("submit");     
     }
-    set onSubmit(newOnSubmit: boolean) {
-        this.setAttr("onSubmit", newOnSubmit);
+    set onSubmit(newOnSubmit: any) {
+        this.addEventHandler("submit", newOnSubmit);
+        if (newOnSubmit) {
+            console.log("setting onsubmit attr true");
+            this.setAttr("onsubmit", true);
+        }
+        else {
+            console.log("setting onsubmit attr false");
+            this.setAttr("onsubmit", false);
+        }
     }
 }
 
