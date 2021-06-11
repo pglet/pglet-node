@@ -51,7 +51,7 @@ build_script:
 - npm i
 - tsc
 - npm pack
-- IF "%APPVEYOR_REPO_TAG%"=="true" npm publish
+- IF "%APPVEYOR_REPO_TAG%"=="true" npm publish --access public
 
 test: off
 
