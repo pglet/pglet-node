@@ -6,8 +6,8 @@ image: Visual Studio 2019
 
 environment:
   NODE_VERSION: 12
-  # NPM_TOKEN:
-  #   secure: k2cSmOKcnk4Va2hNea/oVjUCIyWl+iAMMS0ZgxWzXFHQg/0q5f+T7JyKYEIEF56Y
+  NPM_TOKEN:
+    secure: KKb2QlvuxS7HZjQcqDb6BB+iurxXAmUvMbQ5HYp0OzIPL70S4e/SURFKWqxks6AF
 
 init:
 - ps: Install-Product node $env:NODE_VERSION
