@@ -2,10 +2,12 @@ version: 0.1.{build}
 
 skip_branch_with_pr: true
 
+image: Visual Studio 2019
+
 environment:
   NODE_VERSION: 12
-  NPM_TOKEN:
-    secure: k2cSmOKcnk4Va2hNea/oVjUCIyWl+iAMMS0ZgxWzXFHQg/0q5f+T7JyKYEIEF56Y
+  # NPM_TOKEN:
+  #   secure: k2cSmOKcnk4Va2hNea/oVjUCIyWl+iAMMS0ZgxWzXFHQg/0q5f+T7JyKYEIEF56Y
 
 init:
 - ps: Install-Product node $env:NODE_VERSION
@@ -44,7 +46,8 @@ build_script:
     # patch version
     $packageJson = Get-Content 'package.json' | ConvertFrom-Json
     $packageJson.version = $ver
-    $packageJson | ConvertTo-Json -Depth 20 | Set-Content -Path 'package.json'
+    $packageJson | ConvertTo-Json -Depth 20 | Set-Content -Path 'package.json'\
+
 - npm i
 - tsc
 - npm pack
