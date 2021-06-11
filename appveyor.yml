@@ -13,6 +13,7 @@ init:
 
 build_script:
 # run tests
+- tsc --version
 - node --version
 - npm --version
 
