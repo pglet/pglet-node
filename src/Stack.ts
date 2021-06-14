@@ -174,11 +174,9 @@ class Stack extends Control {
     set onSubmit(newOnSubmit: any) {
         this.addEventHandler("submit", newOnSubmit);
         if (newOnSubmit) {
-            console.log("setting onsubmit attr true");
             this.setAttr("onsubmit", true);
         }
         else {
-            console.log("setting onsubmit attr false");
             this.setAttr("onsubmit", false);
         }
     }
