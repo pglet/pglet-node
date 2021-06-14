@@ -44,7 +44,6 @@ class Control {
             return (value == "true");
         }
         else if (type == "number" && (value && typeof(value) == "string")) {
-            console.log("getAttr float: ", parseFloat(value));
             return parseFloat(value);
         }
         return value;
@@ -121,6 +120,7 @@ class Control {
     set margin(newMargin: string) {
         this.setAttr("margin", newMargin);
     }
+
     async update() {
         if (!this._page) {
             throw `Control must be added to the page first.`
@@ -129,6 +129,7 @@ class Control {
             return this._page.update([this]);
         }
     }
+
     populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: String[]) {
         let updateAttrs = this.getCmdAttrs(true);
 
@@ -161,7 +162,6 @@ class Control {
         diffList.forEach(changeObject => {
             //console.log("change object: ", changeObject);
             if (changeObject.added) {
-                //console.log("insert");
                 //insert control
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
@@ -171,7 +171,6 @@ class Control {
                 })
             }
             else if (changeObject.removed) {
-                //console.log("remove");
                 // remove control
                 let ids = [];
                 changeObject.value.forEach(val => {
@@ -184,7 +183,6 @@ class Control {
 
             }
             else {
-                //console.log("leave");
                 // leave control
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
@@ -256,8 +254,6 @@ class Control {
         }
 
         this.attrs.forEach((value, attr) => {
-            //console.log("value, attr: ", value, attr);
-            //let dirty = this.attrs.get(attr)[1];
             let dirty = value[1];
             
             if (update && !dirty) {

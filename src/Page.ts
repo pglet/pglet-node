@@ -70,7 +70,7 @@ class Page extends Control {
         controls.forEach(ctrl => {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
-        console.log("commandList: ", commandList);
+        //console.log("commandList: ", commandList);
         //console.log("control map: ", ...this._index.entries());
         if (commandList.length == 0) {
             return;

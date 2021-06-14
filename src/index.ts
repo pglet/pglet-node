@@ -67,7 +67,7 @@ async function _doInstall() {
 
     if (pgletInPath != null) {
         pgletExe = pgletInPath;
-        console.log("pglet found in PATH:", pgletExe);
+        //console.log("pglet found in PATH:", pgletExe);
         return;
     }
 
@@ -152,7 +152,7 @@ let page = async (...args: any) => {
 let app = async (...args: any) => {
     
     await _install();
-    console.log("pgletExe", pgletExe)
+    //console.log("pgletExe", pgletExe)
     var fn = null;
     if (args.length > 0 && typeof args[args.length - 1] === 'function') {
         fn = args[args.length - 1];
@@ -162,14 +162,14 @@ let app = async (...args: any) => {
 
     const pargs = buildArgs("app", args);
     pargs.push("--all-events");
-    console.log("args: ", pargs);
+
     var child = cp.spawn(pgletExe, pargs);
 
     let url: string;
     let page: Page;
     child.stdout.on('data', (data) => {
 
-        console.log("spawn result: ", decoder.write(Buffer.from(data)));
+        //console.log("spawn result: ", decoder.write(Buffer.from(data)));
         if (!url) {
             url = decoder.write(Buffer.from(data)).trim();
             return;

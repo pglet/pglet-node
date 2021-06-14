@@ -25,9 +25,7 @@ class Callout extends Control {
             super.addEventHandler("dismiss", calloutProps.onDismiss);
         }
         if (calloutProps.childControls) {
-            
             this._controls.push(...calloutProps.childControls);
-            console.log("calloutprops childControls: ", this._controls);
         }
     }
 

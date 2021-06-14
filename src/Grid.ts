@@ -172,12 +172,12 @@ class Items extends Control {
     get items() {
         return this._items;     
     }
+    
     addItem(item: any) {   
         let props: ItemObject = {};
         //let names = Object.getOwnPropertyNames(item);
         //let descriptors = Object.getOwnPropertyDescriptors(item);
         Object.entries(item).forEach(entry => {
-            //console.log("entry: ", entry);
             const [prop, val]: any = entry;
             props[prop] = val;   
         })
