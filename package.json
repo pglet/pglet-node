@@ -1,5 +1,5 @@
 {
-  "name": "@britzkopf/pglet",
+  "name": "pglet",
   "version": "0.1.0",
   "description": "Pglet client for Node.js - easily build interactive web apps in Node.js",
   "main": "dist/index.js",
