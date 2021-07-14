@@ -11,7 +11,7 @@ const pglet = require("pglet");
 
 (async () => {
     let p = await pglet.page();
-    await p.send("add text value='Hello, world!'");
+    await p.add(new pglet.Text({value: "Hello, world!"}););
 })();
 ```
 
@@ -27,7 +27,7 @@ Add `{ web: true }` option to `pglet.page` call:
 
 ```javascript {1}
   let p = await pglet.page({ web: true });
-  await p.send("add text value='Hello, world!'");
+  await p.add(new pglet.Text({value: "Hello, world!"}););
 ```
 
 This time page will be created on [Pglet hosted service](https://pglet.io/docs/pglet-service).
