@@ -11,25 +11,12 @@ const pglet = require("pglet");
 
 (async () => {
     let p = await pglet.page();
-    await p.add(new pglet.Text({value: "Hello, world!"}););
+    await p.add(new pglet.Text({value: "Hello, world!"}));
 })();
 ```
 
 Run the sample above with `node` and in a new browser window you'll get:
 
 ![Sample app in a browser](https://pglet.io/img/docs/quickstart-hello-world.png "Sample app in a browser")
-
-Here is a local page served by an instance of Pglet server started in the background on your computer.
-
-## Make it web
-
-Add `{ web: true }` option to `pglet.page` call:
-
-```javascript {1}
-  let p = await pglet.page({ web: true });
-  await p.add(new pglet.Text({value: "Hello, world!"}););
-```
-
-This time page will be created on [Pglet hosted service](https://pglet.io/docs/pglet-service).
 
 Read [JavaScript tutorial](https://pglet.io/docs/tutorials/javascript) for further information and more examples.
