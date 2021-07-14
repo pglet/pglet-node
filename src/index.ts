@@ -40,7 +40,7 @@ import { Control}  from './Control';
 import { Connection } from './Connection';
 
 
-const PGLET_VERSION: string = "0.4.2";
+const PGLET_VERSION: string = "0.4.6";
 
 var pgletExe: string = null;
 var _installPromise: any = null;

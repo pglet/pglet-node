@@ -1,7 +1,7 @@
 import { Textbox, page } from "../src/index";
 
 async function getPage() {
-    return page({name: "updatetest page", noWindow: true});
+    return page({name: "updatetest page", noWindow: true, local: true});
     
 }
 
