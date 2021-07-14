@@ -228,6 +228,11 @@ function buildArgs(action: string, args: any) {
         pargs.push(opts.token);
     }
 
+    if (opts && opts.permissions) {
+        pargs.push("--permissions");
+        pargs.push(opts.permissions);
+    }    
+
     // if (opts && opts.allEvents) {
     //     pargs.push("--all-events");
     //     pargs.push(opts.token);
