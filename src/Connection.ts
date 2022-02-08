@@ -1,7 +1,8 @@
 import os from 'os';
 import net from 'net';
 import fs from 'fs';
-import { Event } from './Event';
+import { Event as PgletEvent } from './Event';
+import ReconnectingWebSocket, { Event, Options} from 'reconnecting-websocket';
 
 export class Connection {
     private connId = ""
@@ -206,7 +207,7 @@ export class Connection {
         let re = /(?<target>[^\s]+)\s(?<name>[^\s]+)(\s(?<data>.+))*/;
         let match = re.exec(result);
 
-        return new Event(match.groups.target, match.groups.name, match.groups.data);
+        return new PgletEvent(match.groups.target, match.groups.name, match.groups.data);
     }
     
 }

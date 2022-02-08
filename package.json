@@ -33,7 +33,9 @@
     "@types/request": "^2.48.5",
     "compare-versions": "^3.6.0",
     "diff": "^5.0.0",
-    "request": "^2.88.2"
+    "reconnecting-websocket": "^4.4.0",
+    "request": "^2.88.2",
+    "ws": "^8.4.2"
   },
   "devDependencies": {
     "@types/diff": "^5.0.0",
