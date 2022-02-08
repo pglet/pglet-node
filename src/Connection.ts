@@ -2,7 +2,7 @@ import os from 'os';
 import net from 'net';
 import fs from 'fs';
 import { Event as PgletEvent } from './Event';
-import ReconnectingWebSocket, { Event, Options} from 'reconnecting-websocket';
+import ReconnectingWebSocket, { Event, Options } from 'reconnecting-websocket';
 
 export class Connection {
     private connId = ""
@@ -88,7 +88,7 @@ export class Connection {
     }
 
     // wait event pipe for new event
-    waitEvent(): Promise<string | Event> {
+    waitEvent(): Promise<string | PgletEvent> {
         // register for result
 
         return new Promise((resolve, reject) => {

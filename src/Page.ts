@@ -1,7 +1,7 @@
 import { ControlProperties, Control } from './Control'
 import { Alignment } from './Alignment';
 import { Connection } from './Connection';
-import { Event } from './Event';
+import { Event as PgletEvent} from './Event';
 import { ControlEvent } from './ControlEvent';
 
 interface PageProperties extends ControlProperties {
@@ -48,7 +48,7 @@ class Page extends Control {
         return this._index.get(id);
     }
 
-    waitEvent(): Promise <string | Event> {
+    waitEvent(): Promise<string | PgletEvent> {
         return this._conn.waitEvent();
     }
 
@@ -145,7 +145,7 @@ class Page extends Control {
         return this._conn.send(`${cmd} ${ctrlValue} value="${value}"`);
     }
 
-    private _onEvent(e: Event) {
+    private _onEvent(e: PgletEvent) {
         //console.log("e.data: ", e.data);
         if (e.target == "page" && e.name == "change") {
             let allProps = JSON.parse(e.data);

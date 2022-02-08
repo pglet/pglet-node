@@ -40,7 +40,7 @@ import { Control}  from './Control';
 import { Connection } from './Connection';
 
 
-const PGLET_VERSION: string = "0.4.6";
+const PGLET_VERSION: string = "0.5.6";
 
 var pgletExe: string = null;
 var _installPromise: any = null;
@@ -136,10 +136,12 @@ let page = async (...args: any) => {
 
     const pargs = buildArgs("page", args);
     pargs.push("--all-events");
+    pargs.push("--local");
     
     //console.log("pgletExe", pgletExe)
 
     var res = cp.spawnSync(pgletExe, pargs, { encoding : 'utf8' });
+    console.log("result: ", res);
     var result = res.stdout.trim();
     let re = /(?<connId>[^\s]+)\s(?<pageUrl>[^\s]+)/;
     let match = re.exec(result);
