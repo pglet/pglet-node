@@ -1,4 +1,4 @@
-import { ControlProperties, Control } from './Control'
+import { ControlProperties, Control } from '../Control'
 import Point from './Point';
 
 interface VerticalBarchartProperties extends ControlProperties {

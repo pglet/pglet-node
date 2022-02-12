@@ -7,35 +7,35 @@ import request from 'request';
 import { StringDecoder } from 'string_decoder';
 const decoder = new StringDecoder('utf8');
 import Page from './Page';
-import Text from './Text';
-import Textbox from './Textbox';
-import Stack from './Stack';
-import Button from './Button';
-import Dropdown from './Dropdown';
-import Progress from './Progress';
-import Spinner from './Spinner';
-import Checkbox from './Checkbox';
-import Slider from './Slider';
-import SpinButton from './SpinButton';
-import Toggle from './Toggle';
-import Dialog from './Dialog';
-import Panel from './Panel';
-import Point from './Point';
-import Searchbox from './Searchbox';
-import VerticalBarchart from './VerticalBarchart';
-import DatePicker from './DatePicker';
-import Barchart from './Barchart';
-import Piechart from './Piechart';
-import Callout from './Callout';
-import Icon from './Icon';
+import Text from './controls/Text';
+import Textbox from './controls/Textbox';
+import Stack from './controls/Stack';
+import Button from './controls/Button';
+import Dropdown from './controls/Dropdown';
+import Progress from './controls/Progress';
+import Spinner from './controls/Spinner';
+import Checkbox from './controls/Checkbox';
+import Slider from './controls/Slider';
+import SpinButton from './controls/SpinButton';
+import Toggle from './controls/Toggle';
+import Dialog from './controls/Dialog';
+import Panel from './controls/Panel';
+import Point from './controls/Point';
+import Searchbox from './controls/Searchbox';
+import VerticalBarchart from './controls/VerticalBarchart';
+import DatePicker from './controls/DatePicker';
+import Barchart from './controls/Barchart';
+import Piechart from './controls/Piechart';
+import Callout from './controls/Callout';
+import Icon from './controls/Icon';
 import { Event } from './Event';
-import { Linechart, LineData } from './Linechart';
-import { Option, ChoiceGroup } from './ChoiceGroup'
-import { Message, MessageButton } from './Message';
-import { Toolbar, ToolbarItem} from './Toolbar';
-import { Nav, NavItem } from './Nav';
-import { Column, Columns, Items, Grid } from './Grid';
-import { Tabs, Tab } from './Tabs';
+import { Linechart, LineData } from './controls/Linechart';
+import { Option, ChoiceGroup } from './controls/ChoiceGroup'
+import { Message, MessageButton } from './controls/Message';
+import { Toolbar, ToolbarItem} from './controls/Toolbar';
+import { Nav, NavItem } from './controls/Nav';
+import { Column, Columns, Items, Grid } from './controls/Grid';
+import { Tabs, Tab } from './controls/Tabs';
 import { Control}  from './Control';
 import { Connection } from './Connection';
 
@@ -134,9 +134,9 @@ let page = async (...args: any) => {
     
     await _install();
 
-    const pargs = buildArgs("page", args);
-    pargs.push("--all-events");
-    pargs.push("--local");
+    const pargs = buildArgs("server", args);
+    //pargs.push("--all-events");
+    pargs.push("--background");
     
     //console.log("pgletExe", pgletExe)
 

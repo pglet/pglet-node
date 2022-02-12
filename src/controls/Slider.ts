@@ -1,4 +1,4 @@
-import { ControlProperties, Control } from './Control'
+import { ControlProperties, Control } from '../Control'
 
 interface SliderProperties extends ControlProperties {
     value?: number,

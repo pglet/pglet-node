@@ -1,4 +1,4 @@
-import { ControlProperties, Control } from './Control'
+import { ControlProperties, Control } from '../Control'
 
 interface StackProperties extends ControlProperties {
     horizontal?: boolean,

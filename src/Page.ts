@@ -1,5 +1,5 @@
 import { ControlProperties, Control } from './Control'
-import { Alignment } from './Alignment';
+import { Alignment } from './controls/Alignment';
 import { Connection } from './Connection';
 import { Event as PgletEvent} from './Event';
 import { ControlEvent } from './ControlEvent';
