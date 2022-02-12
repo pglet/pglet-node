@@ -141,14 +141,15 @@ let page = async (...args: any) => {
     //console.log("pgletExe", pgletExe)
 
     var res = cp.spawnSync(pgletExe, pargs, { encoding : 'utf8' });
-    console.log("result: ", res);
-    var result = res.stdout.trim();
-    let re = /(?<connId>[^\s]+)\s(?<pageUrl>[^\s]+)/;
-    let match = re.exec(result);
+    //console.log("result: ", res);
+    //var result = res.stdout.trim();
+    //let re = /(?<connId>[^\s]+)\s(?<pageUrl>[^\s]+)/;
+    //let match = re.exec(result);
 
-    var conn = new Connection(match.groups.connId);
+    //var conn = new Connection(match.groups.connId);
+    var conn = new Connection("reconnecting-websocket");
 
-    return new Page({connection: conn, url: match.groups.pageUrl})
+    return new Page({connection: conn, url: "conn.pageUrl"})
 }
 
 let app = async (...args: any) => {
