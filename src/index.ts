@@ -38,7 +38,7 @@ import { Column, Columns, Items, Grid } from './controls/Grid';
 import { Tabs, Tab } from './controls/Tabs';
 import { Control}  from './Control';
 import { Connection } from './Connection';
-
+import Rws from './protocol/ReconnectingWebSocket';
 
 const PGLET_VERSION: string = "0.5.6";
 
@@ -147,6 +147,7 @@ let page = async (...args: any) => {
     //let match = re.exec(result);
 
     //var conn = new Connection(match.groups.connId);
+    var ws = new 
     var conn = new Connection("reconnecting-websocket");
 
     return new Page({connection: conn, url: "conn.pageUrl"})

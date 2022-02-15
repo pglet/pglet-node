@@ -5,7 +5,7 @@ import { Event as PgletEvent } from './Event';
 import ReconnectingWebSocket, { Event, Options } from 'reconnecting-websocket';
 
 export class Connection {
-    private connId = ""
+    //private connId = ""
     private _commandClient: any;
     private _commandResolve: any;
     private _commandReject: any;
@@ -14,8 +14,8 @@ export class Connection {
     private _eventHandlers: any = {};
     onEvent: any;
 
-    constructor(connId: string) {
-        this.connId = connId;
+    constructor(Rws: ReconnectingWebSocket) {
+        //this.connId = connId;
 
         if (os.type() === "Windows_NT") {
             // open connections for command and event pipes
