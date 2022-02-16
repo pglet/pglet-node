@@ -28,7 +28,7 @@ import Barchart from './controls/Barchart';
 import Piechart from './controls/Piechart';
 import Callout from './controls/Callout';
 import Icon from './controls/Icon';
-import { Event } from './Event';
+import { Event as PgletEvent } from './Event';
 import { Linechart, LineData } from './controls/Linechart';
 import { Option, ChoiceGroup } from './controls/ChoiceGroup'
 import { Message, MessageButton } from './controls/Message';
@@ -38,9 +38,13 @@ import { Column, Columns, Items, Grid } from './controls/Grid';
 import { Tabs, Tab } from './controls/Tabs';
 import { Control}  from './Control';
 import { Connection } from './Connection';
-import Rws from './protocol/ReconnectingWebSocket';
+import NodeWebSocket from 'ws';
+import ReconnectingWebsocket, { Event, Options } from 'reconnecting-websocket';
 
 const PGLET_VERSION: string = "0.5.6";
+const HOSTED_SERVICE_URL = "https://app.pglet.io";
+const DEFAULT_SERVER_PORT = "8550";
+const isDeno = typeof window !== 'undefined' && ("Deno" in window);
 
 var pgletExe: string = null;
 var _installPromise: any = null;
@@ -141,14 +145,37 @@ let page = async (...args: any) => {
     //console.log("pgletExe", pgletExe)
 
     var res = cp.spawnSync(pgletExe, pargs, { encoding : 'utf8' });
-    //console.log("result: ", res);
-    //var result = res.stdout.trim();
-    //let re = /(?<connId>[^\s]+)\s(?<pageUrl>[^\s]+)/;
-    //let match = re.exec(result);
+    let serverUrl
+    if (!pargs.url) {
+        if (!pargs.local) {
+            serverUrl = HOSTED_SERVICE_URL;
+        }
+        else {
+            serverUrl = `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}`
+        }
+    }
 
-    //var conn = new Connection(match.groups.connId);
-    var ws = new 
-    var conn = new Connection("reconnecting-websocket");
+    const options: Options = {
+        WebSocket: isDeno ? WebSocket : NodeWebSocket,
+        connectionTimeout: 200,
+        maxRetries: 10
+    };
+    
+    const rws = new ReconnectingWebsocket("ws://localhost:8550/ws", [], options);
+    
+    rws.onopen = (evt: Event) => {
+        console.log(`Connected to ${rws.url}`);
+    }
+    
+    rws.onclose = (evt: Event) => {
+        console.log("Disconnected");
+    }
+    
+    rws.onmessage = (evt: MessageEvent) => {
+        console.log(evt.data);
+    }
+    
+    var conn = new Connection(rws);
 
     return new Page({connection: conn, url: "conn.pageUrl"})
 }
@@ -179,7 +206,7 @@ let app = async (...args: any) => {
             return;
         }
         else {
-            page = new Page({connection: new Connection(decoder.write(Buffer.from(data)).trim()), url: url});
+            page = new Page({connection: new Connection(Rws), url: url});
             fn(page);
         }
     })
@@ -250,5 +277,5 @@ function buildArgs(action: string, args: any) {
     return pargs;
 }
 export {
-    app, page, Page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout, Searchbox, Icon, Event
+    app, page, Page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout, Searchbox, Icon, PgletEvent
 }
