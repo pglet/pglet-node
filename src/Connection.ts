@@ -3,6 +3,7 @@ import net from 'net';
 import fs from 'fs';
 import { Event as PgletEvent } from './Event';
 import ReconnectingWebSocket, { Event, Options } from 'reconnecting-websocket';
+import Rws from './protocol/ReconnectingWebSocket';
 
 export class Connection {
     //private connId = ""
@@ -13,9 +14,13 @@ export class Connection {
     private _eventResolve: any;
     private _eventHandlers: any = {};
     onEvent: any;
+    onMessage: (evt: MessageEvent) => Promise<void>
 
     constructor(Rws: ReconnectingWebSocket) {
         //this.connId = connId;
+        Rws.onmessage = (msg: MessageEvent) => {
+            console.log(msg.data);
+        }
 
         if (os.type() === "Windows_NT") {
             // open connections for command and event pipes

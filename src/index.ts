@@ -134,25 +134,44 @@ async function download(url: string, filePath: string) {
     });
 }
 
-let page = async (...args: any) => {
+async function connectPage(opts?: clientOpts) {
+    let userOpts = {
+        pageName: "*",
+        web: false,
+        serverUrl: `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}`,
+        ...opts
+    }
+
+    return pageInternal(userOpts);
+
+}
+function serveApp(sessionHandler: (page: Page) => Promise<void>, opts?: clientOpts) {
+    
+}
+
+type clientOpts = {
+    pageName?: string,
+    web?: boolean,
+    serverUrl?: string,
+    noWindow?: boolean,
+}
+
+function getWebSocketUrl(url: string) {
+    let returnUrl = new URL(url);
+    returnUrl.protocol = returnUrl.protocol === "https:" ? "wss" : "ws";
+    returnUrl.pathname = "ws";
+    return returnUrl.href;
+}
+
+let pageInternal = async (args: clientOpts) => {
     
     await _install();
 
-    const pargs = buildArgs("server", args);
-    //pargs.push("--all-events");
-    pargs.push("--background");
-    
-    //console.log("pgletExe", pgletExe)
-
-    var res = cp.spawnSync(pgletExe, pargs, { encoding : 'utf8' });
-    let serverUrl
-    if (!pargs.url) {
-        if (!pargs.local) {
-            serverUrl = HOSTED_SERVICE_URL;
-        }
-        else {
-            serverUrl = `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}`
-        }
+    if (!args.web) {
+        cp.spawnSync(pgletExe, ["server", "--background"], { encoding : 'utf8' });
+    }
+    else {
+        args.serverUrl = HOSTED_SERVICE_URL;
     }
 
     const options: Options = {
@@ -160,8 +179,9 @@ let page = async (...args: any) => {
         connectionTimeout: 200,
         maxRetries: 10
     };
+
     
-    const rws = new ReconnectingWebsocket("ws://localhost:8550/ws", [], options);
+    const rws = new ReconnectingWebsocket(getWebSocketUrl(args.serverUrl), [], options);
     
     rws.onopen = (evt: Event) => {
         console.log(`Connected to ${rws.url}`);
@@ -180,7 +200,7 @@ let page = async (...args: any) => {
     return new Page({connection: conn, url: "conn.pageUrl"})
 }
 
-let app = async (...args: any) => {
+let appInternal = async (...args: any) => {
     
     await _install();
     //console.log("pgletExe", pgletExe)
@@ -191,10 +211,7 @@ let app = async (...args: any) => {
         throw "The last argument must be a function.";
     }
 
-    const pargs = buildArgs("app", args);
-    pargs.push("--all-events");
-
-    var child = cp.spawn(pgletExe, pargs);
+    var child = cp.spawn(pgletExe, ["server", "--background"]);
 
     let url: string;
     let page: Page;
@@ -215,67 +232,6 @@ let app = async (...args: any) => {
 
 }
 
-function buildArgs(action: string, args: any) {
-
-    var pageName = null;
-    var opts = null;
-
-    var idx = 0;
-    while (idx < args.length) {
-        if (typeof args[idx] === 'string') {
-            pageName = args[idx];
-        } else if (typeof args[idx] === 'object') {
-            opts = args[idx];
-        }
-        idx++;
-    }
-
-    if (opts && opts.name) {
-        pageName = opts.name;
-    }
-
-    var pargs = [];
-    pargs.push(action);
-
-    if (pageName) {
-        pargs.push(pageName);
-    }
-
-    if (opts && opts.local) {
-        pargs.push("--local");
-    }
-    
-    if (opts && opts.noWindow) {
-        pargs.push("--no-window");
-    }
-
-    if (opts && opts.server) {
-        pargs.push("--server");
-        pargs.push(opts.server);
-    }
-
-    if (opts && opts.token) {
-        pargs.push("--token");
-        pargs.push(opts.token);
-    }
-
-    if (opts && opts.permissions) {
-        pargs.push("--permissions");
-        pargs.push(opts.permissions);
-    }    
-
-    // if (opts && opts.allEvents) {
-    //     pargs.push("--all-events");
-    //     pargs.push(opts.token);
-    // }
-
-    // if (os.type() !== "Windows_NT") {
-    //     // enforce Unix Domain Sockets for non-Windows platforms
-    //     pargs.push("--uds");
-    // }
-
-    return pargs;
-}
 export {
     app, page, Page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout, Searchbox, Icon, PgletEvent
 }
