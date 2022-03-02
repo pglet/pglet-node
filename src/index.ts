@@ -174,26 +174,8 @@ let pageInternal = async (args: clientOpts) => {
         args.serverUrl = HOSTED_SERVICE_URL;
     }
 
-    const options: Options = {
-        WebSocket: isDeno ? WebSocket : NodeWebSocket,
-        connectionTimeout: 200,
-        maxRetries: 10
-    };
-
     
-    const rws = new ReconnectingWebsocket(getWebSocketUrl(args.serverUrl), [], options);
-    
-    rws.onopen = (evt: Event) => {
-        console.log(`Connected to ${rws.url}`);
-    }
-    
-    rws.onclose = (evt: Event) => {
-        console.log("Disconnected");
-    }
-    
-    rws.onmessage = (evt: MessageEvent) => {
-        console.log(evt.data);
-    }
+    const rws = new ReconnectingWebsocket("ws://localhost:8550/ws");
     
     var conn = new Connection(rws);
 

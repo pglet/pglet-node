@@ -4,6 +4,7 @@ import fs from 'fs';
 import { Event as PgletEvent } from './Event';
 import ReconnectingWebSocket, { Event, Options } from 'reconnecting-websocket';
 import Rws from './protocol/ReconnectingWebSocket';
+import { MessageChannel } from 'worker_threads';
 
 export class Connection {
     //private connId = ""
@@ -13,6 +14,7 @@ export class Connection {
     private _eventClient: any;
     private _eventResolve: any;
     private _eventHandlers: any = {};
+    private _sendQueue: MessageChannel;
     onEvent: any;
     onMessage: (evt: MessageEvent) => Promise<void>
 
@@ -213,6 +215,18 @@ export class Connection {
         let match = re.exec(result);
 
         return new PgletEvent(match.groups.target, match.groups.name, match.groups.data);
+    }
+
+    startReadWriteLoops() {
+        // something like waitEvent() - for Read - and sendLinux/Windows - for Write
+        // Pglet.page should be able to await ws messages (read) and send ws messages (write)
+        // Producer of channel = Pglet.page/app, Consumer of channel = Connection
+    }
+
+    private sendMessageInternal(): Promise<void> {
+        return new Promise((res, rej) => {
+            
+        });
     }
     
 }

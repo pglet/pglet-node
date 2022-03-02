@@ -1,5 +1,5 @@
 import NodeWebSocket from 'ws';
-import ReconnectingWebsocket, { Event, Options } from 'reconnecting-websocket';
+import rws, { Event, Options } from 'reconnecting-websocket';
 
 const isDeno = typeof window !== 'undefined' && ("Deno" in window);
 
@@ -9,18 +9,32 @@ const options: Options = {
     maxRetries: 10
 };
 
-const Rws = new ReconnectingWebsocket("ws://localhost:8550/ws", [], options);
+export class ReconnectingWebSocket {
+    private _rws: rws;
+    private _onOpen: (evt: Event) => void;
+    private _onClose: (evt: Event) => void;
+    private _onMessage: (evt: MessageEvent) => void;
 
-Rws.onopen = (evt: Event) => {
-    console.log(`Connected to ${Rws.url}`);
+    constructor(uri: string) {
+        this._rws = new rws(uri, [], options);
+    }
+
+    set onOpen(value: (evt: Event) => void) {
+        this._onOpen = value;
+    }
+    set onClose(value: (evt: Event) => void) {
+        this._onClose = value;
+    }
+    set onMessage(value: (evt: Event) => void) {
+        this._onMessage = value;
+    }
+
+    connect(): Promise<void> {
+        return new Promise((res, rej) => {
+            //additional reconnection configuration and/or cancellation (bluebirdjs?)
+        });
+
+    }
+
+
 }
-
-Rws.onclose = (evt: Event) => {
-    console.log("Disconnected");
-}
-
-Rws.onmessage = (evt: MessageEvent) => {
-    console.log(evt.data);
-}
-
-export = Rws;
