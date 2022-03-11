@@ -21,12 +21,15 @@ export class ReconnectingWebSocket {
 
     set onOpen(value: (evt: Event) => void) {
         this._onOpen = value;
+        this._rws.onopen = value;
     }
     set onClose(value: (evt: Event) => void) {
         this._onClose = value;
+        this._rws.onclose = value;
     }
-    set onMessage(value: (evt: Event) => void) {
+    set onMessage(value: (evt: MessageEvent) => void) {
         this._onMessage = value;
+        this._rws.onmessage = value;
     }
 
     connect(): Promise<void> {

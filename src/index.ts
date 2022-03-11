@@ -39,7 +39,8 @@ import { Tabs, Tab } from './controls/Tabs';
 import { Control}  from './Control';
 import { Connection } from './Connection';
 import NodeWebSocket from 'ws';
-import ReconnectingWebsocket, { Event, Options } from 'reconnecting-websocket';
+import { ReconnectingWebSocket } from './protocol/ReconnectingWebSocket'
+import { Event, Options } from 'reconnecting-websocket';
 
 const PGLET_VERSION: string = "0.5.6";
 const HOSTED_SERVICE_URL = "https://app.pglet.io";
@@ -146,7 +147,13 @@ async function connectPage(opts?: clientOpts) {
 
 }
 function serveApp(sessionHandler: (page: Page) => Promise<void>, opts?: clientOpts) {
-    
+    let userOpts = {
+        pageName: "*",
+        web: false,
+        serverUrl: `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}`,
+        ...opts
+    }
+    return appInternal(sessionHandler, userOpts)
 }
 
 type clientOpts = {
@@ -175,9 +182,12 @@ let pageInternal = async (args: clientOpts) => {
     }
 
     
-    const rws = new ReconnectingWebsocket("ws://localhost:8550/ws");
+    const rws = new ReconnectingWebSocket("ws://localhost:8550/ws");
     
     var conn = new Connection(rws);
+    conn.onEvent = (payload) => {
+        console.log(payload);
+    }
 
     return new Page({connection: conn, url: "conn.pageUrl"})
 }
@@ -215,5 +225,5 @@ let appInternal = async (...args: any) => {
 }
 
 export {
-    app, page, Page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout, Searchbox, Icon, PgletEvent
+    serveApp, connectPage, Page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout, Searchbox, Icon, PgletEvent
 }

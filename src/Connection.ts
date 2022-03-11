@@ -2,9 +2,10 @@ import os from 'os';
 import net from 'net';
 import fs from 'fs';
 import { Event as PgletEvent } from './Event';
-import ReconnectingWebSocket, { Event, Options } from 'reconnecting-websocket';
-import Rws from './protocol/ReconnectingWebSocket';
+import rws , { Event, Options } from 'reconnecting-websocket';
+import { ReconnectingWebSocket } from './protocol/ReconnectingWebSocket';
 import { MessageChannel } from 'worker_threads';
+import { CommandResponse } from './protocol/CommandResponse';
 
 export class Connection {
     //private connId = ""
@@ -15,60 +16,68 @@ export class Connection {
     private _eventResolve: any;
     private _eventHandlers: any = {};
     private _sendQueue: MessageChannel;
-    onEvent: any;
-    onMessage: (evt: MessageEvent) => Promise<void>
+    private _rws: ReconnectingWebSocket;
+    private connId: string;
+    //private _onEvent: any;
+    //onMessage: (evt: MessageEvent) => Promise<void>
 
     constructor(Rws: ReconnectingWebSocket) {
-        //this.connId = connId;
-        Rws.onmessage = (msg: MessageEvent) => {
-            console.log(msg.data);
+        this.connId = "dummy";
+        this._rws = Rws;
+
+        this._rws.onMessage = this.onMessage;
+        this._rws.onOpen = (msg: Event) => {
+            console.log("connected!");
+        }
+        this._rws.onClose = (msg: Event) => {
+            console.log("closed!");
         }
 
-        if (os.type() === "Windows_NT") {
-            // open connections for command and event pipes
-            this._commandResolve = null;
-            this._commandReject = null;
-            this._commandClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}` : `${os.tmpdir()}/CoreFxPipe_${connId}`, () => {
-                this._commandClient.setNoDelay(true);
-            });
+        // if (os.type() === "Windows_NT") {
+        //     // open connections for command and event pipes
+        //     this._commandResolve = null;
+        //     this._commandReject = null;
+        //     this._commandClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}` : `${os.tmpdir()}/CoreFxPipe_${connId}`, () => {
+        //         this._commandClient.setNoDelay(true);
+        //     });
 
-            this._commandClient.on('data', (data: any) => {
-                // parse result
-                const result = this.parseResult(data);
-                //console.log("commandClient data: ", result);
+        //     this._commandClient.on('data', (data: any) => {
+        //         // parse result
+        //         const result = this.parseResult(data);
+        //         //console.log("commandClient data: ", result);
                 
-                let fn = this._commandResolve;
-                let value = result.value;
-                if (result.error) {
-                    let fn = this._commandReject;
-                    let value = result.error;
-                }
+        //         let fn = this._commandResolve;
+        //         let value = result.value;
+        //         if (result.error) {
+        //             let fn = this._commandReject;
+        //             let value = result.error;
+        //         }
 
-                this._commandResolve = null;
-                this._commandReject = null;
+        //         this._commandResolve = null;
+        //         this._commandReject = null;
 
-                if (fn) {
-                    fn(value);
-                }
-            });
+        //         if (fn) {
+        //             fn(value);
+        //         }
+        //     });
 
-            this._eventResolve = null;
-            this._eventClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}.events` : `${os.tmpdir()}/CoreFxPipe_${connId}.events`, () => {
-            });
+        //     this._eventResolve = null;
+        //     this._eventClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}.events` : `${os.tmpdir()}/CoreFxPipe_${connId}.events`, () => {
+        //     });
 
-            this._eventClient.on('data', (data) => {
-                const result = this.parseEvent(data);
+        //     this._eventClient.on('data', (data) => {
+        //         const result = this.parseEvent(data);
                 
-                //call page private _onEvent
-                this.onEvent(result); 
-                var fn = this._eventResolve;
-                this._eventResolve = null;
+        //         //call page private _onEvent
+        //         this.onEvent(result); 
+        //         var fn = this._eventResolve;
+        //         this._eventResolve = null;
 
-                if (fn) {
-                    fn(result);
-                }
-            });
-        }
+        //         if (fn) {
+        //             fn(result);
+        //         }
+        //     });
+        // }
     }
 
     async sendBatch (commands: string[]): Promise<string> {
@@ -221,6 +230,21 @@ export class Connection {
         // something like waitEvent() - for Read - and sendLinux/Windows - for Write
         // Pglet.page should be able to await ws messages (read) and send ws messages (write)
         // Producer of channel = Pglet.page/app, Consumer of channel = Connection
+    }
+
+    async readLoop() {
+        while (true) {
+            const e = await this.waitEvent();
+            console.log(e);
+        }
+    }
+    
+    onMessage(evt: MessageEvent) {
+
+    }
+
+    onEvent(payload) {
+        
     }
 
     private sendMessageInternal(): Promise<void> {
