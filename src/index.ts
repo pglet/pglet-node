@@ -207,6 +207,7 @@ let appInternal = async (...args: any) => {
 
     let url: string;
     let page: Page;
+    const rws = new ReconnectingWebSocket("ws://localhost:8550/ws");
     child.stdout.on('data', (data) => {
 
         //console.log("spawn result: ", decoder.write(Buffer.from(data)));
@@ -215,7 +216,7 @@ let appInternal = async (...args: any) => {
             return;
         }
         else {
-            page = new Page({connection: new Connection(Rws), url: url});
+            page = new Page({connection: new Connection(rws), url: url});
             fn(page);
         }
     })

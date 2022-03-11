@@ -6,6 +6,9 @@ import rws , { Event, Options } from 'reconnecting-websocket';
 import { ReconnectingWebSocket } from './protocol/ReconnectingWebSocket';
 import { MessageChannel } from 'worker_threads';
 import { CommandResponse } from './protocol/CommandResponse';
+import { Message as PgletMessage } from './protocol/Message';
+import { Action } from './protocol/Actions';
+import { resolve } from 'path';
 
 export class Connection {
     //private connId = ""
@@ -88,111 +91,101 @@ export class Connection {
         return this._send("end"); //returns results of intervening commands in text list
     }
 
-    send(command: string): Promise<string> {
-        return this._send(command);
-    }
-
-    private _send(command: string): Promise<string> {
-        let waitResult = !command.match(/\w+/g)[0].endsWith('f');
-        if (os.type() === "Windows_NT") {
-            // Windows
-            return this.sendWindows(command, waitResult);
-        } else {
-            // Linux/macOS - use FIFO
-            return this.sendLinux(command, waitResult);
+    send(command: string): Promise<void> {
+        let msg: PgletMessage = {
+            id: null,
+            action: 'pageCommandFromHost',
+            message: command
         }
+        return this.sendMessageInternal(msg);
     }
 
-    // wait event pipe for new event
-    waitEvent(): Promise<string | PgletEvent> {
-        // register for result
+    // private _send(command: string): Promise<string> {
+    //     let waitResult = !command.match(/\w+/g)[0].endsWith('f');
+    //     if (os.type() === "Windows_NT") {
+    //         // Windows
+    //         return this.sendWindows(command, waitResult);
+    //     } else {
+    //         // Linux/macOS - use FIFO
+    //         return this.sendLinux(command, waitResult);
+    //     }
+    // }
 
-        return new Promise((resolve, reject) => {
-            if (os.type() === "Windows_NT") {
-                this._eventResolve = resolve;
-            } else {
-                fs.open(`${this.connId}.events`, 'r+', (err, fd) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        var stream = fs.createReadStream(null, {
-                            fd
-                        });
-                        stream.on('data', (data) => {
-                            stream.close()
-                            resolve(this.parseEvent(data));
-                        });                     
-                    }
-                });                
-            }
-        });
-    }
-
-    private sendWindows(command: string, waitResult: boolean): Promise<string> {
-        if (waitResult) {
-
-            // command with result
-            return new Promise((resolve, reject) => {
-                this._commandResolve = resolve;
-                this._commandReject = reject;
-
-                // send command
-                this._commandClient.write(command + '\n');                
-            });
-
-        } else {
-
-            // fire-and-forget command
-            return new Promise<string>((resolve, reject) => {
-                this._commandClient.write(command + '\n', (err) => {
-                    if (err) {
-                        reject(err);
-         
-                    } else {
-                        resolve("");
-                    }
-                });
-            });
-        }
-    }
-
-    private sendLinux(command: string, waitResult: boolean): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-                
-            fs.writeFile(this.connId, command + '\n', (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    if (waitResult) {
-                        fs.readFile(this.connId, (err, data) => {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                // parse result
-                                const result = this.parseResult(data);
-                
-                                if (result.error) {
-                                    reject(result.error);
-                                } else {
-                                    resolve(result.value);
-                                }
-                            }
-                        })
-                    } else {
-                        resolve("");
-                    }
-                }
-            });
+    private sendMessageInternal(msg: PgletMessage): Promise<void> {
+        //everything fire and forget for now
+        return new Promise((res, rej) => {
+            
+            this._rws.send(msg);
+            resolve("");
             
         });
     }
 
-    // addEventHandlers(controlId: string, eventName: string, handler: any) {
-    //     let controlEvents = controlId in this._eventHandlers ? this._eventHandlers[controlId] : {};
+    // private sendWindows(command: string, waitResult: boolean): Promise<string> {
+    //     if (waitResult) {
 
-    //     controlEvents[eventName] = handler;
-    //     this._eventHandlers[controlId] = controlEvents;
+    //         // command with result
+    //         return new Promise((resolve, reject) => {
+    //             this._commandResolve = resolve;
+    //             this._commandReject = reject;
+
+    //             // send command
+    //             this._commandClient.write(command + '\n');                
+    //         });
+
+    //     } else {
+
+    //         // fire-and-forget command
+    //         return new Promise<string>((resolve, reject) => {
+    //             this._commandClient.write(command + '\n', (err) => {
+    //                 if (err) {
+    //                     reject(err);
+         
+    //                 } else {
+    //                     resolve("");
+    //                 }
+    //             });
+    //         });
+    //     }
     // }
+
+    // private sendLinux(command: string, waitResult: boolean): Promise<string> {
+    //     return new Promise<string>((resolve, reject) => {
+                
+    //         fs.writeFile(this.connId, command + '\n', (err) => {
+    //             if (err) {
+    //                 reject(err);
+    //             } else {
+    //                 if (waitResult) {
+    //                     fs.readFile(this.connId, (err, data) => {
+    //                         if (err) {
+    //                             reject(err);
+    //                         } else {
+    //                             // parse result
+    //                             const result = this.parseResult(data);
+                
+    //                             if (result.error) {
+    //                                 reject(result.error);
+    //                             } else {
+    //                                 resolve(result.value);
+    //                             }
+    //                         }
+    //                     })
+    //                 } else {
+    //                     resolve("");
+    //                 }
+    //             }
+    //         });
+            
+    //     });
+    // }
+
+    addEventHandlers(controlId: string, eventName: string, handler: any) {
+        let controlEvents = controlId in this._eventHandlers ? this._eventHandlers[controlId] : {};
+
+        controlEvents[eventName] = handler;
+        this._eventHandlers[controlId] = controlEvents;
+    }
     
     protected removeEventHandlers(controlId: string): void {
         if (controlId in this._eventHandlers) {
@@ -232,6 +225,31 @@ export class Connection {
         // Producer of channel = Pglet.page/app, Consumer of channel = Connection
     }
 
+    // wait event pipe for new event
+    waitEvent(): Promise<string | PgletEvent> {
+        // register for result
+
+        return new Promise((resolve, reject) => {
+            if (os.type() === "Windows_NT") {
+                this._eventResolve = resolve;
+            } else {
+                fs.open(`${this.connId}.events`, 'r+', (err, fd) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        var stream = fs.createReadStream(null, {
+                            fd
+                        });
+                        stream.on('data', (data) => {
+                            stream.close()
+                            resolve(this.parseEvent(data));
+                        });                     
+                    }
+                });                
+            }
+        });
+    }
+
     async readLoop() {
         while (true) {
             const e = await this.waitEvent();
@@ -240,17 +258,12 @@ export class Connection {
     }
     
     onMessage(evt: MessageEvent) {
-
+        console.log(evt.data);
     }
 
     onEvent(payload) {
-        
+        console.log(payload);
     }
 
-    private sendMessageInternal(): Promise<void> {
-        return new Promise((res, rej) => {
-            
-        });
-    }
     
 }

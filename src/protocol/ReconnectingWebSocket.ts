@@ -1,5 +1,7 @@
 import NodeWebSocket from 'ws';
 import rws, { Event, Options } from 'reconnecting-websocket';
+import { Message as PgletMessage } from './Message';
+import { Message } from '..';
 
 const isDeno = typeof window !== 'undefined' && ("Deno" in window);
 
@@ -30,6 +32,12 @@ export class ReconnectingWebSocket {
     set onMessage(value: (evt: MessageEvent) => void) {
         this._onMessage = value;
         this._rws.onmessage = value;
+    }
+
+    send(msg: PgletMessage) { 
+        // TODO simulate request response with hash
+        this._rws.send(msg.message);
+
     }
 
     connect(): Promise<void> {

@@ -1,7 +1,9 @@
+import { Action } from './Actions';
+
 export interface Message {
 
-    readonly id: string;
-    readonly action: string;
+    readonly id: string | null;
+    readonly action: Action;
     readonly message: any;
     
 }

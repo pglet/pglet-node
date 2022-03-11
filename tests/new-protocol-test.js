@@ -5,7 +5,7 @@ function sleep(ms) {
 }
 
 (async () => {
-    p = await pglet.page("new protocol testing", { noWindow: false, web: true });
+    p = await pglet.connectPage("new protocol testing", { noWindow: false, web: true });
 
     async function greeterButtonHandler(e) {
         let name = await p.getValue(textboxObject);
@@ -19,6 +19,7 @@ function sleep(ms) {
     await p.clean();
 
     while(true) {
+        // TODO WaitEvent will never resolve since the command and event pipe promise resolution wiring is removed
         const e = await p.waitEvent();
         console.log(e);
 
