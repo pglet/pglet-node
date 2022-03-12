@@ -11,21 +11,13 @@ import { Action } from './protocol/Actions';
 import { resolve } from 'path';
 
 export class Connection {
-    //private connId = ""
-    private _commandClient: any;
-    private _commandResolve: any;
-    private _commandReject: any;
-    private _eventClient: any;
-    private _eventResolve: any;
     private _eventHandlers: any = {};
-    private _sendQueue: MessageChannel;
     private _rws: ReconnectingWebSocket;
-    private connId: string;
+    private connId: string = "";
     //private _onEvent: any;
     //onMessage: (evt: MessageEvent) => Promise<void>
 
     constructor(Rws: ReconnectingWebSocket) {
-        this.connId = "dummy";
         this._rws = Rws;
 
         this._rws.onMessage = this.onMessage;
@@ -83,13 +75,13 @@ export class Connection {
         // }
     }
 
-    async sendBatch (commands: string[]): Promise<string> {
-        await this._send("begin"); //returns null
-        for (const cmd of commands) {
-            await this._send(cmd); //returns null
-        }
-        return this._send("end"); //returns results of intervening commands in text list
-    }
+    // async sendBatch (commands: string[]): Promise<string> {
+    //     await this._send("begin"); //returns null
+    //     for (const cmd of commands) {
+    //         await this._send(cmd); //returns null
+    //     }
+    //     return this._send("end"); //returns results of intervening commands in text list
+    // }
 
     send(command: string): Promise<void> {
         let msg: PgletMessage = {
@@ -231,7 +223,8 @@ export class Connection {
 
         return new Promise((resolve, reject) => {
             if (os.type() === "Windows_NT") {
-                this._eventResolve = resolve;
+                
+                //this._eventResolve = resolve;
             } else {
                 fs.open(`${this.connId}.events`, 'r+', (err, fd) => {
                     if (err) {
