@@ -5,7 +5,9 @@ function sleep(ms) {
 }
 
 (async () => {
-    p = await pglet.connectPage("new protocol testing", { noWindow: false, web: true });
+    // TODO return page
+    p = await pglet.connectPage("test", { noWindow: false, web: true });
+    
 
     async function greeterButtonHandler(e) {
         let name = await p.getValue(textboxObject);

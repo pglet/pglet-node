@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import crypto from 'crypto';
 import cp from 'child_process';
 import compareVersions from 'compare-versions';
 import request from 'request';
@@ -40,6 +41,7 @@ import { Control}  from './Control';
 import { Connection } from './Connection';
 import NodeWebSocket from 'ws';
 import { ReconnectingWebSocket } from './protocol/ReconnectingWebSocket'
+import { Message as PgletMessage } from './protocol/Message';
 import { Event, Options } from 'reconnecting-websocket';
 
 const PGLET_VERSION: string = "0.5.6";
@@ -182,14 +184,22 @@ let pageInternal = async (args: clientOpts) => {
     }
 
     
-    const rws = new ReconnectingWebSocket("ws://localhost:8550/ws");
+    const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl));
     
     var conn = new Connection(rws);
     conn.onEvent = (payload) => {
         console.log(payload);
     }
-
-    return new Page({connection: conn, url: "conn.pageUrl"})
+    let registerHostClientPayload = {
+        HostClientID: null,
+        PageName: "*",
+        IsApp: false,
+        AuthToken: "authToken",
+        Permissions: "permissions"
+    }
+    await conn.send('registerHostClient', registerHostClientPayload);
+    console.log("serverurl: ", args.serverUrl);
+    return new Page({connection: conn, url: args.serverUrl})
 }
 
 let appInternal = async (...args: any) => {
@@ -207,7 +217,7 @@ let appInternal = async (...args: any) => {
 
     let url: string;
     let page: Page;
-    const rws = new ReconnectingWebSocket("ws://localhost:8550/ws");
+    const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl));
     child.stdout.on('data', (data) => {
 
         //console.log("spawn result: ", decoder.write(Buffer.from(data)));

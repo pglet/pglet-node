@@ -3,9 +3,12 @@ import { Alignment } from './controls/Alignment';
 import { Connection } from './Connection';
 import { Event as PgletEvent} from './Event';
 import { ControlEvent } from './ControlEvent';
+import { Action } from './protocol/Actions';
+
 
 interface PageProperties extends ControlProperties {
     connection?: Connection,
+    pageName?: string,
     url?: string,
     title?: string,
     verticalFill?: boolean,
@@ -19,6 +22,7 @@ class Page extends Control {
     private _controls: Control[] = [];
     private _index: Map<string, Control> = new Map();
     private _conn: Connection;
+    private _pageName: string;
     private _url: string;
 
     constructor(pageProps: PageProperties) {
@@ -35,6 +39,9 @@ class Page extends Control {
         }
         if (pageProps.url) {
             this._url = pageProps.url;
+        }
+        if (pageProps.pageName) {
+            this._pageName = pageProps.pageName;
         }
         this._conn.onEvent = this._onEvent.bind(this);
         
@@ -70,14 +77,26 @@ class Page extends Control {
         controls.forEach(ctrl => {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
-        //console.log("commandList: ", commandList);
+        console.log("commandList: ", commandList);
         //console.log("control map: ", ...this._index.entries());
         if (commandList.length == 0) {
             return;
         }
 
-
-        let ids = await this._conn.sendBatch(commandList);
+        let ids = ""
+        commandList.forEach(async cmd => {
+            // TODO 
+            // let pageCmdRequestPayload = {
+            //     PageName: pageName,
+            //     SessionID: sessionId,
+            //     Command: command
+            // }
+            console.log("cmd", cmd);
+            await this._conn.send('pageCommandFromHost', cmd);
+            //ids += await this._conn.send('pageCommandFromHost', cmd);
+            //ids += " ";
+        })
+        //let ids = await this._conn.sendBatch(commandList);
 
         if (ids) {
             let n = 0;
@@ -130,19 +149,19 @@ class Page extends Control {
         this.getChildren().forEach(ctrl => {
             ctrl.removeControlRecursively(this._index, ctrl);
         })
-        return this._conn.send(`clean ${this.uid}`)
+        return this._conn.send('pageCommandFromHost', `clean ${this.uid}`)
     }
 
-    getValue(ctrl: string | Control): Promise<string> {
+    getValue(ctrl: string | Control): Promise<void> {
         let value = (typeof ctrl === "string") ? ctrl : ctrl.uid;
-        return this._conn.send(`get ${value} value`);
+        return this._conn.send('pageCommandFromHost', `get ${value} value`);
     }
 
-    setValue(ctrl: string | Control, value: string, fireAndForget: boolean): Promise<string> {
+    setValue(ctrl: string | Control, value: string, fireAndForget: boolean): Promise<void> {
         let cmd = fireAndForget ? "setf" : "set";
 
         let ctrlValue = (typeof ctrl === "string") ? ctrl : ctrl.id;
-        return this._conn.send(`${cmd} ${ctrlValue} value="${value}"`);
+        return this._conn.send('pageCommandFromHost',`${cmd} ${ctrlValue} value="${value}"`);
     }
 
     private _onEvent(e: PgletEvent) {

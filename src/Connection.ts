@@ -1,4 +1,6 @@
 import os from 'os';
+import crypto from 'crypto';
+import util from 'util';
 import net from 'net';
 import fs from 'fs';
 import { Event as PgletEvent } from './Event';
@@ -9,6 +11,7 @@ import { CommandResponse } from './protocol/CommandResponse';
 import { Message as PgletMessage } from './protocol/Message';
 import { Action } from './protocol/Actions';
 import { resolve } from 'path';
+
 
 export class Connection {
     private _eventHandlers: any = {};
@@ -27,6 +30,8 @@ export class Connection {
         this._rws.onClose = (msg: Event) => {
             console.log("closed!");
         }
+
+        //this._rws.send()
 
         // if (os.type() === "Windows_NT") {
         //     // open connections for command and event pipes
@@ -83,10 +88,10 @@ export class Connection {
     //     return this._send("end"); //returns results of intervening commands in text list
     // }
 
-    send(command: string): Promise<void> {
+    send(action: Action, command: any): Promise<void> {
         let msg: PgletMessage = {
-            id: null,
-            action: 'pageCommandFromHost',
+            id: crypto.randomUUID(),
+            action: action,
             message: command
         }
         return this.sendMessageInternal(msg);
@@ -107,7 +112,7 @@ export class Connection {
         //everything fire and forget for now
         return new Promise((res, rej) => {
             
-            this._rws.send(msg);
+            this._rws.send(JSON.stringify(msg));
             resolve("");
             
         });
@@ -251,12 +256,13 @@ export class Connection {
     }
     
     onMessage(evt: MessageEvent) {
-        console.log(evt.data);
+        
+        console.log("onMessage Event: ", evt.data);
     }
 
     onEvent(payload) {
         console.log(payload);
     }
 
-    
 }
+

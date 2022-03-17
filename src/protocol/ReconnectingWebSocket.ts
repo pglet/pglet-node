@@ -34,9 +34,9 @@ export class ReconnectingWebSocket {
         this._rws.onmessage = value;
     }
 
-    send(msg: PgletMessage) { 
+    send(msg: string) { 
         // TODO simulate request response with hash
-        this._rws.send(msg.message);
+        this._rws.send(msg);
 
     }
 
