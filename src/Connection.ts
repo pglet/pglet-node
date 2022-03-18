@@ -1,5 +1,6 @@
 import os from 'os';
 import crypto from 'crypto';
+import cp from 'child_process';
 import util from 'util';
 import net from 'net';
 import fs from 'fs';
@@ -17,13 +18,14 @@ export class Connection {
     private _eventHandlers: any = {};
     private _rws: ReconnectingWebSocket;
     private connId: string = "";
+    sentMessageHash: { [key: string]: PgletMessage } = {};
     //private _onEvent: any;
     //onMessage: (evt: MessageEvent) => Promise<void>
 
     constructor(Rws: ReconnectingWebSocket) {
         this._rws = Rws;
 
-        this._rws.onMessage = this.onMessage;
+        this._rws.onMessage = this.onMessage.bind(this);
         this._rws.onOpen = (msg: Event) => {
             console.log("connected!");
         }
@@ -90,10 +92,12 @@ export class Connection {
 
     send(action: Action, command: any): Promise<void> {
         let msg: PgletMessage = {
-            id: crypto.randomUUID(),
+            id: crypto.randomUUID(), //requires node >=15
             action: action,
             message: command
         }
+        this.sentMessageHash[msg.id] = msg;
+        console.log("sending message: ", msg);
         return this.sendMessageInternal(msg);
     }
 
@@ -256,12 +260,31 @@ export class Connection {
     }
     
     onMessage(evt: MessageEvent) {
-        
-        console.log("onMessage Event: ", evt.data);
+        let msg: PgletMessage;
+        let evtData = JSON.parse(evt.data);
+        if (evtData.id in this.sentMessageHash) {
+            console.log("found!");
+            msg = this.sentMessageHash[evtData.id];
+        }
+        console.log("retrieved message: ", msg);
+        //console.log("onMessage Event payload: ", JSON.parse(evt.data).payload.hostClientID);
     }
 
     onEvent(payload) {
         console.log(payload);
+    }
+
+    private static openBrowser(url: string) {
+        let platform = os.platform();
+        if (platform === "win32") {
+            cp.exec(`start ${url}`);
+        }
+        else if (platform == "darwin") {
+            cp.exec(`open ${url}`);
+        }
+        else {
+            cp.exec(`xdg-open ${url}`)
+        }
     }
 
 }
