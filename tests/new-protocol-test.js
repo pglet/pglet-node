@@ -6,7 +6,7 @@ function sleep(ms) {
 
 (async () => {
     // TODO return page
-    p = await pglet.connectPage("test", { noWindow: false, web: true });
+    p = await pglet.connectPage("test", { noWindow: false, web: false });
     
 
     async function greeterButtonHandler(e) {
@@ -17,14 +17,14 @@ function sleep(ms) {
 
     let buttonObject = new pglet.Button({text: "Say hello!", primary: true, onClick: greeterButtonHandler})
     await p.add([buttonObject]);
-    await sleep(5000);
-    await p.clean();
+    //await sleep(5000);
+    //await p.clean();
 
-    while(true) {
-        // TODO WaitEvent will never resolve since the command and event pipe promise resolution wiring is removed
-        const e = await p.waitEvent();
-        console.log(e);
+    // while(true) {
+    //     // TODO WaitEvent will never resolve since the command and event pipe promise resolution wiring is removed
+    //     const e = await p.waitEvent();
+    //     console.log("e: ", e);
 
-    }
+    // }
 })(); 
 

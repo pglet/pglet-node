@@ -12,12 +12,16 @@ import { CommandResponse } from './protocol/CommandResponse';
 import { Message as PgletMessage } from './protocol/Message';
 import { Action } from './protocol/Actions';
 import { resolve } from 'path';
+import { Log } from './Utils';
 
 
 export class Connection {
     private _eventHandlers: any = {};
     private _rws: ReconnectingWebSocket;
     private connId: string = "";
+    private _messageResolve: any;
+    private _messageReject: any;
+    private _pageUrl: string;
     sentMessageHash: { [key: string]: PgletMessage } = {};
     //private _onEvent: any;
     //onMessage: (evt: MessageEvent) => Promise<void>
@@ -27,11 +31,13 @@ export class Connection {
 
         this._rws.onMessage = this.onMessage.bind(this);
         this._rws.onOpen = (msg: Event) => {
-            console.log("connected!");
+            console.log(Log.bg.green, "connected!");
         }
         this._rws.onClose = (msg: Event) => {
-            console.log("closed!");
+            console.log(Log.bg.red, "closed!");
         }
+        this._messageResolve = null;
+        this._messageReject = null;
 
         //this._rws.send()
 
@@ -90,11 +96,11 @@ export class Connection {
     //     return this._send("end"); //returns results of intervening commands in text list
     // }
 
-    send(action: Action, command: any): Promise<void> {
+    async send(action: Action, command: any): Promise<string> {
         let msg: PgletMessage = {
             id: crypto.randomUUID(), //requires node >=15
             action: action,
-            message: command
+            payload: command
         }
         this.sentMessageHash[msg.id] = msg;
         console.log("sending message: ", msg);
@@ -112,12 +118,16 @@ export class Connection {
     //     }
     // }
 
-    private sendMessageInternal(msg: PgletMessage): Promise<void> {
+    private sendMessageInternal(msg: PgletMessage): Promise<string> {
         //everything fire and forget for now
         return new Promise((res, rej) => {
             
             this._rws.send(JSON.stringify(msg));
-            resolve("");
+
+            // wait for message to arrive in hash
+            // then these will be called in onMessage 
+            this._messageResolve = res;
+            this._messageReject = rej;
             
         });
     }
@@ -262,24 +272,45 @@ export class Connection {
     onMessage(evt: MessageEvent) {
         let msg: PgletMessage;
         let evtData = JSON.parse(evt.data);
+        console.log(Log.bg.white, "evtData: ", evtData);
         if (evtData.id in this.sentMessageHash) {
             console.log("found!");
             msg = this.sentMessageHash[evtData.id];
+            //assume msg is retrieved
+            switch (msg.action) {
+                case 'registerHostClient':
+                    console.log(Log.bg.yellow, "Register Host Client");
+                    break;
+                case 'pageCommandFromHost':
+                    console.log(Log.bg.yellow, "Page Command From Host");
+                    break;
+                case 'pageCommandsBatchFromHost':
+                    console.log(Log.bg.yellow, "Page Commands Batch from Host");
+                    break;
+            }
         }
-        console.log("retrieved message: ", msg);
+        let cb = evtData.error ? this._messageReject : this._messageResolve;
+
+        if (cb) {
+            cb(JSON.stringify(evtData));
+            this._messageResolve = null;
+            this._messageReject = null;
+        }
+        console.log(Log.underscore + Log.bg.magenta, "retrieved message: ", msg);
         //console.log("onMessage Event payload: ", JSON.parse(evt.data).payload.hostClientID);
     }
 
     onEvent(payload) {
+        // this will be called when onMessage fires with Actions.pageEventToHost
         console.log(payload);
     }
 
-    private static openBrowser(url: string) {
-        let platform = os.platform();
-        if (platform === "win32") {
+    static openBrowser(url: string) {
+        let osType = os.type();
+        if (osType === "Windows_NT") {
             cp.exec(`start ${url}`);
         }
-        else if (platform == "darwin") {
+        else if (osType == "Darwin") {
             cp.exec(`open ${url}`);
         }
         else {

@@ -43,6 +43,7 @@ import NodeWebSocket from 'ws';
 import { ReconnectingWebSocket } from './protocol/ReconnectingWebSocket'
 import { Message as PgletMessage } from './protocol/Message';
 import { Event, Options } from 'reconnecting-websocket';
+import { Log } from './Utils';
 
 const PGLET_VERSION: string = "0.5.6";
 const HOSTED_SERVICE_URL = "https://app.pglet.io";
@@ -137,13 +138,14 @@ async function download(url: string, filePath: string) {
     });
 }
 
-async function connectPage(opts?: clientOpts) {
+async function connectPage(name?: string, opts?: clientOpts) {
     let userOpts = {
         pageName: "*",
         web: false,
-        serverUrl: `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}`,
+        serverUrl: `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}/`,
         ...opts
     }
+    if (name) { userOpts.pageName = name };
 
     return pageInternal(userOpts);
 
@@ -192,13 +194,18 @@ let pageInternal = async (args: clientOpts) => {
     }
     let registerHostClientPayload = {
         HostClientID: null,
-        PageName: "*",
+        PageName: args.pageName,
         IsApp: false,
-        AuthToken: "authToken",
-        Permissions: "permissions"
+        AuthToken: null,
+        Permissions: null
     }
-    await conn.send('registerHostClient', registerHostClientPayload);
+    let resp = await conn.send('registerHostClient', registerHostClientPayload);
+    console.log("resp: ", JSON.parse(resp).payload);
     console.log("serverurl: ", args.serverUrl);
+    if (!args.noWindow) {
+        let url = args.serverUrl + JSON.parse(resp).payload.pageName; 
+        Connection.openBrowser(url); 
+    }
     return new Page({connection: conn, url: args.serverUrl})
 }
 

@@ -1,5 +1,6 @@
 import Page from './Page';
 import { GetId } from './Utils';
+import { Command } from './protocol/Command';
 import * as diff from 'diff';
 
 interface ControlProperties {
@@ -130,7 +131,7 @@ class Control {
         }
     }
 
-    populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: String[]) {
+    populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: Command[]) {
         let updateAttrs = this.getCmdAttrs(true);
 
         if (updateAttrs.length > 0) {

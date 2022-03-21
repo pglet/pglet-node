@@ -86,12 +86,12 @@ class Page extends Control {
         let ids = ""
         commandList.forEach(async cmd => {
             // TODO 
-            // let pageCmdRequestPayload = {
-            //     PageName: pageName,
-            //     SessionID: sessionId,
-            //     Command: command
-            // }
-            console.log("cmd", cmd);
+            let pageCmdRequestPayload = {
+                PageName: pageName,
+                SessionID: sessionId,
+                Command: command
+            }
+            console.log("cmd: ", cmd);
             await this._conn.send('pageCommandFromHost', cmd);
             //ids += await this._conn.send('pageCommandFromHost', cmd);
             //ids += " ";
@@ -152,12 +152,12 @@ class Page extends Control {
         return this._conn.send('pageCommandFromHost', `clean ${this.uid}`)
     }
 
-    getValue(ctrl: string | Control): Promise<void> {
+    getValue(ctrl: string | Control): Promise<string> {
         let value = (typeof ctrl === "string") ? ctrl : ctrl.uid;
         return this._conn.send('pageCommandFromHost', `get ${value} value`);
     }
 
-    setValue(ctrl: string | Control, value: string, fireAndForget: boolean): Promise<void> {
+    setValue(ctrl: string | Control, value: string, fireAndForget: boolean): Promise<string> {
         let cmd = fireAndForget ? "setf" : "set";
 
         let ctrlValue = (typeof ctrl === "string") ? ctrl : ctrl.id;

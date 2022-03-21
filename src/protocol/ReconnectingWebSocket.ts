@@ -34,7 +34,7 @@ export class ReconnectingWebSocket {
         this._rws.onmessage = value;
     }
 
-    send(msg: string) { 
+    send(msg: any) { 
         // TODO simulate request response with hash
         this._rws.send(msg);
 
