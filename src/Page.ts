@@ -85,14 +85,14 @@ class Page extends Control {
 
         let ids = ""
         commandList.forEach(async cmd => {
-            // TODO 
+            // TODO rewrite populateUpdateCommands
             let pageCmdRequestPayload = {
-                PageName: pageName,
-                SessionID: sessionId,
-                Command: command
+                pageName: this._pageName,
+                sessionID: 0,
+                command: cmd
             }
             console.log("cmd: ", cmd);
-            await this._conn.send('pageCommandFromHost', cmd);
+            await this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
             //ids += await this._conn.send('pageCommandFromHost', cmd);
             //ids += " ";
         })

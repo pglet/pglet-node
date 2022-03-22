@@ -2,6 +2,7 @@ import Page from './Page';
 import { GetId } from './Utils';
 import { Command } from './protocol/Command';
 import * as diff from 'diff';
+import { CpuInfo } from 'os';
 
 interface ControlProperties {
     id?: string,
@@ -135,7 +136,13 @@ class Control {
         let updateAttrs = this.getCmdAttrs(true);
 
         if (updateAttrs.length > 0) {
-            commandList.push(`set ${updateAttrs.join(' ')}`);
+            `set ${updateAttrs.join(' ')}`
+            let updateCmd: Command = {
+                indent: 0,
+                name: "set",
+
+            }
+            commandList.push(updateCmd);
         }
 
         let hashes = new Map<number, Control>();
@@ -247,11 +254,11 @@ class Control {
         return sattr.replace(/\n/g, "\\n").replace(/\"/g, "\\\"");
     }
 
-    private getCmdAttrs(update?: boolean): string[] {
-        let parts = [];
+    private getCmdAttrs(update?: boolean): Command {
+        let cmd: Command;
 
         if (update && !this.uid) {
-            return parts;
+            return cmd;
         }
 
         this.attrs.forEach((value, attr) => {
@@ -260,21 +267,23 @@ class Control {
             if (update && !dirty) {
                 return;
             }
-
-            parts.push(`${attr}="${value[0]}"`);
+            cmd.attrs[attr] = value[0]
+            //parts.push(`${attr}="${value[0]}"`);
 
             this.attrs.set(attr, [value[0], false]);
         })
         
         if (!update && this._id) {
-            parts.unshift(`id="${this.stringifyAttr(this._id)}"`)
+            cmd.attrs["id"] = this.stringifyAttr(this._id);
+            //parts.unshift(`id="${this.stringifyAttr(this._id)}"`)
         }
         else if (update && parts.length > 0) {
-            parts.unshift(`${this.stringifyAttr(this.uid)}`)
+            cmd.values.push(this.stringifyAttr(this.uid));
+            //parts.unshift(`${this.stringifyAttr(this.uid)}`)
         }
         
 
-        return parts;
+        return cmd;
     }
 
     protected getChildren() {
