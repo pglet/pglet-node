@@ -1,11 +1,11 @@
 
-export interface Command {
+export class Command {
 
-    readonly indent?: number;
-    readonly name?: string;
-    readonly values?: string[];
-    readonly attrs?: { [name: string]: string };
-    readonly lines?: string[];
-    readonly commands?: Command[];
+    indent?: number = 0;
+    name?: string;
+    values?: string[] = [];
+    attrs?: { [name: string]: string } = {};
+    lines?: string[];
+    commands?: Command[];
 
 }

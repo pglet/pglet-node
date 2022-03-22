@@ -4,6 +4,7 @@ import { Connection } from './Connection';
 import { Event as PgletEvent} from './Event';
 import { ControlEvent } from './ControlEvent';
 import { Action } from './protocol/Actions';
+import { Command } from './protocol/Command';
 
 
 interface PageProperties extends ControlProperties {
@@ -70,7 +71,7 @@ class Page extends Control {
 
     private async _update(controls?: Control[]): Promise<string> {
         let addedControls: Control[]  = [];
-        let commandList: string[] = [];
+        let commandList: Command[] = [];
         if (!controls) {
             return;
         }

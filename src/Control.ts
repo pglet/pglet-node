@@ -34,7 +34,7 @@ class Control {
         // console.log("attrs: ", this.attrs);
     }
 
-    getControlName() {
+    getControlName(): string {
         throw new Error("must be overridden in child class");
     }
     
@@ -133,15 +133,11 @@ class Control {
     }
 
     populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: Command[]) {
-        let updateAttrs = this.getCmdAttrs(true);
+        let updateCmd = this.getCmdAttrs(true);
 
-        if (updateAttrs.length > 0) {
-            `set ${updateAttrs.join(' ')}`
-            let updateCmd: Command = {
-                indent: 0,
-                name: "set",
-
-            }
+        if (Object.keys(updateCmd.attrs).length > 0) {
+            //`set ${updateCmd.join(' ')}`
+            updateCmd.name = "set";
             commandList.push(updateCmd);
         }
 
@@ -173,8 +169,22 @@ class Control {
                 //insert control
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
-                    let cmd = ctrl.getCmdStr('', controlMap, addedControls);
-                    commandList.push(`add to="${this.uid}" at="${n}"\n${cmd}`);
+                    let cmd = ctrl.getCmds(0, controlMap, addedControls);
+                    // let addCommand: Command = {
+                    //     name: "add",
+                    //     attrs: {
+                    //         "to": this._uid,
+                    //         "at": n.toString()
+                    //     }
+                    // }
+                    let addCommand = new Command();
+                    addCommand.name = "add";
+                    addCommand.attrs = {
+                        "to": this._uid,
+                        "at": n.toString()
+                    }
+                    commandList.push(addCommand);
+                    //commandList.push(`add to="${this.uid}" at="${n}"\n${cmd}`);
                     n += 1;
                 })
             }
@@ -186,9 +196,15 @@ class Control {
                     this.removeControlRecursively(controlMap, ctrl);
                     ids.push(ctrl.uid);
                 })
-                
-                commandList.push(`remove ${ids.join(' ')}`);
-
+                // let removeCommand: Command = {
+                //     name: "remove",
+                //     values: ids
+                // }
+                let removeCommand = new Command();
+                removeCommand.name = "remove";
+                removeCommand.values = ids;
+                //commandList.push(`remove ${ids.join(' ')}`);
+                commandList.push(removeCommand);
             }
             else {
                 // leave control
@@ -212,21 +228,26 @@ class Control {
         map.delete(control.uid);
     }
 
-    getCmdStr(indent?: string, index?: Map<string, Control>, addedControls?: Control[]): string {
+    getCmds(indent?: number, index?: Map<string, Control>, addedControls?: Control[]): Command[] {
 
         if (this.uid && index && index.has(this.uid)) {
             index.delete(this.uid);
         }
 
         if(!indent) {
-            indent = '';
+            indent = 0;
         }
 
         let lines = [];
         let parts = [];
+        let commands: Command[] = [];
         
+        //top level command
         let attrParts = this.getCmdAttrs(false);
-        parts.push(indent + this.getControlName(), ...attrParts);     
+        attrParts.indent = indent;
+        attrParts.values.push(this.getControlName());
+        commands.push(attrParts);
+        //parts.push(indent + this.getControlName(), ...attrParts);     
 
         lines.push(parts.join(' '));
 
@@ -236,16 +257,16 @@ class Control {
         const currentChildren = this.getChildren();
 
         currentChildren.forEach(control => {
-             let childCmd = control.getCmdStr((indent+"  "), index, addedControls);
-             if (childCmd != "") {
-                 lines.push(childCmd);
+             let childCmds = control.getCmds((indent + 2), index, addedControls);
+             if (childCmds.length > 0) {
+                commands.push(...childCmds);
              }
         })
         
         this._previousChildren.length = 0;
         this._previousChildren.push(...currentChildren);
-
-        return lines.join('\n');
+        return commands
+        //return lines.join('\n');
     }
 
     // unsure of the utility of this function
@@ -255,7 +276,7 @@ class Control {
     }
 
     private getCmdAttrs(update?: boolean): Command {
-        let cmd: Command;
+        let cmd = new Command();
 
         if (update && !this.uid) {
             return cmd;
@@ -277,7 +298,7 @@ class Control {
             cmd.attrs["id"] = this.stringifyAttr(this._id);
             //parts.unshift(`id="${this.stringifyAttr(this._id)}"`)
         }
-        else if (update && parts.length > 0) {
+        else if (update && Object.keys(cmd.attrs).length > 0) {
             cmd.values.push(this.stringifyAttr(this.uid));
             //parts.unshift(`${this.stringifyAttr(this.uid)}`)
         }
@@ -286,7 +307,7 @@ class Control {
         return cmd;
     }
 
-    protected getChildren() {
+    protected getChildren(): Control[] {
         return [];
     }
 }
