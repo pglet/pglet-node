@@ -183,6 +183,7 @@ class Control {
                         "to": this._uid,
                         "at": n.toString()
                     }
+                    addCommand.commands.push(...cmd)
                     commandList.push(addCommand);
                     //commandList.push(`add to="${this.uid}" at="${n}"\n${cmd}`);
                     n += 1;

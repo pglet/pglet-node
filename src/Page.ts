@@ -90,7 +90,7 @@ class Page extends Control {
             // TODO rewrite populateUpdateCommands
             let pageCmdRequestPayload = {
                 pageName: this._pageName,
-                sessionID: 0,
+                sessionID: "0",
                 command: cmd
             }
             //console.log("cmd: ", cmd);
@@ -151,7 +151,16 @@ class Page extends Control {
         this.getChildren().forEach(ctrl => {
             ctrl.removeControlRecursively(this._index, ctrl);
         })
-        return this._conn.send('pageCommandFromHost', `clean ${this.uid}`)
+        let cmd = new Command();
+        cmd.name = "clean";
+        cmd.values = ["page"];
+        let pageCmdRequestPayload = {
+            pageName: this._pageName,
+            sessionID: "0",
+            command: cmd
+        }
+        
+        return this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
     }
 
     getValue(ctrl: string | Control): Promise<string> {

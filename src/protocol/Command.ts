@@ -6,6 +6,6 @@ export class Command {
     values?: string[] = [];
     attrs?: { [name: string]: string } = {};
     lines?: string[];
-    commands?: Command[];
+    commands?: Command[] = [];
 
 }
