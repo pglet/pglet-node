@@ -25,7 +25,7 @@ class Control {
     constructor(controlProps: ControlProperties) {
         this._id = controlProps.id ? controlProps.id : undefined;
         this.attrs = new Map();
-        let excludedAttrs = ["id", "childControls", "onClick", "onChange", "onSearch", "onEscape", "onClear", "onDismiss", "onChangeHandler", "onSubmit", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons", "points", "lines", "optionKeys", "optionValues"]
+        let excludedAttrs = ["connection", "id", "childControls", "onClick", "onChange", "onSearch", "onEscape", "onClear", "onDismiss", "onChangeHandler", "onSubmit", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons", "points", "lines", "optionKeys", "optionValues"]
         Object.keys(controlProps).forEach(key => {  
             if (excludedAttrs.indexOf(key) < 0) {
                 this.setAttr(key, controlProps[key]);
@@ -276,6 +276,7 @@ class Control {
     }
 
     private getCmdAttrs(update?: boolean): Command {
+        //console.log("getCmdAttrs for: ", this)
         let cmd = new Command();
 
         if (update && !this.uid) {

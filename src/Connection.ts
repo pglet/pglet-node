@@ -120,6 +120,11 @@ export class Connection {
 
     private sendMessageInternal(msg: PgletMessage): Promise<string> {
         //everything fire and forget for now
+        // let circularReplacer = (key, value) => {
+        //     console.log(Log.bg.crimson, "key: ", key);
+        //     console.log(Log.bg.white, "value: ", value);
+        //     return value;
+        // }
         return new Promise((res, rej) => {
             
             this._rws.send(JSON.stringify(msg));
@@ -269,40 +274,40 @@ export class Connection {
         }
     }
     
-    onMessage(evt: MessageEvent) {
-        let msg: PgletMessage;
-        let evtData = JSON.parse(evt.data);
-        console.log(Log.bg.white, "evtData: ", evtData);
-        if (evtData.id in this.sentMessageHash) {
+    onMessage(msg: MessageEvent) {
+        let storedMsg: PgletMessage;
+        let msgData = JSON.parse(msg.data);
+        console.log(Log.bg.yellow, "msgData: ", msgData);
+        if (msgData.id in this.sentMessageHash) {
             console.log("found!");
-            msg = this.sentMessageHash[evtData.id];
+            storedMsg = this.sentMessageHash[msgData.id];
             //assume msg is retrieved
-            switch (msg.action) {
+            switch (storedMsg.action) {
                 case 'registerHostClient':
-                    console.log(Log.bg.yellow, "Register Host Client");
+                    console.log(Log.underscore + Log.bg.yellow, "Register Host Client");
                     break;
                 case 'pageCommandFromHost':
-                    console.log(Log.bg.yellow, "Page Command From Host");
+                    console.log(Log.underscore + Log.bg.yellow, "Page Command From Host");
                     break;
                 case 'pageCommandsBatchFromHost':
-                    console.log(Log.bg.yellow, "Page Commands Batch from Host");
+                    console.log(Log.underscore + Log.bg.yellow, "Page Commands Batch from Host");
                     break;
             }
         }
-        let cb = evtData.error ? this._messageReject : this._messageResolve;
+        let cb = msgData.error ? this._messageReject : this._messageResolve;
 
         if (cb) {
-            cb(JSON.stringify(evtData));
+            cb(JSON.stringify(msgData));
             this._messageResolve = null;
             this._messageReject = null;
         }
-        console.log(Log.underscore + Log.bg.magenta, "retrieved message: ", msg);
+        console.log(Log.bg.yellow, "retrieved message: ", storedMsg);
         //console.log("onMessage Event payload: ", JSON.parse(evt.data).payload.hostClientID);
     }
 
     onEvent(payload) {
         // this will be called when onMessage fires with Actions.pageEventToHost
-        console.log(payload);
+        console.log(Log.bg.yellow, "onEvent payload: ", payload);
     }
 
     static openBrowser(url: string) {

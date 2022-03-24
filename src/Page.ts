@@ -5,6 +5,7 @@ import { Event as PgletEvent} from './Event';
 import { ControlEvent } from './ControlEvent';
 import { Action } from './protocol/Actions';
 import { Command } from './protocol/Command';
+import { Log } from './Utils';
 
 
 interface PageProperties extends ControlProperties {
@@ -78,7 +79,7 @@ class Page extends Control {
         controls.forEach(ctrl => {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
-        console.log("commandList: ", commandList);
+        console.log(Log.bg.green, "commandList: ", commandList);
         //console.log("control map: ", ...this._index.entries());
         if (commandList.length == 0) {
             return;
@@ -92,7 +93,7 @@ class Page extends Control {
                 sessionID: 0,
                 command: cmd
             }
-            console.log("cmd: ", cmd);
+            //console.log("cmd: ", cmd);
             await this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
             //ids += await this._conn.send('pageCommandFromHost', cmd);
             //ids += " ";

@@ -189,9 +189,9 @@ let pageInternal = async (args: clientOpts) => {
     const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl));
     
     var conn = new Connection(rws);
-    conn.onEvent = (payload) => {
-        console.log(payload);
-    }
+    // conn.onEvent = (payload) => {
+    //     console.log(payload);
+    // }
     let registerHostClientPayload = {
         HostClientID: null,
         PageName: args.pageName,
@@ -200,13 +200,14 @@ let pageInternal = async (args: clientOpts) => {
         Permissions: null
     }
     let resp = await conn.send('registerHostClient', registerHostClientPayload);
-    console.log("resp: ", JSON.parse(resp).payload);
-    console.log("serverurl: ", args.serverUrl);
+    let respPayload = JSON.parse(resp).payload;
+    console.log(Log.underscore, "resp: ", respPayload);
+    //console.log("serverurl: ", args.serverUrl);
     if (!args.noWindow) {
-        let url = args.serverUrl + JSON.parse(resp).payload.pageName; 
+        let url = args.serverUrl + respPayload.pageName; 
         Connection.openBrowser(url); 
     }
-    return new Page({connection: conn, url: args.serverUrl})
+    return new Page({pageName: respPayload.pageName, connection: conn, url: args.serverUrl})
 }
 
 let appInternal = async (...args: any) => {
