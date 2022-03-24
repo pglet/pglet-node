@@ -227,13 +227,18 @@ export class Connection {
     }
 
     private parseEvent(data: any) {
-        const result = data.toString().trim();
-        
-        let re = /(?<target>[^\s]+)\s(?<name>[^\s]+)(\s(?<data>.+))*/;
-        let match = re.exec(result);
+        const payload = data.payload
 
-        return new PgletEvent(match.groups.target, match.groups.name, match.groups.data);
+        return new PgletEvent(payload.eventTarget, payload.eventName, payload.eventData);
     }
+    // private parseEvent(data: any) {
+    //     const result = data.toString().trim();
+        
+    //     let re = /(?<target>[^\s]+)\s(?<name>[^\s]+)(\s(?<data>.+))*/;
+    //     let match = re.exec(result);
+
+    //     return new PgletEvent(match.groups.target, match.groups.name, match.groups.data);
+    // }
 
     startReadWriteLoops() {
         // something like waitEvent() - for Read - and sendLinux/Windows - for Write
@@ -292,9 +297,16 @@ export class Connection {
                 case 'pageCommandsBatchFromHost':
                     console.log(Log.underscore + Log.bg.yellow, "Page Commands Batch from Host");
                     break;
+                case 'pageEventToHost':
+                    console.log(Log.underscore + Log.bg.yellow, "Page Event to Host");
             }
         }
-        let cb = msgData.error ? this._messageReject : this._messageResolve;
+
+        if (msgData.action === 'pageEventToHost') {
+            let pgletEvent = this.parseEvent(msgData);
+            this.onEvent(pgletEvent);
+        }
+        let cb = msgData.payload.error ? this._messageReject : this._messageResolve;
 
         if (cb) {
             cb(JSON.stringify(msgData));

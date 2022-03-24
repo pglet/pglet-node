@@ -176,7 +176,7 @@ class Page extends Control {
     }
 
     private _onEvent(e: PgletEvent) {
-        //console.log("e.data: ", e.data);
+        console.log("e.data: ", e.data);
         if (e.target == "page" && e.name == "change") {
             let allProps = JSON.parse(e.data);
             //console.log("all Props: ", allProps);

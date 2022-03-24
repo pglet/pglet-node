@@ -16,8 +16,8 @@ function sleep(ms) {
     }
     let buttonObject = new pglet.Button({text: "Say hello!", primary: true, onClick: greeterButtonHandler})
     await p.add([textboxObject, buttonObject]);
-    await sleep(5000);
-    await p.clean();
+    // await sleep(5000);
+    // await p.clean();
 
     // while(true) {
     //     // TODO WaitEvent will never resolve since the command and event pipe promise resolution wiring is removed
