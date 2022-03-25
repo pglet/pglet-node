@@ -103,7 +103,7 @@ export class Connection {
             payload: command
         }
         this.sentMessageHash[msg.id] = msg;
-        console.log("sending message: ", msg);
+        console.log(Log.bg.yellow, "sending message: ", msg);
         return this.sendMessageInternal(msg);
     }
 

@@ -79,7 +79,10 @@ class Page extends Control {
         controls.forEach(ctrl => {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
-        console.log(Log.bg.green, "commandList: ", commandList);
+        console.log(Log.bg.blue, "commandList: ", commandList);
+        console.log(Log.bg.blue, "addedControls: ", addedControls);
+        commandList.forEach(cmd => console.log(Log.bg.blue, "commands: ", cmd.commands));
+        
         //console.log("control map: ", ...this._index.entries());
         if (commandList.length == 0) {
             return;
@@ -94,9 +97,10 @@ class Page extends Control {
             }
             //console.log("cmd: ", cmd);
             let resp = await this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
-            console.log(Log.underscore, "resp: ", resp); 
+            let respPayload = JSON.parse(resp).payload;
+            console.log(Log.bg.blue, "resp: ", resp); 
             //console.log("resp: ", resp);
-            ids.push(JSON.parse(resp).result);
+            ids.push(respPayload.result);
             //ids += await this._conn.send('pageCommandFromHost', cmd);
             //ids += " ";
         }
@@ -131,6 +135,16 @@ class Page extends Control {
         //         })
         //     })
         // }
+        if (ids.length > 0) {
+            let n = 0;
+            ids.forEach(id => {
+                if (id === "") return;
+                addedControls[n].uid = id;
+                addedControls[n].page = this;
+                this._index.set(id, addedControls[n]);
+                n += 1;
+            })
+        }
         return ids;
     }
 
@@ -196,7 +210,7 @@ class Page extends Control {
 
     // this will be called when onMessage fires with Actions.pageEventToHost
     private _onEvent(e: PgletEvent) {
-        console.log(Log.bg.green, "onEvent PgletEvent: ", e);
+        console.log(Log.bg.blue, "onEvent PgletEvent: ", e);
         console.log(this._index);
         if (e.target == "page" && e.name == "change") {
             let allProps = JSON.parse(e.data);

@@ -25,6 +25,7 @@ class Control {
     constructor(controlProps: ControlProperties) {
         this._id = controlProps.id ? controlProps.id : undefined;
         this.attrs = new Map();
+        // excludedAttrs is needed so that a single object can be passed to control constructor and here event handlers and other non-applicable attributes are filtered out. 
         let excludedAttrs = ["connection", "id", "childControls", "onClick", "onChange", "onSearch", "onEscape", "onClear", "onDismiss", "onChangeHandler", "onSubmit", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons", "points", "lines", "optionKeys", "optionValues"]
         Object.keys(controlProps).forEach(key => {  
             if (excludedAttrs.indexOf(key) < 0) {
@@ -250,7 +251,7 @@ class Control {
         commands.push(attrParts);
         //parts.push(indent + this.getControlName(), ...attrParts);     
 
-        lines.push(parts.join(' '));
+        //lines.push(parts.join(' '));
 
         if (addedControls) {
             addedControls.push(this);
