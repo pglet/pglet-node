@@ -70,7 +70,7 @@ class Page extends Control {
         }
     }
 
-    private async _update(controls?: Control[]): Promise<string> {
+    private async _update(controls?: Control[]): Promise<string[]> {
         let addedControls: Control[]  = [];
         let commandList: Command[] = [];
         if (!controls) {
@@ -84,35 +84,53 @@ class Page extends Control {
         if (commandList.length == 0) {
             return;
         }
-
-        let ids = ""
-        commandList.forEach(async cmd => {
-            // TODO rewrite populateUpdateCommands
+        //let ids = "";
+        let ids: string[] = [];
+        for (const cmd of commandList) {
             let pageCmdRequestPayload = {
                 pageName: this._pageName,
                 sessionID: "0",
                 command: cmd
             }
             //console.log("cmd: ", cmd);
-            await this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
+            let resp = await this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
+            console.log(Log.underscore, "resp: ", resp); 
+            //console.log("resp: ", resp);
+            ids.push(JSON.parse(resp).result);
             //ids += await this._conn.send('pageCommandFromHost', cmd);
             //ids += " ";
-        })
+        }
+        // commandList.forEach(async cmd => {
+        //     // TODO rewrite populateUpdateCommands
+        //     let pageCmdRequestPayload = {
+        //         pageName: this._pageName,
+        //         sessionID: "0",
+        //         command: cmd
+        //     }
+        //     //console.log("cmd: ", cmd);
+        //     let resp = await this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
+        //     console.log(Log.underscore, "resp: ", resp); 
+        //     //console.log("resp: ", resp);
+        //     ids.push(JSON.parse(resp).result);
+        //     //ids += await this._conn.send('pageCommandFromHost', cmd);
+        //     //ids += " ";
+        // })
+        console.log("ids: ", ids);
         //let ids = await this._conn.sendBatch(commandList);
 
-        if (ids) {
-            let n = 0;
-            ids.split(/\r?\n/).forEach(line => {
+        // if (ids) {
+        //     let n = 0;
+        //     ids.split(/\r?\n/).forEach(line => {
                 
-                line.split(" ").forEach(id => {
+        //         line.split(" ").forEach(id => {
 
-                    addedControls[n].uid = id;
-                    addedControls[n].page = this;
-                    this._index.set(id, addedControls[n]);
-                    n += 1
-                })
-            })
-        }
+        //             addedControls[n].uid = id;
+        //             addedControls[n].page = this;
+        //             this._index.set(id, addedControls[n]);
+        //             n += 1
+        //         })
+        //     })
+        // }
         return ids;
     }
 
@@ -163,7 +181,8 @@ class Page extends Control {
         return this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
     }
 
-    getValue(ctrl: string | Control): Promise<string> {
+    getValue(ctrl: Control): Promise<string> {
+        console.log(Log.bg.blue, "ctrl.uid: ", ctrl.uid);
         let value = (typeof ctrl === "string") ? ctrl : ctrl.uid;
         return this._conn.send('pageCommandFromHost', `get ${value} value`);
     }
@@ -175,16 +194,20 @@ class Page extends Control {
         return this._conn.send('pageCommandFromHost',`${cmd} ${ctrlValue} value="${value}"`);
     }
 
+    // this will be called when onMessage fires with Actions.pageEventToHost
     private _onEvent(e: PgletEvent) {
-        console.log("e.data: ", e.data);
+        console.log(Log.bg.green, "onEvent PgletEvent: ", e);
+        console.log(this._index);
         if (e.target == "page" && e.name == "change") {
             let allProps = JSON.parse(e.data);
             //console.log("all Props: ", allProps);
             allProps.forEach(props => {
+                console.log(Log.bg.blue, "props: ", props)
                 let id = props["i"];
                 if (this._index.has(id)) {
                     for (const [key, value] of Object.entries(props)) {
                         if (key != "i") {
+                            console.log("INNER ALLPROPS LOOP")
                             this._index.get(id).setAttr(key, value, false)
                         }
                     }

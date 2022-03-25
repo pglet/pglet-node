@@ -201,7 +201,7 @@ let pageInternal = async (args: clientOpts) => {
     }
     let resp = await conn.send('registerHostClient', registerHostClientPayload);
     let respPayload = JSON.parse(resp).payload;
-    console.log(Log.underscore, "resp: ", respPayload);
+    //console.log(Log.underscore, "resp: ", respPayload);
     //console.log("serverurl: ", args.serverUrl);
     if (!args.noWindow) {
         let url = args.serverUrl + respPayload.pageName; 

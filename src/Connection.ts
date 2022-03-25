@@ -23,7 +23,7 @@ export class Connection {
     private _messageReject: any;
     private _pageUrl: string;
     sentMessageHash: { [key: string]: PgletMessage } = {};
-    //private _onEvent: any;
+    onEvent: any;
     //onMessage: (evt: MessageEvent) => Promise<void>
 
     constructor(Rws: ReconnectingWebSocket) {
@@ -283,24 +283,25 @@ export class Connection {
         let storedMsg: PgletMessage;
         let msgData = JSON.parse(msg.data);
         console.log(Log.bg.yellow, "msgData: ", msgData);
-        if (msgData.id in this.sentMessageHash) {
-            console.log("found!");
-            storedMsg = this.sentMessageHash[msgData.id];
-            //assume msg is retrieved
-            switch (storedMsg.action) {
-                case 'registerHostClient':
-                    console.log(Log.underscore + Log.bg.yellow, "Register Host Client");
-                    break;
-                case 'pageCommandFromHost':
-                    console.log(Log.underscore + Log.bg.yellow, "Page Command From Host");
-                    break;
-                case 'pageCommandsBatchFromHost':
-                    console.log(Log.underscore + Log.bg.yellow, "Page Commands Batch from Host");
-                    break;
-                case 'pageEventToHost':
-                    console.log(Log.underscore + Log.bg.yellow, "Page Event to Host");
-            }
-        }
+        // if (msgData.id in this.sentMessageHash) {
+        //     console.log("found!");
+        //     storedMsg = this.sentMessageHash[msgData.id];
+        //     //assume msg is retrieved
+        //     switch (storedMsg.action) {
+        //         case 'registerHostClient':
+        //             console.log(Log.underscore + Log.bg.yellow, "Register Host Client");
+        //             break;
+        //         case 'pageCommandFromHost':
+        //             console.log(Log.underscore + Log.bg.yellow, "Page Command From Host", msgData.payload.result);
+        //             //this.onEvent(msgData.payload);
+        //             break;
+        //         case 'pageCommandsBatchFromHost':
+        //             console.log(Log.underscore + Log.bg.yellow, "Page Commands Batch from Host");
+        //             break;
+        //         case 'pageEventToHost':
+        //             console.log(Log.underscore + Log.bg.yellow, "Page Event to Host");
+        //     }
+        // }
 
         if (msgData.action === 'pageEventToHost') {
             let pgletEvent = this.parseEvent(msgData);
@@ -313,14 +314,14 @@ export class Connection {
             this._messageResolve = null;
             this._messageReject = null;
         }
-        console.log(Log.bg.yellow, "retrieved message: ", storedMsg);
+        //console.log(Log.bg.yellow, "retrieved message: ", storedMsg);
         //console.log("onMessage Event payload: ", JSON.parse(evt.data).payload.hostClientID);
     }
 
-    onEvent(payload) {
-        // this will be called when onMessage fires with Actions.pageEventToHost
-        console.log(Log.bg.yellow, "onEvent payload: ", payload);
-    }
+    // onEvent(payload) {
+    //     
+    //     console.log(Log.bg.yellow, "onEvent payload: ", payload);
+    // }
 
     static openBrowser(url: string) {
         let osType = os.type();
