@@ -3,6 +3,7 @@ import { GetId } from './Utils';
 import { Command } from './protocol/Command';
 import * as diff from 'diff';
 import { CpuInfo } from 'os';
+import { Log } from './Utils';
 
 interface ControlProperties {
     id?: string,
@@ -195,6 +196,7 @@ class Control {
                 let ids = [];
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
+                    //console.log(Log.bg.red, "ctrl and ctrl.uid: ", ctrl, ctrl.uid)
                     this.removeControlRecursively(controlMap, ctrl);
                     ids.push(ctrl.uid);
                 })

@@ -164,7 +164,7 @@ class Page extends Control {
 
     remove(controls: Control[]) {
         controls.forEach(ctrl => {
-            let index = controls.indexOf(ctrl);
+            let index = this._controls.indexOf(ctrl);
 
             if (index > -1) {
                 this._controls.splice(index, 1);

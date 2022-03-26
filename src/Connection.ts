@@ -306,6 +306,7 @@ export class Connection {
         if (msgData.action === 'pageEventToHost') {
             let pgletEvent = this.parseEvent(msgData);
             this.onEvent(pgletEvent);
+            return;
         }
         let cb = msgData.payload.error ? this._messageReject : this._messageResolve;
 

@@ -10,8 +10,11 @@ function sleep(ms) {
     await p.clean()
     let textboxObject = new pglet.Textbox({id: "textbox1", value: "val1"});
     async function greeterButtonHandler(e) {
-        let name = await p.getValue(textboxObject);
-        await p.add([new pglet.Text({value: `Hello ${name}!`})])
+        let name = textboxObject.value;
+        let text = new pglet.Text({value: `Hello ${name}!`});
+        await p.add([text]);
+        await sleep(3000);
+        await p.remove([text]);
         return
     }
     let buttonObject = new pglet.Button({text: "Say hello!", primary: true, onClick: greeterButtonHandler})
