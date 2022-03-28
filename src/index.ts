@@ -39,21 +39,18 @@ import { Column, Columns, Items, Grid } from './controls/Grid';
 import { Tabs, Tab } from './controls/Tabs';
 import { Control}  from './Control';
 import { Connection } from './Connection';
-import NodeWebSocket from 'ws';
 import { ReconnectingWebSocket } from './protocol/ReconnectingWebSocket'
-import { Message as PgletMessage } from './protocol/Message';
-import { Event, Options } from 'reconnecting-websocket';
 import { Log } from './Utils';
 
-const PGLET_VERSION: string = "0.5.6";
+const PGLET_VERSION: string = "0.7.0";
 const HOSTED_SERVICE_URL = "https://app.pglet.io";
 const DEFAULT_SERVER_PORT = "8550";
 const isDeno = typeof window !== 'undefined' && ("Deno" in window);
 
 var pgletExe: string = null;
-var _installPromise: any = null;
+var _installPromise: Promise<void> = null;
 
-async function _install() {
+async function _install(): Promise<void> {
     // prevent concurrent calls firing install more than once
     if (!_installPromise) {
         _installPromise = _doInstall();
@@ -61,7 +58,7 @@ async function _install() {
       return _installPromise;
 }
 
-async function _doInstall() {
+async function _doInstall(): Promise<void> {
     pgletExe = os.type() === "Windows_NT" ? "pglet.exe" : "pglet";
 
     // check if pglet exists in PATH (for development)
@@ -138,6 +135,14 @@ async function download(url: string, filePath: string) {
     });
 }
 
+type clientOpts = {
+    pageName?: string,
+    web?: boolean,
+    serverUrl?: string,
+    noWindow?: boolean,
+    sessionHandler?: (page: Page) => Promise<void>
+}
+
 async function connectPage(name?: string, opts?: clientOpts) {
     let userOpts = {
         pageName: "*",
@@ -148,30 +153,19 @@ async function connectPage(name?: string, opts?: clientOpts) {
     if (name) { userOpts.pageName = name };
 
     return pageInternal(userOpts);
-
 }
+
 function serveApp(sessionHandler: (page: Page) => Promise<void>, opts?: clientOpts) {
     let userOpts = {
+        sessionHandler: null,
         pageName: "*",
         web: false,
         serverUrl: `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}`,
         ...opts
     }
-    return appInternal(sessionHandler, userOpts)
-}
-
-type clientOpts = {
-    pageName?: string,
-    web?: boolean,
-    serverUrl?: string,
-    noWindow?: boolean,
-}
-
-function getWebSocketUrl(url: string) {
-    let returnUrl = new URL(url);
-    returnUrl.protocol = returnUrl.protocol === "https:" ? "wss" : "ws";
-    returnUrl.pathname = "ws";
-    return returnUrl.href;
+    userOpts.sessionHandler = sessionHandler;
+    
+    return appInternal(userOpts)
 }
 
 let pageInternal = async (args: clientOpts) => {
@@ -184,14 +178,10 @@ let pageInternal = async (args: clientOpts) => {
     else {
         args.serverUrl = HOSTED_SERVICE_URL;
     }
-
     
-    const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl));
-    
+    const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl)); 
     var conn = new Connection(rws);
-    // conn.onEvent = (payload) => {
-    //     console.log(payload);
-    // }
+
     let registerHostClientPayload = {
         HostClientID: null,
         PageName: args.pageName,
@@ -202,21 +192,20 @@ let pageInternal = async (args: clientOpts) => {
     let resp = await conn.send('registerHostClient', registerHostClientPayload);
     let respPayload = JSON.parse(resp).payload;
     //console.log(Log.underscore, "resp: ", respPayload);
-    //console.log("serverurl: ", args.serverUrl);
     if (!args.noWindow) {
         let url = args.serverUrl + respPayload.pageName; 
-        Connection.openBrowser(url); 
+        openBrowser(url); 
     }
     return new Page({pageName: respPayload.pageName, connection: conn, url: args.serverUrl})
 }
 
-let appInternal = async (...args: any) => {
+let appInternal = async (args: clientOpts) => {
     
     await _install();
-    //console.log("pgletExe", pgletExe)
+
     var fn = null;
-    if (args.length > 0 && typeof args[args.length - 1] === 'function') {
-        fn = args[args.length - 1];
+    if (args.sessionHandler && typeof args.sessionHandler === 'function') {
+        fn = args.sessionHandler;
     } else {
         throw "The last argument must be a function.";
     }
@@ -226,9 +215,8 @@ let appInternal = async (...args: any) => {
     let url: string;
     let page: Page;
     const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl));
-    child.stdout.on('data', (data) => {
 
-        //console.log("spawn result: ", decoder.write(Buffer.from(data)));
+    child.stdout.on('data', (data) => {
         if (!url) {
             url = decoder.write(Buffer.from(data)).trim();
             return;
@@ -239,8 +227,26 @@ let appInternal = async (...args: any) => {
         }
     })
 
+}
 
+function getWebSocketUrl(url: string) {
+    let returnUrl = new URL(url);
+    returnUrl.protocol = returnUrl.protocol === "https:" ? "wss" : "ws";
+    returnUrl.pathname = "ws";
+    return returnUrl.href;
+}
 
+function openBrowser(url: string) {
+    let osType = os.type();
+    if (osType === "Windows_NT") {
+        cp.exec(`start ${url}`);
+    }
+    else if (osType == "Darwin") {
+        cp.exec(`open ${url}`);
+    }
+    else {
+        cp.exec(`xdg-open ${url}`)
+    }
 }
 
 export {

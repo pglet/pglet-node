@@ -39,53 +39,6 @@ export class Connection {
         this._messageResolve = null;
         this._messageReject = null;
 
-        //this._rws.send()
-
-        // if (os.type() === "Windows_NT") {
-        //     // open connections for command and event pipes
-        //     this._commandResolve = null;
-        //     this._commandReject = null;
-        //     this._commandClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}` : `${os.tmpdir()}/CoreFxPipe_${connId}`, () => {
-        //         this._commandClient.setNoDelay(true);
-        //     });
-
-        //     this._commandClient.on('data', (data: any) => {
-        //         // parse result
-        //         const result = this.parseResult(data);
-        //         //console.log("commandClient data: ", result);
-                
-        //         let fn = this._commandResolve;
-        //         let value = result.value;
-        //         if (result.error) {
-        //             let fn = this._commandReject;
-        //             let value = result.error;
-        //         }
-
-        //         this._commandResolve = null;
-        //         this._commandReject = null;
-
-        //         if (fn) {
-        //             fn(value);
-        //         }
-        //     });
-
-        //     this._eventResolve = null;
-        //     this._eventClient = net.createConnection(os.type() === "Windows_NT" ? `\\\\.\\pipe\\${connId}.events` : `${os.tmpdir()}/CoreFxPipe_${connId}.events`, () => {
-        //     });
-
-        //     this._eventClient.on('data', (data) => {
-        //         const result = this.parseEvent(data);
-                
-        //         //call page private _onEvent
-        //         this.onEvent(result); 
-        //         var fn = this._eventResolve;
-        //         this._eventResolve = null;
-
-        //         if (fn) {
-        //             fn(result);
-        //         }
-        //     });
-        // }
     }
 
     // async sendBatch (commands: string[]): Promise<string> {
@@ -319,23 +272,6 @@ export class Connection {
         //console.log("onMessage Event payload: ", JSON.parse(evt.data).payload.hostClientID);
     }
 
-    // onEvent(payload) {
-    //     
-    //     console.log(Log.bg.yellow, "onEvent payload: ", payload);
-    // }
-
-    static openBrowser(url: string) {
-        let osType = os.type();
-        if (osType === "Windows_NT") {
-            cp.exec(`start ${url}`);
-        }
-        else if (osType == "Darwin") {
-            cp.exec(`open ${url}`);
-        }
-        else {
-            cp.exec(`xdg-open ${url}`)
-        }
-    }
 
 }
 
