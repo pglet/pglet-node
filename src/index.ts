@@ -46,6 +46,7 @@ import { connect } from 'http2';
 const PGLET_VERSION: string = "0.7.0";
 const HOSTED_SERVICE_URL = "https://app.pglet.io";
 const DEFAULT_SERVER_PORT = "8550";
+const ZERO_SESSION = "0";
 const isDeno = typeof window !== 'undefined' && ("Deno" in window);
 
 var pgletExe: string = null;
@@ -155,7 +156,7 @@ async function connectPage(name?: string, opts?: clientOpts): Promise<Page> {
     }
     if (name) { userOpts.pageName = name };
     let conn = await connectInternal(userOpts);
-    return new Page({pageName: conn.pageName, connection: conn, url: conn.pageUrl})
+    return new Page({pageName: conn.pageName, connection: conn, url: conn.pageUrl, sessionID: ZERO_SESSION})
 }
 async function serveApp(sessionHandler: (page: Page) => Promise<void>, opts?: clientOpts): Promise<void> {
     let userOpts = {
@@ -190,11 +191,18 @@ let connectInternal = async (args: clientOpts): Promise<Connection> => {
     
     const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl)); 
     var conn = new Connection(rws);
+    conn.onEvent = async (payload) => {
+        if (payload.sessionID in conn.sessions) {
+            let page = conn.sessions[payload.sessionID];
+            let e = new PgletEvent(payload.eventTarget, payload.eventName, payload.eventData);
+            await page._onEvent(e);
+        }
+    }
     if (args.isApp) {
         conn.onSessionCreated = async (payload) => {
             console.log("session created: ", payload);
             // instantiate page
-            let page = new Page({pageName: conn.pageName, url: conn.pageUrl, connection: conn});
+            let page = new Page({ pageName: conn.pageName, url: conn.pageUrl, connection: conn, sessionID: payload.sessionID });
             //conn.addSession(payload.sessionID, page);
             conn.sessions[payload.sessionID] =  page;
             console.log(Log.underscore, "conn.sessions: ", conn.sessions);

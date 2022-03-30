@@ -282,11 +282,11 @@ export class Connection {
         //     }
         // }
 
-        if (msgData.action === 'pageEventToHost') {
-            let pgletEvent = this.parseEvent(msgData);
-            this.onEvent(pgletEvent);
-            return;
-        }
+        // if (msgData.action === 'pageEventToHost') {
+        //     let pgletEvent = this.parseEvent(msgData);
+        //     this.onEvent(pgletEvent);
+        //     return;
+        // }
 
         if (msgData.action === 'sessionCreated') {
             console.log(Log.bg.yellow, "sessionCreated: ", msgData);
@@ -304,6 +304,7 @@ export class Connection {
         //console.log(Log.bg.yellow, "retrieved message: ", storedMsg);
         //console.log("onMessage Event payload: ", JSON.parse(evt.data).payload.hostClientID);
     }
+
 
 
 }

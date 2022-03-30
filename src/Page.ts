@@ -11,6 +11,7 @@ import { Log } from './Utils';
 interface PageProperties extends ControlProperties {
     connection?: Connection,
     pageName?: string,
+    sessionID?: string,
     url?: string,
     title?: string,
     verticalFill?: boolean,
@@ -25,6 +26,7 @@ class Page extends Control {
     private _index: Map<string, Control> = new Map();
     private _conn: Connection;
     private _pageName: string;
+    private _sessionID: string;
     private _url: string;
 
     constructor(pageProps: PageProperties) {
@@ -44,6 +46,9 @@ class Page extends Control {
         }
         if (pageProps.pageName) {
             this._pageName = pageProps.pageName;
+        }
+        if (pageProps.sessionID) {
+            this._sessionID = pageProps.sessionID;
         }
         this._conn.onEvent = this._onEvent.bind(this);
         //this.onSessionCreated = this._conn.onSessionCreated.bind(this);
@@ -93,7 +98,7 @@ class Page extends Control {
         for (const cmd of commandList) {
             let pageCmdRequestPayload = {
                 pageName: this._pageName,
-                sessionID: "0",
+                sessionID: this._sessionID,
                 command: cmd
             }
             //console.log("cmd: ", cmd);
@@ -189,7 +194,7 @@ class Page extends Control {
         cmd.values = ["page"];
         let pageCmdRequestPayload = {
             pageName: this._pageName,
-            sessionID: "0",
+            sessionID: this._sessionID,
             command: cmd
         }
         
@@ -210,7 +215,7 @@ class Page extends Control {
     }
 
     // this will be called when onMessage fires with Actions.pageEventToHost
-    private _onEvent(e: PgletEvent) {
+    _onEvent(e: PgletEvent) {
         //console.log(Log.bg.blue, "onEvent PgletEvent: ", e);
         //console.log(this._index);
         if (e.target == "page" && e.name == "change") {
