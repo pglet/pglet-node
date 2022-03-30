@@ -41,6 +41,7 @@ import { Control}  from './Control';
 import { Connection } from './Connection';
 import { ReconnectingWebSocket } from './protocol/ReconnectingWebSocket'
 import { Log } from './Utils';
+import { connect } from 'http2';
 
 const PGLET_VERSION: string = "0.7.0";
 const HOSTED_SERVICE_URL = "https://app.pglet.io";
@@ -140,37 +141,45 @@ type clientOpts = {
     web?: boolean,
     serverUrl?: string,
     noWindow?: boolean,
-    sessionHandler?: (page: Page) => Promise<void>
+    sessionHandler?: (page: Page) => Promise<void>,
+    isApp?: boolean
 }
 
-async function connectPage(name?: string, opts?: clientOpts) {
+async function connectPage(name?: string, opts?: clientOpts): Promise<Page> {
     let userOpts = {
         pageName: "*",
         web: false,
         serverUrl: `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}/`,
+        isApp: false,        
         ...opts
     }
     if (name) { userOpts.pageName = name };
-
-    return pageInternal(userOpts);
+    let conn = await connectInternal(userOpts);
+    return new Page({pageName: conn.pageName, connection: conn, url: conn.pageUrl})
 }
-
-function serveApp(sessionHandler: (page: Page) => Promise<void>, opts?: clientOpts) {
+async function serveApp(sessionHandler: (page: Page) => Promise<void>, opts?: clientOpts): Promise<void> {
     let userOpts = {
         sessionHandler: null,
         pageName: "*",
         web: false,
         serverUrl: `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}`,
+        isApp: true,
         ...opts
     }
-    userOpts.sessionHandler = sessionHandler;
-    
-    return appInternal(userOpts)
+    if (sessionHandler && typeof sessionHandler === 'function') {
+        userOpts.sessionHandler = sessionHandler;
+    } else {
+        throw "The last argument must be a function.";
+    }
+
+    await connectInternal(userOpts);
 }
 
-let pageInternal = async (args: clientOpts) => {
+let connectInternal = async (args: clientOpts): Promise<Connection> => {
     
     await _install();
+
+    var fn = args.sessionHandler;
 
     if (!args.web) {
         cp.spawnSync(pgletExe, ["server", "--background"], { encoding : 'utf8' });
@@ -181,22 +190,35 @@ let pageInternal = async (args: clientOpts) => {
     
     const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl)); 
     var conn = new Connection(rws);
+    if (args.isApp) {
+        conn.onSessionCreated = async (payload) => {
+            console.log("session created: ", payload);
+            // instantiate page
+            let page = new Page({pageName: conn.pageName, url: conn.pageUrl, connection: conn});
+            //conn.addSession(payload.sessionID, page);
+            conn.sessions[payload.sessionID] =  page;
+            console.log(Log.underscore, "conn.sessions: ", conn.sessions);
+            await fn(page);
+        }
+    }
 
     let registerHostClientPayload = {
         HostClientID: null,
         PageName: args.pageName,
-        IsApp: false,
+        IsApp: args.isApp,
         AuthToken: null,
         Permissions: null
     }
     let resp = await conn.send('registerHostClient', registerHostClientPayload);
     let respPayload = JSON.parse(resp).payload;
-    //console.log(Log.underscore, "resp: ", respPayload);
-    if (!args.noWindow) {
-        let url = args.serverUrl + respPayload.pageName; 
-        openBrowser(url); 
+    conn.pageName = respPayload.pageName;
+    conn.pageUrl = args.serverUrl + '/' + respPayload.pageName;
+
+    console.log(Log.underscore, "resp: ", respPayload);
+    if (!args.noWindow) { 
+        openBrowser(conn.pageUrl); 
     }
-    return new Page({pageName: respPayload.pageName, connection: conn, url: args.serverUrl})
+    return conn;
 }
 
 let appInternal = async (args: clientOpts) => {
@@ -215,6 +237,18 @@ let appInternal = async (args: clientOpts) => {
     let url: string;
     let page: Page;
     const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl));
+    var conn = new Connection(rws);
+
+    let registerHostClientPayload = {
+        HostClientID: null,
+        PageName: args.pageName,
+        IsApp: true,
+        AuthToken: null,
+        Permissions: null
+    }
+
+    let resp = await conn.send('registerHostClient', registerHostClientPayload);
+    let respPayload = JSON.parse(resp).payload;
 
     child.stdout.on('data', (data) => {
         if (!url) {

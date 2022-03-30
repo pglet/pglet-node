@@ -5,6 +5,7 @@ import util from 'util';
 import net from 'net';
 import fs from 'fs';
 import { Event as PgletEvent } from './Event';
+import Page from './Page'
 import rws , { Event, Options } from 'reconnecting-websocket';
 import { ReconnectingWebSocket } from './protocol/ReconnectingWebSocket';
 import { MessageChannel } from 'worker_threads';
@@ -22,8 +23,11 @@ export class Connection {
     private _messageResolve: any;
     private _messageReject: any;
     private _pageUrl: string;
+    private _pageName: string;
+    private _sessions: { [key: string]: Page} = {};
     sentMessageHash: { [key: string]: PgletMessage } = {};
     onEvent: any;
+    onSessionCreated: any;
     //onMessage: (evt: MessageEvent) => Promise<void>
 
     constructor(Rws: ReconnectingWebSocket) {
@@ -39,6 +43,28 @@ export class Connection {
         this._messageResolve = null;
         this._messageReject = null;
 
+    }
+
+    get pageUrl() {
+        return this._pageUrl;    
+    }
+    set pageUrl(url: string) {
+        this._pageUrl = url;
+    }
+    get pageName() {
+        return this._pageName;    
+    }
+    set pageName(name: string) {
+        this._pageName = name;
+    }
+    get sessions() {
+        return this._sessions;    
+    }
+    // addSession(key: string, page: Page) {
+    //     this._sessions[key] = page;
+    // }
+    set sessions(session: { [key: string]: Page}) {
+        this._sessions = session;
     }
 
     // async sendBatch (commands: string[]): Promise<string> {
@@ -261,6 +287,13 @@ export class Connection {
             this.onEvent(pgletEvent);
             return;
         }
+
+        if (msgData.action === 'sessionCreated') {
+            console.log(Log.bg.yellow, "sessionCreated: ", msgData);
+            this.onSessionCreated(msgData.payload);
+            return;
+        }
+
         let cb = msgData.payload.error ? this._messageReject : this._messageResolve;
 
         if (cb) {
