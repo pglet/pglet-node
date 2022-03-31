@@ -191,11 +191,13 @@ let connectInternal = async (args: clientOpts): Promise<Connection> => {
     
     const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl)); 
     var conn = new Connection(rws);
-    conn.onEvent = async (payload) => {
+    conn.onEvent = (payload) => {
+        console.log("payload from conn.onEvent: ", payload);
         if (payload.sessionID in conn.sessions) {
             let page = conn.sessions[payload.sessionID];
+            console.log(Log.underscore, "page: ", page);
             let e = new PgletEvent(payload.eventTarget, payload.eventName, payload.eventData);
-            await page._onEvent(e);
+            page._onEvent(e);
         }
     }
     if (args.isApp) {
@@ -229,47 +231,47 @@ let connectInternal = async (args: clientOpts): Promise<Connection> => {
     return conn;
 }
 
-let appInternal = async (args: clientOpts) => {
+// let appInternal = async (args: clientOpts) => {
     
-    await _install();
+//     await _install();
 
-    var fn = null;
-    if (args.sessionHandler && typeof args.sessionHandler === 'function') {
-        fn = args.sessionHandler;
-    } else {
-        throw "The last argument must be a function.";
-    }
+//     var fn = null;
+//     if (args.sessionHandler && typeof args.sessionHandler === 'function') {
+//         fn = args.sessionHandler;
+//     } else {
+//         throw "The last argument must be a function.";
+//     }
 
-    var child = cp.spawn(pgletExe, ["server", "--background"]);
+//     var child = cp.spawn(pgletExe, ["server", "--background"]);
 
-    let url: string;
-    let page: Page;
-    const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl));
-    var conn = new Connection(rws);
+//     let url: string;
+//     let page: Page;
+//     const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl));
+//     var conn = new Connection(rws);
 
-    let registerHostClientPayload = {
-        HostClientID: null,
-        PageName: args.pageName,
-        IsApp: true,
-        AuthToken: null,
-        Permissions: null
-    }
+//     let registerHostClientPayload = {
+//         HostClientID: null,
+//         PageName: args.pageName,
+//         IsApp: true,
+//         AuthToken: null,
+//         Permissions: null
+//     }
 
-    let resp = await conn.send('registerHostClient', registerHostClientPayload);
-    let respPayload = JSON.parse(resp).payload;
+//     let resp = await conn.send('registerHostClient', registerHostClientPayload);
+//     let respPayload = JSON.parse(resp).payload;
 
-    child.stdout.on('data', (data) => {
-        if (!url) {
-            url = decoder.write(Buffer.from(data)).trim();
-            return;
-        }
-        else {
-            page = new Page({connection: new Connection(rws), url: url});
-            fn(page);
-        }
-    })
+//     child.stdout.on('data', (data) => {
+//         if (!url) {
+//             url = decoder.write(Buffer.from(data)).trim();
+//             return;
+//         }
+//         else {
+//             page = new Page({connection: new Connection(rws), url: url});
+//             fn(page);
+//         }
+//     })
 
-}
+// }
 
 function getWebSocketUrl(url: string) {
     let returnUrl = new URL(url);

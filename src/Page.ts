@@ -50,7 +50,7 @@ class Page extends Control {
         if (pageProps.sessionID) {
             this._sessionID = pageProps.sessionID;
         }
-        this._conn.onEvent = this._onEvent.bind(this);
+        //this._conn.onEvent = this._onEvent.bind(this);
         //this.onSessionCreated = this._conn.onSessionCreated.bind(this);
         
     }
@@ -214,7 +214,6 @@ class Page extends Control {
         return this._conn.send('pageCommandFromHost',`${cmd} ${ctrlValue} value="${value}"`);
     }
 
-    // this will be called when onMessage fires with Actions.pageEventToHost
     _onEvent(e: PgletEvent) {
         //console.log(Log.bg.blue, "onEvent PgletEvent: ", e);
         //console.log(this._index);
@@ -243,32 +242,32 @@ class Page extends Control {
         }
         
     }
-    private _onSessionCreated(e: PgletEvent) {
-        if (e.target == "page" && e.name == "change") {
-            let allProps = JSON.parse(e.data);
-            //console.log("all Props: ", allProps);
-            allProps.forEach(props => {
-                console.log(Log.bg.blue, "props: ", props)
-                let id = props["i"];
-                if (this._index.has(id)) {
-                    for (const [key, value] of Object.entries(props)) {
-                        if (key != "i") {
-                            console.log("INNER ALLPROPS LOOP")
-                            this._index.get(id).setAttr(key, value, false)
-                        }
-                    }
-                }
-            })
-        }
-        if (this._index.has(e.target)) {
-            let handler = this._index.get(e.target).eventHandlers[e.name];
-            let ce = new ControlEvent(e.target, e.name, e.data, this._index.get(e.target), this)
-            if (handler) {
-                handler(ce);
-            }
-        }
+    // private _onSessionCreated(e: PgletEvent) {
+    //     if (e.target == "page" && e.name == "change") {
+    //         let allProps = JSON.parse(e.data);
+    //         //console.log("all Props: ", allProps);
+    //         allProps.forEach(props => {
+    //             console.log(Log.bg.blue, "props: ", props)
+    //             let id = props["i"];
+    //             if (this._index.has(id)) {
+    //                 for (const [key, value] of Object.entries(props)) {
+    //                     if (key != "i") {
+    //                         console.log("INNER ALLPROPS LOOP")
+    //                         this._index.get(id).setAttr(key, value, false)
+    //                     }
+    //                 }
+    //             }
+    //         })
+    //     }
+    //     if (this._index.has(e.target)) {
+    //         let handler = this._index.get(e.target).eventHandlers[e.name];
+    //         let ce = new ControlEvent(e.target, e.name, e.data, this._index.get(e.target), this)
+    //         if (handler) {
+    //             handler(ce);
+    //         }
+    //     }
         
-    }
+    // }
 
     getChildren() {
         return this._controls;

@@ -282,11 +282,12 @@ export class Connection {
         //     }
         // }
 
-        // if (msgData.action === 'pageEventToHost') {
-        //     let pgletEvent = this.parseEvent(msgData);
-        //     this.onEvent(pgletEvent);
-        //     return;
-        // }
+        if (msgData.action === 'pageEventToHost') {
+            //let pgletEvent = this.parseEvent(msgData);
+            console.log("about to call conn.onEvent: ", msgData);
+            this.onEvent(msgData.payload);
+            return;
+        }
 
         if (msgData.action === 'sessionCreated') {
             console.log(Log.bg.yellow, "sessionCreated: ", msgData);
