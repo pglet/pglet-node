@@ -83,6 +83,7 @@ export class Connection {
         }
         this.sentMessageHash[msg.id] = msg;
         console.log(Log.bg.yellow, "sending message: ", msg);
+        console.log(Log.bg.yellow, "sending message stringified: ", JSON.stringify(msg));
         return this.sendMessageInternal(msg);
     }
 

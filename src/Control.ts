@@ -29,7 +29,7 @@ class Control {
         // excludedAttrs is needed so that a single object can be passed to control constructor and here event handlers and other non-applicable attributes are filtered out. 
         let excludedAttrs = ["connection", "id", "childControls", "onClick", "onChange", "onSearch", "onEscape", "onClear", "onDismiss", "onChangeHandler", "onSubmit", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons", "points", "lines", "optionKeys", "optionValues"]
         Object.keys(controlProps).forEach(key => {  
-            if (excludedAttrs.indexOf(key) < 0) {
+            if (excludedAttrs.indexOf(key) < 0) {                
                 this.setAttr(key, controlProps[key]);
             }   
         })
@@ -55,7 +55,17 @@ class Control {
     
 
     setAttr(key: string, value: any, dirty = true) {
-        this.attrs.set(key, [value, dirty]);
+        let newVal: string;
+        if (typeof(value) == "boolean") {
+            newVal = String(value);
+        }
+        else if(typeof(value) == "number") {
+            newVal = value.toString();
+        }
+        else {
+            newVal = value;
+        }
+        this.attrs.set(key, [newVal, dirty]);
     }
      
     protected getEventHandler(eventName: string) {
