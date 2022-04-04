@@ -191,15 +191,17 @@ let connectInternal = async (args: clientOpts): Promise<Connection> => {
     
     const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl)); 
     var conn = new Connection(rws);
+    
     conn.onEvent = (payload) => {
-        console.log("payload from conn.onEvent: ", payload);
+        //console.log("payload from conn.onEvent: ", payload);
         if (payload.sessionID in conn.sessions) {
             let page = conn.sessions[payload.sessionID];
-            console.log(Log.underscore, "page: ", page);
+            //console.log(Log.underscore, "page: ", page);
             let e = new PgletEvent(payload.eventTarget, payload.eventName, payload.eventData);
             page._onEvent(e);
         }
     }
+    
     if (args.isApp) {
         conn.onSessionCreated = async (payload) => {
             console.log("session created: ", payload);

@@ -100,7 +100,6 @@ class TodoApp {
     }
 
     addClicked(e) {
-        console.log("ADD CLICKED!!!");
         let task = new Task(this, this.newTask.value);
         this.tasks.push(task);
         this.tasksView.childControls.push(task.view);
