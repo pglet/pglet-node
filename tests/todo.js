@@ -64,7 +64,7 @@ class TodoApp {
             new Tab({text: "all"}), new Tab({text: "active"}), new Tab({text: "completed"})
         ]})
         this.itemsLeft= new Text({value: "0 items left"})
-        this.view = new Stack({ width: '70%', childControls: [
+        this.view = new Stack({ width: '50%', childControls: [
             new Text({value: "Todos", size: "large", align: "center"}),
             new Stack({ horizontal: true, childControls: [
                 this.newTask,

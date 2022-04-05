@@ -85,20 +85,19 @@ class Page extends Control {
         controls.forEach(ctrl => {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
-        //console.log(Log.bg.blue, "commandList: ", commandList);
-        console.log(Log.bg.blue, "addedControls: ", addedControls);
-        commandList.forEach(cmd => {
-                console.log(Log.bg.blue, "Command: ", cmd);
-                console.log(Log.bg.blue, "commands: ", cmd.commands);
-            }
-        );
-        
-        //console.log("control map: ", ...this._index.entries());
+        // console.log(Log.bg.blue, "addedControls: ", addedControls);
+        // commandList.forEach(cmd => {
+        //         console.log(Log.bg.blue, "Command: ", cmd);
+        //         console.log(Log.bg.blue, "commands: ", cmd.commands);
+        //     }
+        // );
+
         if (commandList.length == 0) {
             return;
         }
-        //let ids = "";
+
         let ids: string[] = [];
+        
         for (const cmd of commandList) {
             let pageCmdRequestPayload = {
                 pageName: this._pageName,
@@ -113,41 +112,8 @@ class Page extends Control {
             if (respPayload.result != "") {
                 ids.push(...respPayload.result.split(" "));
             }
-            //ids += await this._conn.send('pageCommandFromHost', cmd);
-            //ids += " ";
         }
-        //console.log("ids: ", ids);
-        // commandList.forEach(async cmd => {
-        //     // TODO rewrite populateUpdateCommands
-        //     let pageCmdRequestPayload = {
-        //         pageName: this._pageName,
-        //         sessionID: "0",
-        //         command: cmd
-        //     }
-        //     //console.log("cmd: ", cmd);
-        //     let resp = await this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
-        //     console.log(Log.underscore, "resp: ", resp); 
-        //     //console.log("resp: ", resp);
-        //     ids.push(JSON.parse(resp).result);
-        //     //ids += await this._conn.send('pageCommandFromHost', cmd);
-        //     //ids += " ";
-        // })
 
-        //let ids = await this._conn.sendBatch(commandList);
-
-        // if (ids) {
-        //     let n = 0;
-        //     ids.split(/\r?\n/).forEach(line => {
-                
-        //         line.split(" ").forEach(id => {
-
-        //             addedControls[n].uid = id;
-        //             addedControls[n].page = this;
-        //             this._index.set(id, addedControls[n]);
-        //             n += 1
-        //         })
-        //     })
-        // }
         if (ids.length > 0) {
             let n = 0;
             ids.forEach(id => {

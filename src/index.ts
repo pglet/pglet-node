@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import crypto from 'crypto';
 import cp from 'child_process';
 import compareVersions from 'compare-versions';
 import request from 'request';
@@ -176,8 +175,8 @@ async function serveApp(sessionHandler: (page: Page) => Promise<void>, opts?: cl
     await connectInternal(userOpts);
 }
 
-let connectInternal = async (args: clientOpts): Promise<Connection> => {
-    
+//let connectInternal = async (args: clientOpts): Promise<Connection> => {
+async function connectInternal(args: clientOpts): Promise<Connection> { 
     await _install();
 
     var fn = args.sessionHandler;
@@ -232,48 +231,6 @@ let connectInternal = async (args: clientOpts): Promise<Connection> => {
     }
     return conn;
 }
-
-// let appInternal = async (args: clientOpts) => {
-    
-//     await _install();
-
-//     var fn = null;
-//     if (args.sessionHandler && typeof args.sessionHandler === 'function') {
-//         fn = args.sessionHandler;
-//     } else {
-//         throw "The last argument must be a function.";
-//     }
-
-//     var child = cp.spawn(pgletExe, ["server", "--background"]);
-
-//     let url: string;
-//     let page: Page;
-//     const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl));
-//     var conn = new Connection(rws);
-
-//     let registerHostClientPayload = {
-//         HostClientID: null,
-//         PageName: args.pageName,
-//         IsApp: true,
-//         AuthToken: null,
-//         Permissions: null
-//     }
-
-//     let resp = await conn.send('registerHostClient', registerHostClientPayload);
-//     let respPayload = JSON.parse(resp).payload;
-
-//     child.stdout.on('data', (data) => {
-//         if (!url) {
-//             url = decoder.write(Buffer.from(data)).trim();
-//             return;
-//         }
-//         else {
-//             page = new Page({connection: new Connection(rws), url: url});
-//             fn(page);
-//         }
-//     })
-
-// }
 
 function getWebSocketUrl(url: string) {
     let returnUrl = new URL(url);

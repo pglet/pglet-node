@@ -33,7 +33,6 @@ class Control {
                 this.setAttr(key, controlProps[key]);
             }   
         })
-        // console.log("attrs: ", this.attrs);
     }
 
     getControlName(): string {
@@ -182,13 +181,6 @@ class Control {
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
                     let cmd = ctrl.getCmds(0, controlMap, addedControls);
-                    // let addCommand: Command = {
-                    //     name: "add",
-                    //     attrs: {
-                    //         "to": this._uid,
-                    //         "at": n.toString()
-                    //     }
-                    // }
                     let addCommand = new Command();
                     addCommand.name = "add";
                     addCommand.attrs = {
@@ -197,7 +189,6 @@ class Control {
                     }
                     addCommand.commands.push(...cmd)
                     commandList.push(addCommand);
-                    //commandList.push(`add to="${this.uid}" at="${n}"\n${cmd}`);
                     n += 1;
                 })
             }
@@ -210,14 +201,9 @@ class Control {
                     this.removeControlRecursively(controlMap, ctrl);
                     ids.push(ctrl.uid);
                 })
-                // let removeCommand: Command = {
-                //     name: "remove",
-                //     values: ids
-                // }
                 let removeCommand = new Command();
                 removeCommand.name = "remove";
                 removeCommand.values = ids;
-                //commandList.push(`remove ${ids.join(' ')}`);
                 commandList.push(removeCommand);
             }
             else {
@@ -252,18 +238,13 @@ class Control {
             indent = 0;
         }
 
-        let lines = [];
-        let parts = [];
         let commands: Command[] = [];
         
         //top level command
         let attrParts = this.getCmdAttrs(false);
         attrParts.indent = indent;
         attrParts.values.push(this.getControlName());
-        commands.push(attrParts);
-        //parts.push(indent + this.getControlName(), ...attrParts);     
-
-        //lines.push(parts.join(' '));
+        commands.push(attrParts);    
 
         if (addedControls) {
             addedControls.push(this);
@@ -280,17 +261,15 @@ class Control {
         this._previousChildren.length = 0;
         this._previousChildren.push(...currentChildren);
         return commands
-        //return lines.join('\n');
     }
 
-    // unsure of the utility of this function
+    // alternate to storing attributes as strings?
     private stringifyAttr(attr: any): any {
         let sattr: string = attr.toString();
         return sattr.replace(/\n/g, "\\n").replace(/\"/g, "\\\"");
     }
 
     private getCmdAttrs(update?: boolean): Command {
-        //console.log("getCmdAttrs for: ", this)
         let cmd = new Command();
 
         if (update && !this.uid) {
@@ -304,20 +283,16 @@ class Control {
                 return;
             }
             cmd.attrs[attr] = value[0]
-            //parts.push(`${attr}="${value[0]}"`);
 
             this.attrs.set(attr, [value[0], false]);
         })
         
         if (!update && this._id) {
             cmd.attrs["id"] = this.stringifyAttr(this._id);
-            //parts.unshift(`id="${this.stringifyAttr(this._id)}"`)
         }
         else if (update && Object.keys(cmd.attrs).length > 0) {
             cmd.values.push(this.stringifyAttr(this.uid));
-            //parts.unshift(`${this.stringifyAttr(this.uid)}`)
-        }
-        
+        }      
 
         return cmd;
     }
