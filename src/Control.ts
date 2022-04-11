@@ -158,7 +158,6 @@ class Control {
         
         const previousChildren = this._previousChildren;
         previousChildren.forEach(ctrl => {
-            //console.log("previous child cmdstr: ", ctrl.getCmdStr());
             let hash = GetId(ctrl);
             hashes.set(hash, ctrl);
             previousInts.push(hash);
@@ -166,7 +165,6 @@ class Control {
 
         const currentChildren = this.getChildren();
         currentChildren.forEach(ctrl => {
-            //console.log("current child cmdstr: ", ctrl.getCmdStr());
             let hash = GetId(ctrl);
             hashes.set(hash, ctrl);
             currentInts.push(hash);
@@ -260,6 +258,7 @@ class Control {
         
         this._previousChildren.length = 0;
         this._previousChildren.push(...currentChildren);
+        commands.forEach(cmd => console.log(Log.bg.red, cmd, cmd.values, cmd.attrs));
         return commands
     }
 
@@ -296,6 +295,7 @@ class Control {
 
         return cmd;
     }
+
 
     protected getChildren(): Control[] {
         return [];

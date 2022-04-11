@@ -44,7 +44,12 @@ function sleep(ms) {
             return
         }
         let buttonObject = new pglet.Button({ text: "Say hello!", primary: true, onClick: greeterButtonHandler })
-        await p.add([textboxObject, buttonObject]);
+        let barChartObject = new pglet.Barchart({
+            points: [
+                new pglet.Point({legend: 'A', x: 10, y: 100}),
+                new pglet.Point({legend: 'B', x: 20, y: 100})
+            ], dataMode: "fraction"})
+        await p.add([barChartObject]);
 
     }, { noWindow: false, web: false });
 

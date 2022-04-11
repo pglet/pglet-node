@@ -12,12 +12,12 @@ test('update single control by object', async () => {
     await p.add([textbox]);
     let value = await p.getValue(textbox);
 
-    expect(value).toBe("val1");
+    expect(value).toMatchObject("val1");
 
     textbox.value = "val2";
     await p.update();
     let newValue = await p.getValue(textbox);
 
-    expect(newValue).toBe("val2");
+    expect(newValue).toMatchObject("val2");
 });
 

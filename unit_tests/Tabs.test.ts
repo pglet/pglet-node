@@ -8,9 +8,9 @@ test('Tabs add test', () => {
     let tabs = new Tabs({ tabs: tabList});
     expect(tab1 instanceof Control).toBeTruthy();
     expect(tabs instanceof Control).toBeTruthy();
-    expect(tabs.getControlName()).toBe("tabs");
-    console.log(tabs.getCmdStr());
-    expect(tabs.getCmdStr()).toBe(
+    expect(tabs.getControlName()).toMatchObject("tabs");
+    console.log(tabs.getCmds());
+    expect(tabs.getCmds()).toMatchObject(
         `tabs\n` + 
         `  tab text="tab1"\n` +
         `  tab text="tab2"` 

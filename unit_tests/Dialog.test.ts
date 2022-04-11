@@ -8,11 +8,13 @@ test('dialog add test', () => {
     expect(d instanceof Control).toBeTruthy();
     expect(d instanceof Dialog).toBeTruthy();
     expect(d.getControlName()).toBe("dialog");
-    expect(d.getCmdStr()).toBe(
-        `dialog open="true" title="dialog1" subText="dialog subtext" autoDismiss="true"\n` +
-        `  text value="Do you want this?"\n` +
-        `  footer\n` +
-        `    button text="OK"\n` +
-        `    button text="CANCEL"` 
-    );
+    expect(d.getCmds()).toMatchObject([
+        { indent: 0, values: ['dialog'], attrs: {open: 'true', title: 'dialog1', subText: 'dialog subtext', autoDismiss: 'true'}, commands: [] },
+        { indent: 2, values: ['text'], attrs: {value: 'Do you want this?'}, commands: [] },
+        { indent: 2, values: ['footer'], attrs: {}, commands: [] },
+        { indent: 4, values: ['button'], attrs: {text: 'OK'}, commands: [] },
+        { indent: 4, values: ['button'], attrs: {text: 'CANCEL'}, commands: [] }
+    ]);
 });
+
+ 

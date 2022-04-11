@@ -4,8 +4,8 @@ import { Control } from "../src/index";
 test('Progress add test', () => {
     let progress = new Progress({ value: 10, label: "progressLabel"});
     expect(progress instanceof Control).toBeTruthy();
-    expect(progress.getControlName()).toBe("progress");
-    expect(progress.getCmdStr()).toBe(
+    expect(progress.getControlName()).toMatchObject("progress");
+    expect(progress.getCmds()).toMatchObject(
         `progress value="10" label="progressLabel"` 
     );
 });

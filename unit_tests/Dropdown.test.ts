@@ -5,10 +5,10 @@ test('dropdown add test', () => {
     expect(dd instanceof Control).toBeTruthy();
     expect(dd instanceof Dropdown).toBeTruthy();
     expect(dd.getControlName()).toBe("dropdown");
-    expect(dd.getCmdStr()).toBe(
-        `dropdown label="myDropdown"\n` +
-        `  option key="s" text="small"\n` +
-        `  option key="m" text="medium"\n` +
-        `  option key="l" text="large"` 
-    );
+    expect(dd.getCmds()).toMatchObject([
+        { indent: 0, values: ['dropdown'], attrs: {label: 'myDropdown'}, commands: [] },
+        { indent: 2, values: ['option'], attrs: {key: 's', text: 'small'}, commands: [] },
+        { indent: 2, values: ['option'], attrs: {key: 'm', text: 'medium'}, commands: [] },
+        { indent: 2, values: ['option'], attrs: {key: 'l', text: 'large'}, commands: [] }
+    ]);
 });
