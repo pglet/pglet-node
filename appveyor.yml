@@ -5,7 +5,7 @@ skip_branch_with_pr: true
 image: Visual Studio 2019
 
 environment:
-  NODE_VERSION: 12
+  NODE_VERSION: 15
   NPM_TOKEN:
     secure: k2cSmOKcnk4Va2hNea/oVjUCIyWl+iAMMS0ZgxWzXFHQg/0q5f+T7JyKYEIEF56Y
 
