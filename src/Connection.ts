@@ -35,10 +35,10 @@ export class Connection {
 
         this._rws.onMessage = this.onMessage.bind(this);
         this._rws.onOpen = (msg: Event) => {
-            console.log(Log.bg.green, "connected!");
+            //console.log(Log.bg.green, "connected!");
         }
         this._rws.onClose = (msg: Event) => {
-            console.log(Log.bg.red, "closed!");
+            //console.log(Log.bg.red, "closed!");
         }
         this._messageResolve = null;
         this._messageReject = null;
