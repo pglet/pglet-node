@@ -12,6 +12,7 @@
   "scripts": {
     "test": "jest",
     "test-multiple": "FOR /L %i IN (1,1,5) DO (jest)",
+    "test-debug": "set DEBUG=* & jest",
     "coverage": "jest --coverage"
   },
   "repository": {
@@ -32,6 +33,7 @@
     "@types/node": "^17.0.21",
     "@types/request": "^2.48.5",
     "compare-versions": "^3.6.0",
+    "debug": "^4.3.4",
     "diff": "^5.0.0",
     "reconnecting-websocket": "^4.4.0",
     "request": "^2.88.2",

@@ -14,7 +14,8 @@ import { Message as PgletMessage } from './protocol/Message';
 import { Action } from './protocol/Actions';
 import { resolve } from 'path';
 import { Log } from './Utils';
-
+import Debug from 'debug';
+let connectionDebug = Debug('connection');
 
 export class Connection {
     private _eventHandlers: any = {};
@@ -36,9 +37,11 @@ export class Connection {
         this._rws.onMessage = this.onMessage.bind(this);
         this._rws.onOpen = (msg: Event) => {
             //console.log(Log.bg.green, "connected!");
+            connectionDebug("connected!");
         }
         this._rws.onClose = (msg: Event) => {
             //console.log(Log.bg.red, "closed!");
+            connectionDebug('connection');
         }
         this._messageResolve = null;
         this._messageReject = null;
@@ -81,8 +84,9 @@ export class Connection {
             payload: command
         }
         this.sentMessageHash[msg.id] = msg;
-        console.log(Log.bg.yellow, "sending message: ", msg);
-        console.log(Log.bg.yellow, "sending message stringified: ", JSON.stringify(msg));
+        //console.log(Log.bg.yellow, "sending message: ", msg);
+        connectionDebug("sending message: %O", msg);
+        //console.log(Log.bg.yellow, "sending message stringified: ", JSON.stringify(msg));
         return this.sendMessageInternal(msg);
     }
 
@@ -169,7 +173,8 @@ export class Connection {
     onMessage(msg: MessageEvent) {
         let storedMsg: PgletMessage;
         let msgData = JSON.parse(msg.data);
-        console.log(Log.bg.yellow, "msgData: ", msgData);
+        //console.log(Log.bg.yellow, "msgData: ", msgData);
+        connectionDebug("msgData: " + msgData);
         // if (msgData.id in this.sentMessageHash) {
         //     console.log("found!");
         //     storedMsg = this.sentMessageHash[msgData.id];
@@ -196,7 +201,8 @@ export class Connection {
         }
 
         if (msgData.action === 'sessionCreated') {
-            console.log(Log.bg.yellow, "sessionCreated: ", msgData);
+            //console.log(Log.bg.yellow, "sessionCreated: ", msgData);
+            connectionDebug("session created: " + msgData);
             this.onSessionCreated(msgData.payload);
             return;
         }
