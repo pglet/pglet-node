@@ -1,7 +1,7 @@
-import { Textbox, page } from "../src/index";
+import { Textbox, connectPage } from "../src/index";
 
 async function getPage() {
-    return page({name: "updatetest page", noWindow: true, local: true});
+    return connectPage("updatetest page", {noWindow: true, web: false});
     
 }
 
@@ -10,14 +10,14 @@ test('update single control by object', async () => {
     await p.clean();
     let textbox = new Textbox({id: "textbox1", value: "val1"});
     await p.add([textbox]);
-    let value = await p.getValue(textbox);
+    //let value = await p.getValue(textbox);
 
-    expect(value).toMatchObject("val1");
+    expect(textbox.value).toBe("val1");
 
     textbox.value = "val2";
     await p.update();
-    let newValue = await p.getValue(textbox);
+    //let newValue = await p.getValue(textbox);
 
-    expect(newValue).toMatchObject("val2");
+    expect(textbox.value).toBe("val2");
 });
 

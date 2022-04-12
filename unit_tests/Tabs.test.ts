@@ -1,5 +1,4 @@
-import { Tab, Tabs } from "../src/Tabs";
-import { Control } from "../src/index";
+import { Control, Tab, Tabs } from "../src/index";
 
 test('Tabs add test', () => {
     let tab1 = new Tab({text: "tab1"});
@@ -8,12 +7,10 @@ test('Tabs add test', () => {
     let tabs = new Tabs({ tabs: tabList});
     expect(tab1 instanceof Control).toBeTruthy();
     expect(tabs instanceof Control).toBeTruthy();
-    expect(tabs.getControlName()).toMatchObject("tabs");
-    console.log(tabs.getCmds());
-    expect(tabs.getCmds()).toMatchObject(
-        `tabs\n` + 
-        `  tab text="tab1"\n` +
-        `  tab text="tab2"` 
-    );
+    expect(tabs.getControlName()).toBe("tabs");
+    expect(tabs.getCmds()).toMatchObject([
+        { indent: 0, values: ['tabs'], attrs: {}, commands: [] },
+        { indent: 2, values: ['tab'], attrs: {text: 'tab1'}, commands: [] },
+        { indent: 2, values: ['tab'], attrs: {text: 'tab2'}, commands: [] }
+    ]);
 });
-

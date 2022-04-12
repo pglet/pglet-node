@@ -177,12 +177,12 @@ class Page extends Control {
         return this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
     }
 
+    // are these necessary?
     getValue(ctrl: Control): Promise<string> {
         console.log(Log.bg.blue, "ctrl.uid: ", ctrl.uid);
         let value = (typeof ctrl === "string") ? ctrl : ctrl.uid;
         return this._conn.send('pageCommandFromHost', `get ${value} value`);
     }
-
     setValue(ctrl: string | Control, value: string, fireAndForget: boolean): Promise<string> {
         let cmd = fireAndForget ? "setf" : "set";
 

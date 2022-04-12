@@ -258,7 +258,7 @@ class Control {
         
         this._previousChildren.length = 0;
         this._previousChildren.push(...currentChildren);
-        commands.forEach(cmd => console.log(Log.bg.red, cmd, cmd.values, cmd.attrs));
+        //commands.forEach(cmd => console.log(Log.bg.red, cmd, cmd.values, cmd.attrs));
         return commands
     }
 

@@ -9,11 +9,11 @@ test('Grid add test', () => {
     expect(grid.getCmds()).toMatchObject([
         { indent: 0, values: ['grid'], attrs: {}, commands: [] },
         { indent: 2, values: ['columns'], attrs: {}, commands: [] },
-        { indent: 4, values: ['column'], attrs: {key: 'key1', fieldName: 'key1'}, commands: [] },
-        { indent: 4, values: ['column'], attrs: {key: 'key2', fieldName: 'key2'}, commands: [] },
+        { indent: 4, values: ['column'], attrs: {name: 'key1', fieldName: 'key1'}, commands: [] },
+        { indent: 4, values: ['column'], attrs: {name: 'key2', fieldName: 'key2'}, commands: [] },
         { indent: 2, values: ['items'], attrs: {}, commands: [] },
-        { indent: 4, values: ['item'], attrs: {key: 'value1', fieldName: 'value1'}, commands: [] },
-        { indent: 4, values: ['item'], attrs: {key: 'value2', fieldName: 'value2'}, commands: [] }
+        { indent: 4, values: ['item'], attrs: {key1: 'value1', key2: 'value2'}, commands: [] },
+        { indent: 4, values: ['item'], attrs: {key1: 'value1', key2: 'value2'}, commands: [] }
     ]);
 });
     
