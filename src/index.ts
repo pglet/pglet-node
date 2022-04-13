@@ -203,12 +203,12 @@ async function connectInternal(args: clientOpts): Promise<Connection> {
     
     if (args.isApp) {
         conn.onSessionCreated = async (payload) => {
-            console.log("session created: ", payload);
+            //console.log("session created: ", payload);
             // instantiate page
             let page = new Page({ pageName: conn.pageName, url: conn.pageUrl, connection: conn, sessionID: payload.sessionID });
             //conn.addSession(payload.sessionID, page);
             conn.sessions[payload.sessionID] =  page;
-            console.log(Log.underscore, "conn.sessions: ", conn.sessions);
+            //console.log(Log.underscore, "conn.sessions: ", conn.sessions);
             await fn(page);
         }
     }
@@ -225,7 +225,7 @@ async function connectInternal(args: clientOpts): Promise<Connection> {
     conn.pageName = respPayload.pageName;
     conn.pageUrl = args.serverUrl + '/' + respPayload.pageName;
 
-    console.log(Log.underscore, "resp: ", respPayload);
+    //console.log(Log.underscore, "resp: ", respPayload);
     if (!args.noWindow) { 
         openBrowser(conn.pageUrl); 
     }

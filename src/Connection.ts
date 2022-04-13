@@ -13,9 +13,8 @@ import { CommandResponse } from './protocol/CommandResponse';
 import { Message as PgletMessage } from './protocol/Message';
 import { Action } from './protocol/Actions';
 import { resolve } from 'path';
-import { Log } from './Utils';
-import Debug from 'debug';
-let connectionDebug = Debug('connection');
+import { Log, warn, info, debug } from './Utils';
+const connectionDebug = debug.extend('connection');
 
 export class Connection {
     private _eventHandlers: any = {};

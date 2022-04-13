@@ -1,4 +1,6 @@
 import { Control } from './Control'
+import Debug from 'debug';
+
 
 // https://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
 function StringHash(str: string): number {
@@ -62,6 +64,11 @@ const Log = {
     }
   };
 
+  const debug = Debug('debug');
+  const info = Debug('info');
+  const warn = Debug('warn');
+  
+
 export {
-    StringHash, GetId, Log
+    StringHash, GetId, Log, debug, warn, info
 }

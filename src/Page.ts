@@ -5,7 +5,8 @@ import { Event as PgletEvent} from './Event';
 import { ControlEvent } from './ControlEvent';
 import { Action } from './protocol/Actions';
 import { Command } from './protocol/Command';
-import { Log } from './Utils';
+import { Log, warn, info, debug } from './Utils';
+const pageDebug = debug.extend('page');
 
 
 interface PageProperties extends ControlProperties {
@@ -85,6 +86,7 @@ class Page extends Control {
         controls.forEach(ctrl => {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
+        pageDebug("added controls: %O", addedControls);
         // console.log(Log.bg.blue, "addedControls: ", addedControls);
         // commandList.forEach(cmd => {
         //         console.log(Log.bg.blue, "Command: ", cmd);
@@ -107,8 +109,8 @@ class Page extends Control {
             //console.log("cmd: ", cmd);
             let resp = await this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
             let respPayload = JSON.parse(resp).payload;
-            console.log(Log.bg.blue, "resp: ", resp); 
-            //console.log("resp: ", resp);
+            pageDebug("response: " + resp);
+            //console.log(Log.bg.blue, "resp: ", resp); 
             if (respPayload.result != "") {
                 ids.push(...respPayload.result.split(" "));
             }
@@ -126,6 +128,7 @@ class Page extends Control {
                 n += 1;
             })
         }
+        pageDebug("INDEX: %O", this._index);
         //console.log("INDEX: ", this._index);
         return ids;
     }
@@ -179,30 +182,29 @@ class Page extends Control {
 
     // are these necessary?
     getValue(ctrl: Control): Promise<string> {
-        console.log(Log.bg.blue, "ctrl.uid: ", ctrl.uid);
         let value = (typeof ctrl === "string") ? ctrl : ctrl.uid;
         return this._conn.send('pageCommandFromHost', `get ${value} value`);
     }
     setValue(ctrl: string | Control, value: string, fireAndForget: boolean): Promise<string> {
         let cmd = fireAndForget ? "setf" : "set";
-
         let ctrlValue = (typeof ctrl === "string") ? ctrl : ctrl.id;
         return this._conn.send('pageCommandFromHost',`${cmd} ${ctrlValue} value="${value}"`);
     }
 
     _onEvent(e: PgletEvent) {
+        pageDebug("onEvent PgletEvent: %O", e);
         //console.log(Log.bg.blue, "onEvent PgletEvent: ", e);
         //console.log(this._index);
         if (e.target == "page" && e.name == "change") {
             let allProps = JSON.parse(e.data);
             //console.log("all Props: ", allProps);
             allProps.forEach(props => {
-                console.log(Log.bg.blue, "props: ", props)
+                //console.log(Log.bg.blue, "props: ", props)
                 let id = props["i"];
                 if (this._index.has(id)) {
                     for (const [key, value] of Object.entries(props)) {
                         if (key != "i") {
-                            console.log("INNER ALLPROPS LOOP")
+                            //console.log("INNER ALLPROPS LOOP")
                             this._index.get(id).setAttr(key, value, false)
                         }
                     }
