@@ -51,8 +51,6 @@ class Page extends Control {
         if (pageProps.sessionID) {
             this._sessionID = pageProps.sessionID;
         }
-        //this._conn.onEvent = this._onEvent.bind(this);
-        //this.onSessionCreated = this._conn.onSessionCreated.bind(this);
         
     }
 
@@ -64,9 +62,9 @@ class Page extends Control {
         return this._index.get(id);
     }
 
-    waitEvent(): Promise<string | PgletEvent> {
-        return this._conn.waitEvent();
-    }
+    // waitEvent(): Promise<string | PgletEvent> {
+    //     return this._conn.waitEvent();
+    // }
 
     update(controls?: Control[]) {
         if (!controls) {
@@ -87,12 +85,7 @@ class Page extends Control {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
         pageDebug("added controls: %O", addedControls);
-        // console.log(Log.bg.blue, "addedControls: ", addedControls);
-        // commandList.forEach(cmd => {
-        //         console.log(Log.bg.blue, "Command: ", cmd);
-        //         console.log(Log.bg.blue, "commands: ", cmd.commands);
-        //     }
-        // );
+        pageDebug("list of commands: %O", commandList);
 
         if (commandList.length == 0) {
             return;
@@ -106,11 +99,9 @@ class Page extends Control {
                 sessionID: this._sessionID,
                 command: cmd
             }
-            //console.log("cmd: ", cmd);
             let resp = await this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
             let respPayload = JSON.parse(resp).payload;
-            pageDebug("response: " + resp);
-            //console.log(Log.bg.blue, "resp: ", resp); 
+            pageDebug("response: " + resp); 
             if (respPayload.result != "") {
                 ids.push(...respPayload.result.split(" "));
             }
@@ -119,8 +110,6 @@ class Page extends Control {
         if (ids.length > 0) {
             let n = 0;
             ids.forEach(id => {
-                //let idArray = id.split(" ");
-
                 if (id === "") return;
                 addedControls[n].uid = id;
                 addedControls[n].page = this;
@@ -129,7 +118,7 @@ class Page extends Control {
             })
         }
         pageDebug("INDEX: %O", this._index);
-        //console.log("INDEX: ", this._index);
+
         return ids;
     }
 
@@ -193,18 +182,16 @@ class Page extends Control {
 
     _onEvent(e: PgletEvent) {
         pageDebug("onEvent PgletEvent: %O", e);
-        //console.log(Log.bg.blue, "onEvent PgletEvent: ", e);
-        //console.log(this._index);
+
         if (e.target == "page" && e.name == "change") {
             let allProps = JSON.parse(e.data);
-            //console.log("all Props: ", allProps);
+
             allProps.forEach(props => {
-                //console.log(Log.bg.blue, "props: ", props)
+                pageDebug("props: %o", props);
                 let id = props["i"];
                 if (this._index.has(id)) {
                     for (const [key, value] of Object.entries(props)) {
                         if (key != "i") {
-                            //console.log("INNER ALLPROPS LOOP")
                             this._index.get(id).setAttr(key, value, false)
                         }
                     }
@@ -220,32 +207,6 @@ class Page extends Control {
         }
         
     }
-    // private _onSessionCreated(e: PgletEvent) {
-    //     if (e.target == "page" && e.name == "change") {
-    //         let allProps = JSON.parse(e.data);
-    //         //console.log("all Props: ", allProps);
-    //         allProps.forEach(props => {
-    //             console.log(Log.bg.blue, "props: ", props)
-    //             let id = props["i"];
-    //             if (this._index.has(id)) {
-    //                 for (const [key, value] of Object.entries(props)) {
-    //                     if (key != "i") {
-    //                         console.log("INNER ALLPROPS LOOP")
-    //                         this._index.get(id).setAttr(key, value, false)
-    //                     }
-    //                 }
-    //             }
-    //         })
-    //     }
-    //     if (this._index.has(e.target)) {
-    //         let handler = this._index.get(e.target).eventHandlers[e.name];
-    //         let ce = new ControlEvent(e.target, e.name, e.data, this._index.get(e.target), this)
-    //         if (handler) {
-    //             handler(ce);
-    //         }
-    //     }
-        
-    // }
 
     getChildren() {
         return this._controls;

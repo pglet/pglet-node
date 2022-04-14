@@ -35,12 +35,10 @@ export class Connection {
 
         this._rws.onMessage = this.onMessage.bind(this);
         this._rws.onOpen = (msg: Event) => {
-            //console.log(Log.bg.green, "connected!");
-            connectionDebug("connected!");
+            connectionDebug("connected");
         }
         this._rws.onClose = (msg: Event) => {
-            //console.log(Log.bg.red, "closed!");
-            connectionDebug('connection');
+            connectionDebug('connection closed');
         }
         this._messageResolve = null;
         this._messageReject = null;
@@ -61,9 +59,6 @@ export class Connection {
     get sessions() {
         return this._sessions;    
     }
-    // addSession(key: string, page: Page) {
-    //     this._sessions[key] = page;
-    // }
     set sessions(session: { [key: string]: Page}) {
         this._sessions = session;
     }
@@ -83,17 +78,15 @@ export class Connection {
             payload: command
         }
         this.sentMessageHash[msg.id] = msg;
-        //console.log(Log.bg.yellow, "sending message: ", msg);
         connectionDebug("sending message: %O", msg);
-        //console.log(Log.bg.yellow, "sending message stringified: ", JSON.stringify(msg));
         return this.sendMessageInternal(msg);
     }
 
     private sendMessageInternal(msg: PgletMessage): Promise<string> {
         return new Promise((res, rej) => {          
             this._rws.send(JSON.stringify(msg));
-            // wait for message to arrive in hash
-            // then these will be called in onMessage 
+
+            // wait for message to arrive in hash then these will be called in onMessage 
             this._messageResolve = res;
             this._messageReject = rej;
             
@@ -136,43 +129,43 @@ export class Connection {
         return new PgletEvent(payload.eventTarget, payload.eventName, payload.eventData);
     }
 
-    // wait event pipe for new event
-    waitEvent(): Promise<string | PgletEvent> {
-        // register for result
+    // // wait event pipe for new event
+    // waitEvent(): Promise<string | PgletEvent> {
+    //     // register for result
 
-        return new Promise((resolve, reject) => {
-            if (os.type() === "Windows_NT") {
+    //     return new Promise((resolve, reject) => {
+    //         if (os.type() === "Windows_NT") {
                 
-                //this._eventResolve = resolve;
-            } else {
-                fs.open(`${this.connId}.events`, 'r+', (err, fd) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        var stream = fs.createReadStream(null, {
-                            fd
-                        });
-                        stream.on('data', (data) => {
-                            stream.close()
-                            resolve(this.parseEvent(data));
-                        });                     
-                    }
-                });                
-            }
-        });
-    }
+    //             //this._eventResolve = resolve;
+    //         } else {
+    //             fs.open(`${this.connId}.events`, 'r+', (err, fd) => {
+    //                 if (err) {
+    //                     reject(err);
+    //                 } else {
+    //                     var stream = fs.createReadStream(null, {
+    //                         fd
+    //                     });
+    //                     stream.on('data', (data) => {
+    //                         stream.close()
+    //                         resolve(this.parseEvent(data));
+    //                     });                     
+    //                 }
+    //             });                
+    //         }
+    //     });
+    // }
 
-    async readLoop() {
-        while (true) {
-            const e = await this.waitEvent();
-            console.log(e);
-        }
-    }
+    // async readLoop() {
+    //     while (true) {
+    //         const e = await this.waitEvent();
+    //         console.log(e);
+    //     }
+    // }
     
     onMessage(msg: MessageEvent) {
         let storedMsg: PgletMessage;
         let msgData = JSON.parse(msg.data);
-        //console.log(Log.bg.yellow, "msgData: ", msgData);
+
         connectionDebug("msgData: " + msgData);
         // if (msgData.id in this.sentMessageHash) {
         //     console.log("found!");
@@ -200,7 +193,6 @@ export class Connection {
         }
 
         if (msgData.action === 'sessionCreated') {
-            //console.log(Log.bg.yellow, "sessionCreated: ", msgData);
             connectionDebug("session created: " + msgData);
             this.onSessionCreated(msgData.payload);
             return;

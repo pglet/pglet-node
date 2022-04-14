@@ -39,8 +39,8 @@ import { Tabs, Tab } from './controls/Tabs';
 import { Control}  from './Control';
 import { Connection } from './Connection';
 import { ReconnectingWebSocket } from './protocol/ReconnectingWebSocket'
-import { Log } from './Utils';
-import { connect } from 'http2';
+import { warn, info, debug } from './Utils';
+const indexDebug = debug.extend('index');
 
 const PGLET_VERSION: string = "0.7.0";
 const HOSTED_SERVICE_URL = "https://app.pglet.io";
@@ -73,7 +73,7 @@ async function _doInstall(): Promise<void> {
 
     if (pgletInPath != null) {
         pgletExe = pgletInPath;
-        //console.log("pglet found in PATH:", pgletExe);
+        indexDebug("pglet found in PATH: " + pgletExe);
         return;
     }
 
@@ -157,6 +157,7 @@ async function connectPage(name?: string, opts?: clientOpts): Promise<Page> {
     let conn = await connectInternal(userOpts);
     return new Page({pageName: conn.pageName, connection: conn, url: conn.pageUrl, sessionID: ZERO_SESSION})
 }
+
 async function serveApp(sessionHandler: (page: Page) => Promise<void>, opts?: clientOpts): Promise<void> {
     let userOpts = {
         sessionHandler: null,
@@ -175,7 +176,6 @@ async function serveApp(sessionHandler: (page: Page) => Promise<void>, opts?: cl
     await connectInternal(userOpts);
 }
 
-//let connectInternal = async (args: clientOpts): Promise<Connection> => {
 async function connectInternal(args: clientOpts): Promise<Connection> { 
     await _install();
 
@@ -192,10 +192,10 @@ async function connectInternal(args: clientOpts): Promise<Connection> {
     var conn = new Connection(rws);
     
     conn.onEvent = (payload) => {
+        indexDebug("event payload: %O", payload);
         //console.log("payload from conn.onEvent: ", payload);
         if (payload.sessionID in conn.sessions) {
             let page = conn.sessions[payload.sessionID];
-            //console.log(Log.underscore, "page: ", page);
             let e = new PgletEvent(payload.eventTarget, payload.eventName, payload.eventData);
             page._onEvent(e);
         }
@@ -203,12 +203,9 @@ async function connectInternal(args: clientOpts): Promise<Connection> {
     
     if (args.isApp) {
         conn.onSessionCreated = async (payload) => {
-            //console.log("session created: ", payload);
-            // instantiate page
+            indexDebug("session created payload: %O", payload);
             let page = new Page({ pageName: conn.pageName, url: conn.pageUrl, connection: conn, sessionID: payload.sessionID });
-            //conn.addSession(payload.sessionID, page);
             conn.sessions[payload.sessionID] =  page;
-            //console.log(Log.underscore, "conn.sessions: ", conn.sessions);
             await fn(page);
         }
     }
@@ -225,7 +222,6 @@ async function connectInternal(args: clientOpts): Promise<Connection> {
     conn.pageName = respPayload.pageName;
     conn.pageUrl = args.serverUrl + '/' + respPayload.pageName;
 
-    //console.log(Log.underscore, "resp: ", respPayload);
     if (!args.noWindow) { 
         openBrowser(conn.pageUrl); 
     }
