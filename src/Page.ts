@@ -1,11 +1,18 @@
 import { ControlProperties, Control } from './Control'
-import { Alignment } from './Alignment';
+import { Alignment } from './controls/Alignment';
 import { Connection } from './Connection';
-import { Event } from './Event';
+import { Event as PgletEvent} from './Event';
 import { ControlEvent } from './ControlEvent';
+import { Action } from './protocol/Actions';
+import { Command } from './protocol/Command';
+import { Log, warn, info, debug } from './Utils';
+const pageDebug = debug.extend('page');
+
 
 interface PageProperties extends ControlProperties {
     connection?: Connection,
+    pageName?: string,
+    sessionID?: string,
     url?: string,
     title?: string,
     verticalFill?: boolean,
@@ -19,6 +26,8 @@ class Page extends Control {
     private _controls: Control[] = [];
     private _index: Map<string, Control> = new Map();
     private _conn: Connection;
+    private _pageName: string;
+    private _sessionID: string;
     private _url: string;
 
     constructor(pageProps: PageProperties) {
@@ -36,7 +45,12 @@ class Page extends Control {
         if (pageProps.url) {
             this._url = pageProps.url;
         }
-        this._conn.onEvent = this._onEvent.bind(this);
+        if (pageProps.pageName) {
+            this._pageName = pageProps.pageName;
+        }
+        if (pageProps.sessionID) {
+            this._sessionID = pageProps.sessionID;
+        }
         
     }
 
@@ -48,10 +62,6 @@ class Page extends Control {
         return this._index.get(id);
     }
 
-    waitEvent(): Promise <string | Event> {
-        return this._conn.waitEvent();
-    }
-
     update(controls?: Control[]) {
         if (!controls) {
             return this._update([this]);
@@ -61,37 +71,50 @@ class Page extends Control {
         }
     }
 
-    private async _update(controls?: Control[]): Promise<string> {
+    private async _update(controls?: Control[]): Promise<string[]> {
         let addedControls: Control[]  = [];
-        let commandList: string[] = [];
+        let commandList: Command[] = [];
         if (!controls) {
             return;
         }
         controls.forEach(ctrl => {
             ctrl.populateUpdateCommands(this._index, addedControls, commandList);
         });
-        //console.log("commandList: ", commandList);
-        //console.log("control map: ", ...this._index.entries());
+        pageDebug("added controls: %O", addedControls);
+        pageDebug("list of commands: %O", commandList);
+
         if (commandList.length == 0) {
             return;
         }
 
+        let ids: string[] = [];
+        
+        for (const cmd of commandList) {
+            let pageCmdRequestPayload = {
+                pageName: this._pageName,
+                sessionID: this._sessionID,
+                command: cmd
+            }
+            let resp = await this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
+            let respPayload = JSON.parse(resp).payload;
+            pageDebug("response: " + resp); 
+            if (respPayload.result != "") {
+                ids.push(...respPayload.result.split(" "));
+            }
+        }
 
-        let ids = await this._conn.sendBatch(commandList);
-
-        if (ids) {
+        if (ids.length > 0) {
             let n = 0;
-            ids.split(/\r?\n/).forEach(line => {
-                
-                line.split(" ").forEach(id => {
-
-                    addedControls[n].uid = id;
-                    addedControls[n].page = this;
-                    this._index.set(id, addedControls[n]);
-                    n += 1
-                })
+            ids.forEach(id => {
+                if (id === "") return;
+                addedControls[n].uid = id;
+                addedControls[n].page = this;
+                this._index.set(id, addedControls[n]);
+                n += 1;
             })
         }
+        pageDebug("INDEX: %O", this._index);
+
         return ids;
     }
 
@@ -111,7 +134,7 @@ class Page extends Control {
 
     remove(controls: Control[]) {
         controls.forEach(ctrl => {
-            let index = controls.indexOf(ctrl);
+            let index = this._controls.indexOf(ctrl);
 
             if (index > -1) {
                 this._controls.splice(index, 1);
@@ -130,27 +153,37 @@ class Page extends Control {
         this.getChildren().forEach(ctrl => {
             ctrl.removeControlRecursively(this._index, ctrl);
         })
-        return this._conn.send(`clean ${this.uid}`)
+        let cmd = new Command();
+        cmd.name = "clean";
+        cmd.values = ["page"];
+        let pageCmdRequestPayload = {
+            pageName: this._pageName,
+            sessionID: this._sessionID,
+            command: cmd
+        }
+        
+        return this._conn.send('pageCommandFromHost', pageCmdRequestPayload);
     }
 
-    getValue(ctrl: string | Control): Promise<string> {
+    // are these necessary?
+    getValue(ctrl: Control): Promise<string> {
         let value = (typeof ctrl === "string") ? ctrl : ctrl.uid;
-        return this._conn.send(`get ${value} value`);
+        return this._conn.send('pageCommandFromHost', `get ${value} value`);
     }
-
     setValue(ctrl: string | Control, value: string, fireAndForget: boolean): Promise<string> {
         let cmd = fireAndForget ? "setf" : "set";
-
         let ctrlValue = (typeof ctrl === "string") ? ctrl : ctrl.id;
-        return this._conn.send(`${cmd} ${ctrlValue} value="${value}"`);
+        return this._conn.send('pageCommandFromHost',`${cmd} ${ctrlValue} value="${value}"`);
     }
 
-    private _onEvent(e: Event) {
-        //console.log("e.data: ", e.data);
+    _onEvent(e: PgletEvent) {
+        pageDebug("onEvent PgletEvent: %O", e);
+
         if (e.target == "page" && e.name == "change") {
             let allProps = JSON.parse(e.data);
-            //console.log("all Props: ", allProps);
+
             allProps.forEach(props => {
+                pageDebug("props: %o", props);
                 let id = props["i"];
                 if (this._index.has(id)) {
                     for (const [key, value] of Object.entries(props)) {

@@ -7,45 +7,51 @@ import request from 'request';
 import { StringDecoder } from 'string_decoder';
 const decoder = new StringDecoder('utf8');
 import Page from './Page';
-import Text from './Text';
-import Textbox from './Textbox';
-import Stack from './Stack';
-import Button from './Button';
-import Dropdown from './Dropdown';
-import Progress from './Progress';
-import Spinner from './Spinner';
-import Checkbox from './Checkbox';
-import Slider from './Slider';
-import SpinButton from './SpinButton';
-import Toggle from './Toggle';
-import Dialog from './Dialog';
-import Panel from './Panel';
-import Point from './Point';
-import Searchbox from './Searchbox';
-import VerticalBarchart from './VerticalBarchart';
-import DatePicker from './DatePicker';
-import Barchart from './Barchart';
-import Piechart from './Piechart';
-import Callout from './Callout';
-import Icon from './Icon';
-import { Event } from './Event';
-import { Linechart, LineData } from './Linechart';
-import { Option, ChoiceGroup } from './ChoiceGroup'
-import { Message, MessageButton } from './Message';
-import { Toolbar, ToolbarItem} from './Toolbar';
-import { Nav, NavItem } from './Nav';
-import { Column, Columns, Items, Grid } from './Grid';
-import { Tabs, Tab } from './Tabs';
+import Text from './controls/Text';
+import Textbox from './controls/Textbox';
+import Stack from './controls/Stack';
+import Button from './controls/Button';
+import Dropdown from './controls/Dropdown';
+import Progress from './controls/Progress';
+import Spinner from './controls/Spinner';
+import Checkbox from './controls/Checkbox';
+import Slider from './controls/Slider';
+import SpinButton from './controls/SpinButton';
+import Toggle from './controls/Toggle';
+import Dialog from './controls/Dialog';
+import Panel from './controls/Panel';
+import Point from './controls/Point';
+import Searchbox from './controls/Searchbox';
+import VerticalBarchart from './controls/VerticalBarchart';
+import DatePicker from './controls/DatePicker';
+import Barchart from './controls/Barchart';
+import Piechart from './controls/Piechart';
+import Callout from './controls/Callout';
+import Icon from './controls/Icon';
+import { Event as PgletEvent } from './Event';
+import { Linechart, LineData } from './controls/Linechart';
+import { Option, ChoiceGroup } from './controls/ChoiceGroup'
+import { Message, MessageButton } from './controls/Message';
+import { Toolbar, ToolbarItem} from './controls/Toolbar';
+import { Nav, NavItem } from './controls/Nav';
+import { Column, Columns, Items, Grid } from './controls/Grid';
+import { Tabs, Tab } from './controls/Tabs';
 import { Control}  from './Control';
 import { Connection } from './Connection';
+import { ReconnectingWebSocket } from './protocol/ReconnectingWebSocket'
+import { warn, info, debug } from './Utils';
+const indexDebug = debug.extend('index');
 
-
-const PGLET_VERSION: string = "0.4.6";
+const PGLET_VERSION: string = "0.7.0";
+const HOSTED_SERVICE_URL = "https://app.pglet.io";
+const DEFAULT_SERVER_PORT = "8550";
+const ZERO_SESSION = "0";
+const isDeno = typeof window !== 'undefined' && ("Deno" in window);
 
 var pgletExe: string = null;
-var _installPromise: any = null;
+var _installPromise: Promise<void> = null;
 
-async function _install() {
+async function _install(): Promise<void> {
     // prevent concurrent calls firing install more than once
     if (!_installPromise) {
         _installPromise = _doInstall();
@@ -53,7 +59,7 @@ async function _install() {
       return _installPromise;
 }
 
-async function _doInstall() {
+async function _doInstall(): Promise<void> {
     pgletExe = os.type() === "Windows_NT" ? "pglet.exe" : "pglet";
 
     // check if pglet exists in PATH (for development)
@@ -67,7 +73,7 @@ async function _doInstall() {
 
     if (pgletInPath != null) {
         pgletExe = pgletInPath;
-        //console.log("pglet found in PATH:", pgletExe);
+        indexDebug("pglet found in PATH: " + pgletExe);
         return;
     }
 
@@ -130,121 +136,118 @@ async function download(url: string, filePath: string) {
     });
 }
 
-let page = async (...args: any) => {
-    
-    await _install();
-
-    const pargs = buildArgs("page", args);
-    pargs.push("--all-events");
-    
-    //console.log("pgletExe", pgletExe)
-
-    var res = cp.spawnSync(pgletExe, pargs, { encoding : 'utf8' });
-    var result = res.stdout.trim();
-    let re = /(?<connId>[^\s]+)\s(?<pageUrl>[^\s]+)/;
-    let match = re.exec(result);
-
-    var conn = new Connection(match.groups.connId);
-
-    return new Page({connection: conn, url: match.groups.pageUrl})
+type clientOpts = {
+    pageName?: string,
+    web?: boolean,
+    serverUrl?: string,
+    noWindow?: boolean,
+    sessionHandler?: (page: Page) => Promise<void>,
+    isApp?: boolean
 }
 
-let app = async (...args: any) => {
-    
-    await _install();
-    //console.log("pgletExe", pgletExe)
-    var fn = null;
-    if (args.length > 0 && typeof args[args.length - 1] === 'function') {
-        fn = args[args.length - 1];
+async function connectPage(name?: string, opts?: clientOpts): Promise<Page> {
+    let userOpts = {
+        pageName: "*",
+        web: false,
+        serverUrl: `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}/`,
+        isApp: false,        
+        ...opts
+    }
+    if (name) { userOpts.pageName = name };
+    let conn = await connectInternal(userOpts);
+    return new Page({pageName: conn.pageName, connection: conn, url: conn.pageUrl, sessionID: ZERO_SESSION})
+}
+
+async function serveApp(sessionHandler: (page: Page) => Promise<void>, opts?: clientOpts): Promise<void> {
+    let userOpts = {
+        sessionHandler: null,
+        pageName: "*",
+        web: false,
+        serverUrl: `http://localhost:${process.env.DEFAULT_SERVER_PORT ?? DEFAULT_SERVER_PORT}`,
+        isApp: true,
+        ...opts
+    }
+    if (sessionHandler && typeof sessionHandler === 'function') {
+        userOpts.sessionHandler = sessionHandler;
     } else {
         throw "The last argument must be a function.";
     }
 
-    const pargs = buildArgs("app", args);
-    pargs.push("--all-events");
-
-    var child = cp.spawn(pgletExe, pargs);
-
-    let url: string;
-    let page: Page;
-    child.stdout.on('data', (data) => {
-
-        //console.log("spawn result: ", decoder.write(Buffer.from(data)));
-        if (!url) {
-            url = decoder.write(Buffer.from(data)).trim();
-            return;
-        }
-        else {
-            page = new Page({connection: new Connection(decoder.write(Buffer.from(data)).trim()), url: url});
-            fn(page);
-        }
-    })
-
-
-
+    await connectInternal(userOpts);
 }
 
-function buildArgs(action: string, args: any) {
+async function connectInternal(args: clientOpts): Promise<Connection> { 
+    await _install();
 
-    var pageName = null;
-    var opts = null;
+    var fn = args.sessionHandler;
 
-    var idx = 0;
-    while (idx < args.length) {
-        if (typeof args[idx] === 'string') {
-            pageName = args[idx];
-        } else if (typeof args[idx] === 'object') {
-            opts = args[idx];
-        }
-        idx++;
+    if (!args.web) {
+        cp.spawnSync(pgletExe, ["server", "--background"], { encoding : 'utf8' });
     }
-
-    if (opts && opts.name) {
-        pageName = opts.name;
-    }
-
-    var pargs = [];
-    pargs.push(action);
-
-    if (pageName) {
-        pargs.push(pageName);
-    }
-
-    if (opts && opts.local) {
-        pargs.push("--local");
+    else {
+        args.serverUrl = HOSTED_SERVICE_URL;
     }
     
-    if (opts && opts.noWindow) {
-        pargs.push("--no-window");
+    const rws = new ReconnectingWebSocket(getWebSocketUrl(args.serverUrl)); 
+    var conn = new Connection(rws);
+    
+    conn.onEvent = (payload) => {
+        indexDebug("event payload: %O", payload);
+        //console.log("payload from conn.onEvent: ", payload);
+        if (payload.sessionID in conn.sessions) {
+            let page = conn.sessions[payload.sessionID];
+            let e = new PgletEvent(payload.eventTarget, payload.eventName, payload.eventData);
+            page._onEvent(e);
+        }
+    }
+    
+    if (args.isApp) {
+        conn.onSessionCreated = async (payload) => {
+            indexDebug("session created payload: %O", payload);
+            let page = new Page({ pageName: conn.pageName, url: conn.pageUrl, connection: conn, sessionID: payload.sessionID });
+            conn.sessions[payload.sessionID] =  page;
+            await fn(page);
+        }
     }
 
-    if (opts && opts.server) {
-        pargs.push("--server");
-        pargs.push(opts.server);
+    let registerHostClientPayload = {
+        HostClientID: null,
+        PageName: args.pageName,
+        IsApp: args.isApp,
+        AuthToken: null,
+        Permissions: null
     }
+    let resp = await conn.send('registerHostClient', registerHostClientPayload);
+    let respPayload = JSON.parse(resp).payload;
+    conn.pageName = respPayload.pageName;
+    conn.pageUrl = args.serverUrl + '/' + respPayload.pageName;
 
-    if (opts && opts.token) {
-        pargs.push("--token");
-        pargs.push(opts.token);
+    if (!args.noWindow) { 
+        openBrowser(conn.pageUrl); 
     }
-
-    if (opts && opts.permissions) {
-        pargs.push("--permissions");
-        pargs.push(opts.permissions);
-    }    
-
-    // if (opts && opts.allEvents) {
-    //     pargs.push("--all-events");
-    //     pargs.push(opts.token);
-    // }
-
-    // if (os.type() !== "Windows_NT") {
-    //     // enforce Unix Domain Sockets for non-Windows platforms
-    //     pargs.push("--uds");
-    // }
-
-    return pargs;
+    return conn;
 }
+
+function getWebSocketUrl(url: string) {
+    let returnUrl = new URL(url);
+    returnUrl.protocol = returnUrl.protocol === "https:" ? "wss" : "ws";
+    returnUrl.pathname = "ws";
+    return returnUrl.href;
+}
+
+function openBrowser(url: string) {
+    let osType = os.type();
+    if (osType === "Windows_NT") {
+        cp.exec(`start ${url}`);
+    }
+    else if (osType == "Darwin") {
+        cp.exec(`open ${url}`);
+    }
+    else {
+        cp.exec(`xdg-open ${url}`)
+    }
+}
+
 export {
-    app, page, Page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout, Searchbox, Icon, Event
+    serveApp, connectPage, Page, Text, Textbox, Stack, Button, Dropdown, Progress, Spinner, Checkbox, Control, Tabs, Tab, Column, Columns, NavItem, Items, Grid, Nav, Slider, SpinButton, Toggle, Toolbar, ToolbarItem, Message, MessageButton, Option, ChoiceGroup, Dialog, Panel, Barchart, Point, VerticalBarchart, DatePicker, LineData, Linechart, Piechart, Callout, Searchbox, Icon, PgletEvent
 }

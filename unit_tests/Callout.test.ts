@@ -8,8 +8,9 @@ test('callout add test', () => {
     expect(co instanceof Control).toBeTruthy();
     expect(co instanceof Callout).toBeTruthy();
     expect(co.getControlName()).toBe("callout");
-    expect(co.getCmdStr()).toBe(
-        `callout target="callout_button" position="leftBottom" beak="true" beakWidth="10" visible="true" focus="false"\n` +
-        `  text value="Callout!"` 
-    );
+    expect(co.getCmds()).toMatchObject([
+        { indent: 0, values: ['callout'], attrs: {target: 'callout_button', position: 'leftBottom', beak: 'true', beakWidth: '10', visible: 'true', focus: 'false'}, commands: [] },
+        { indent: 2, values: ['text'], attrs: {value: 'Callout!'}, commands: [] }
+    ]);
 });
+ 

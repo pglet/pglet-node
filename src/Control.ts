@@ -1,6 +1,9 @@
 import Page from './Page';
 import { GetId } from './Utils';
+import { Command } from './protocol/Command';
 import * as diff from 'diff';
+import { CpuInfo } from 'os';
+import { Log } from './Utils';
 
 interface ControlProperties {
     id?: string,
@@ -23,16 +26,16 @@ class Control {
     constructor(controlProps: ControlProperties) {
         this._id = controlProps.id ? controlProps.id : undefined;
         this.attrs = new Map();
-        let excludedAttrs = ["id", "childControls", "onClick", "onChange", "onSearch", "onEscape", "onClear", "onDismiss", "onChangeHandler", "onSubmit", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons", "points", "lines", "optionKeys", "optionValues"]
+        // excludedAttrs is needed so that a single object can be passed to control constructor and here event handlers and other non-applicable attributes are filtered out. 
+        let excludedAttrs = ["connection", "id", "childControls", "onClick", "onChange", "onSearch", "onEscape", "onClear", "onDismiss", "onChangeHandler", "onSubmit", "columns", "items", "tabs", "overflow", "far", "options", "footer", "buttons", "points", "lines", "optionKeys", "optionValues"]
         Object.keys(controlProps).forEach(key => {  
-            if (excludedAttrs.indexOf(key) < 0) {
+            if (excludedAttrs.indexOf(key) < 0) {                
                 this.setAttr(key, controlProps[key]);
             }   
         })
-        // console.log("attrs: ", this.attrs);
     }
 
-    getControlName() {
+    getControlName(): string {
         throw new Error("must be overridden in child class");
     }
     
@@ -51,7 +54,17 @@ class Control {
     
 
     setAttr(key: string, value: any, dirty = true) {
-        this.attrs.set(key, [value, dirty]);
+        let newVal: string;
+        if (typeof(value) == "boolean") {
+            newVal = String(value);
+        }
+        else if(typeof(value) == "number") {
+            newVal = value.toString();
+        }
+        else {
+            newVal = value;
+        }
+        this.attrs.set(key, [newVal, dirty]);
     }
      
     protected getEventHandler(eventName: string) {
@@ -130,11 +143,13 @@ class Control {
         }
     }
 
-    populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: String[]) {
-        let updateAttrs = this.getCmdAttrs(true);
+    populateUpdateCommands(controlMap: Map<string, Control>, addedControls: Control[], commandList: Command[]) {
+        let updateCmd = this.getCmdAttrs(true);
 
-        if (updateAttrs.length > 0) {
-            commandList.push(`set ${updateAttrs.join(' ')}`);
+        if (Object.keys(updateCmd.attrs).length > 0) {
+            //`set ${updateCmd.join(' ')}`
+            updateCmd.name = "set";
+            commandList.push(updateCmd);
         }
 
         let hashes = new Map<number, Control>();
@@ -143,7 +158,6 @@ class Control {
         
         const previousChildren = this._previousChildren;
         previousChildren.forEach(ctrl => {
-            //console.log("previous child cmdstr: ", ctrl.getCmdStr());
             let hash = GetId(ctrl);
             hashes.set(hash, ctrl);
             previousInts.push(hash);
@@ -151,7 +165,6 @@ class Control {
 
         const currentChildren = this.getChildren();
         currentChildren.forEach(ctrl => {
-            //console.log("current child cmdstr: ", ctrl.getCmdStr());
             let hash = GetId(ctrl);
             hashes.set(hash, ctrl);
             currentInts.push(hash);
@@ -165,8 +178,15 @@ class Control {
                 //insert control
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
-                    let cmd = ctrl.getCmdStr('', controlMap, addedControls);
-                    commandList.push(`add to="${this.uid}" at="${n}"\n${cmd}`);
+                    let cmd = ctrl.getCmds(0, controlMap, addedControls);
+                    let addCommand = new Command();
+                    addCommand.name = "add";
+                    addCommand.attrs = {
+                        "to": this._uid,
+                        "at": n.toString()
+                    }
+                    addCommand.commands.push(...cmd)
+                    commandList.push(addCommand);
                     n += 1;
                 })
             }
@@ -175,12 +195,14 @@ class Control {
                 let ids = [];
                 changeObject.value.forEach(val => {
                     let ctrl = hashes.get(val);
+                    //console.log(Log.bg.red, "ctrl and ctrl.uid: ", ctrl, ctrl.uid)
                     this.removeControlRecursively(controlMap, ctrl);
                     ids.push(ctrl.uid);
                 })
-                
-                commandList.push(`remove ${ids.join(' ')}`);
-
+                let removeCommand = new Command();
+                removeCommand.name = "remove";
+                removeCommand.values = ids;
+                commandList.push(removeCommand);
             }
             else {
                 // leave control
@@ -204,23 +226,23 @@ class Control {
         map.delete(control.uid);
     }
 
-    getCmdStr(indent?: string, index?: Map<string, Control>, addedControls?: Control[]): string {
+    getCmds(indent?: number, index?: Map<string, Control>, addedControls?: Control[]): Command[] {
 
         if (this.uid && index && index.has(this.uid)) {
             index.delete(this.uid);
         }
 
         if(!indent) {
-            indent = '';
+            indent = 0;
         }
 
-        let lines = [];
-        let parts = [];
+        let commands: Command[] = [];
         
+        //top level command
         let attrParts = this.getCmdAttrs(false);
-        parts.push(indent + this.getControlName(), ...attrParts);     
-
-        lines.push(parts.join(' '));
+        attrParts.indent = indent;
+        attrParts.values.push(this.getControlName());
+        commands.push(attrParts);    
 
         if (addedControls) {
             addedControls.push(this);
@@ -228,29 +250,29 @@ class Control {
         const currentChildren = this.getChildren();
 
         currentChildren.forEach(control => {
-             let childCmd = control.getCmdStr((indent+"  "), index, addedControls);
-             if (childCmd != "") {
-                 lines.push(childCmd);
+             let childCmds = control.getCmds((indent + 2), index, addedControls);
+             if (childCmds.length > 0) {
+                commands.push(...childCmds);
              }
         })
         
         this._previousChildren.length = 0;
         this._previousChildren.push(...currentChildren);
 
-        return lines.join('\n');
+        return commands
     }
 
-    // unsure of the utility of this function
+    // alternate to storing attributes as strings?
     private stringifyAttr(attr: any): any {
         let sattr: string = attr.toString();
         return sattr.replace(/\n/g, "\\n").replace(/\"/g, "\\\"");
     }
 
-    private getCmdAttrs(update?: boolean): string[] {
-        let parts = [];
+    private getCmdAttrs(update?: boolean): Command {
+        let cmd = new Command();
 
         if (update && !this.uid) {
-            return parts;
+            return cmd;
         }
 
         this.attrs.forEach((value, attr) => {
@@ -259,24 +281,23 @@ class Control {
             if (update && !dirty) {
                 return;
             }
-
-            parts.push(`${attr}="${value[0]}"`);
+            cmd.attrs[attr] = value[0]
 
             this.attrs.set(attr, [value[0], false]);
         })
         
         if (!update && this._id) {
-            parts.unshift(`id="${this.stringifyAttr(this._id)}"`)
+            cmd.attrs["id"] = this.stringifyAttr(this._id);
         }
-        else if (update && parts.length > 0) {
-            parts.unshift(`${this.stringifyAttr(this.uid)}`)
-        }
-        
+        else if (update && Object.keys(cmd.attrs).length > 0) {
+            cmd.values.push(this.stringifyAttr(this.uid));
+        }      
 
-        return parts;
+        return cmd;
     }
 
-    protected getChildren() {
+
+    protected getChildren(): Control[] {
         return [];
     }
 }

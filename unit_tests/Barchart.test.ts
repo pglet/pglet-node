@@ -1,6 +1,4 @@
-import Barchart from "../src/Barchart";
-import Point from "../src/Point";
-import { Control } from "../src/index";
+import { Control, Barchart, Point } from "../src/index";
 
 test('Barchart add test', () => {
     let bc = new Barchart({ id: "new-barchart", dataMode: "default", tooltips: false, points: 
@@ -10,10 +8,10 @@ test('Barchart add test', () => {
     expect(bc instanceof Control).toBeTruthy();
     expect(bc instanceof Barchart).toBeTruthy();
     expect(bc.getControlName()).toBe("barchart");
-    expect(bc.getCmdStr()).toBe(
-        `barchart id="new-barchart" dataMode="default" tooltips="false"\n`+
-        `  data\n`+
-        `    p legend="A" x="10" y="200"\n`+
-        `    p legend="B" x="20" y="100"`
-    );
+    expect(bc.getCmds()).toMatchObject([
+        { indent: 0, values: ['barchart'], attrs: {id: 'new-barchart', dataMode: 'default', tooltips: 'false'}, commands: [] },
+        { indent: 2, values: ['data'], attrs: {}, commands: [] },
+        { indent: 4, values: ['p'], attrs: {legend: 'A', x: '10', y: '200'}, commands: [] },
+        { indent: 4, values: ['p'], attrs: {legend: 'B', x: '20', y: '100'}, commands: [] }
+    ]);
 });

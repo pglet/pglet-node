@@ -5,6 +5,7 @@ test('textbox add test', () => {
     expect(tbox instanceof Control).toBeTruthy();
     expect(tbox instanceof Textbox).toBeTruthy();
     expect(tbox.getControlName()).toBe("textbox");
-    expect(tbox.getCmdStr()).toBe(
-        `textbox label="textbox input" multiline="true" align="right" borderless="true"`);
+    expect(tbox.getCmds()).toMatchObject([
+        { indent: 0, values: ['textbox'], attrs: {label: 'textbox input', multiline: 'true', align: 'right', borderless: 'true'}, commands: [] }
+    ]);
 });
