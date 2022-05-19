@@ -11,9 +11,6 @@ const options: Options = {
 
 export class ReconnectingWebSocket {
     private _rws: rws;
-    // private _onOpen: (evt: Event) => void;
-    // private _onClose: (evt: Event) => void;
-    // private _onMessage: (evt: MessageEvent) => void;
 
     constructor(uri: string) {
         this._rws = new rws(uri, [], options);

@@ -129,63 +129,11 @@ export class Connection {
         return new PgletEvent(payload.eventTarget, payload.eventName, payload.eventData);
     }
 
-    // // wait event pipe for new event
-    // waitEvent(): Promise<string | PgletEvent> {
-    //     // register for result
-
-    //     return new Promise((resolve, reject) => {
-    //         if (os.type() === "Windows_NT") {
-                
-    //             //this._eventResolve = resolve;
-    //         } else {
-    //             fs.open(`${this.connId}.events`, 'r+', (err, fd) => {
-    //                 if (err) {
-    //                     reject(err);
-    //                 } else {
-    //                     var stream = fs.createReadStream(null, {
-    //                         fd
-    //                     });
-    //                     stream.on('data', (data) => {
-    //                         stream.close()
-    //                         resolve(this.parseEvent(data));
-    //                     });                     
-    //                 }
-    //             });                
-    //         }
-    //     });
-    // }
-
-    // async readLoop() {
-    //     while (true) {
-    //         const e = await this.waitEvent();
-    //         console.log(e);
-    //     }
-    // }
-    
     onMessage(msg: MessageEvent) {
         let storedMsg: PgletMessage;
         let msgData = JSON.parse(msg.data);
 
         connectionDebug("msgData: " + msgData);
-        // if (msgData.id in this.sentMessageHash) {
-        //     console.log("found!");
-        //     storedMsg = this.sentMessageHash[msgData.id];
-        //     //assume msg is retrieved
-        //     switch (storedMsg.action) {
-        //         case 'registerHostClient':
-        //             console.log(Log.underscore + Log.bg.yellow, "Register Host Client");
-        //             break;
-        //         case 'pageCommandFromHost':
-        //             console.log(Log.underscore + Log.bg.yellow, "Page Command From Host", msgData.payload.result);
-        //             //this.onEvent(msgData.payload);
-        //             break;
-        //         case 'pageCommandsBatchFromHost':
-        //             console.log(Log.underscore + Log.bg.yellow, "Page Commands Batch from Host");
-        //             break;
-        //         case 'pageEventToHost':
-        //             console.log(Log.underscore + Log.bg.yellow, "Page Event to Host");
-        //     }
-        // }
 
         if (msgData.action === 'pageEventToHost') {
             this.onEvent(msgData.payload);

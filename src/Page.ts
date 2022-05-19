@@ -62,10 +62,6 @@ class Page extends Control {
         return this._index.get(id);
     }
 
-    // waitEvent(): Promise<string | PgletEvent> {
-    //     return this._conn.waitEvent();
-    // }
-
     update(controls?: Control[]) {
         if (!controls) {
             return this._update([this]);
